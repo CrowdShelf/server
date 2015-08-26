@@ -19,9 +19,9 @@ function setup(app){
         next();
     });
 
-    app.put('/book', bookController.createNew);
-    app.get('/book/:isbn', bookController.getWithISBN);
-    app.get('/book/:isbn/:owner', bookController.getWithISBNAndOwner);
+    app.put('/api/book', bookController.createNew);
+    app.get('/api/book/:isbn', bookController.getWithISBN);
+    app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
 
 }
 
