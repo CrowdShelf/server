@@ -20,9 +20,8 @@ function setup(app){
     });
 
     app.put('/book', bookController.createNew);
-    app.get('/book/:isbn', bookController.getItem);
-    app.get('/book/:isbn/:owner', bookController.getItems);
-
+    app.get('/book/:isbn', bookController.getWithISBN);
+    app.get('/book/:isbn/:owner', bookController.getWithISBNAndOwner);
 
 }
 

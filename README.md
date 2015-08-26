@@ -19,13 +19,10 @@ An `book` is a book in our database that is owned by a user:
         availavleForRent: Boolean, 
         rentedTo: String,
         numberOfCopies: Integer,
-        history: {
-            timestamp: username (String)
-        }
     }
 
 ## API
-Remember header `Content-Type` should be `json/application`on all requests.
+Remember header `Content-Type` should be `application/json`on all requests.
 
 ### Version 1
 These calls have all `v1` in front of them.
@@ -34,7 +31,7 @@ These calls have all `v1` in front of them.
 Put an item as defined above to the database:
 `PUT /book`
 
-This can be a new item, or an item with new properties.
+This can be a new item, or an item with changed properties.
 
 #### Get
 Get an item with a given ISBN or/and of a specific owner:

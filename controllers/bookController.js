@@ -1,16 +1,34 @@
 /**
  * Created by Stein-Otto Svorstøl on 26.08.15.
+ * Logic of book requests
  */
+
+var Books = require('../models/book');
+
 module.exports = {
     createNew: function(req, res){
-        res.send('thanks');
+        var book = req.body; //@TODO check if isbn with owner is already in db, then just update/replace that entry
+        Books.insert(book, function(result){
+            res.sendStatus(201); // 201 Created
+        });
     },
 
-    getItem: function(req, res){
-        res.send('here are item');
+    getWithISBN: function(req, res){
+        var isbn = req.params.isbn;
+        Books.findWithISBN(isbn, function(result){
+            if (result === 404){
+                return res.sendStatus(404);  // not found
+            }
+            res.json(result);
+        });
     },
 
-    getItems: function(req, res){
-        res.send('here are items');
+    getWithISBNAndOwner: function(req, res){
+        var isbn = req.params.isbn;
+        var owner = req.params.owner;
+        Books.findWithISBNAndOwner(isbn, owner, function(result){
+            if (result === 404) return res.sendStatus(404);
+            res.json(result);
+        });
     }
 };
