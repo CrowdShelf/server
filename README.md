@@ -1,6 +1,9 @@
 # CrowdShelf server
 Server for the CrowdShelf apps, written with NodeJS, ExpressJS and Sequelize.
 
+## Workflow
+We're using JIRA for issue tracking. We try to follow [Chrockford's style guide](http://javascript.crockford.com/code.html) for our code.
+
 ## Installation
 1. Clone the repository with `git@github.com:CrowdShelf/server.git`
 2. `cd` into the folder
