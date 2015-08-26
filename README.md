@@ -20,20 +20,30 @@ An `book` is a book in our database that is owned by a user:
         rentedTo: String,
         numberOfCopies: Integer,
     }
+    
+A `crowd` has the following properties:
+
+    {
+        name: String,
+        creator: String,
+        members: Array[String]
+    }
 
 ## API
 Remember header `Content-Type` should be `application/json`on all requests.
 
-### Version 1
-These calls have all `v1` in front of them.
+You'll need `/api/` in front of a request. If you want the latest API, you can just use that. If you want a specific 
+version of the API, follow `api` with the version number, e.g. `/api/v2/`.
 
-#### Create and edit 
+As of August 26. 2015 there's only one version of the api.
+
+### Create and edit 
 Put an item as defined above to the database:
-`PUT /book`
+`PUT /api/book`
 
 This can be a new item, or an item with changed properties.
 
-#### Get
+### Get
 Get an item with a given ISBN or/and of a specific owner:
 
 `GET /book/:isbn` returns all data on all available owners of a specific book as an array.
