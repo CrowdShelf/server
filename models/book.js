@@ -8,13 +8,11 @@ var mongo = require('mongodb').MongoClient;
 var Books;
 var url = 'mongodb://localhost:27017/test';
 mongo.connect(url, function(err, db) {
-    console.log("Connected correctly to server.");
     Books = db.collection('Books');
 });
 
 module.exports = {
     insert: function(book, callback){
-        console.log(book);
         Books.insertOne(book, function(err, result){
            callback(result);
         });
@@ -27,7 +25,6 @@ module.exports = {
     findWithISBN: function(isbn, callback){
         Books.find({isbn: isbn}).toArray(function(err, result){
             if (result.length === 0) return callback(404); // Not found
-            console.log(result);
             callback(result);
         });
     },
