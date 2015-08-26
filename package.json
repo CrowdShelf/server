@@ -1,0 +1,23 @@
+{
+  "name": "crowdshelf-server",
+  "version": "1.0.0",
+  "description": "Server for CrowdShelf",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrowdShelf/server.git"
+  },
+  "author": "Stein-Otto Svorstøl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CrowdShelf/server/issues"
+  },
+  "homepage": "https://github.com/CrowdShelf/server#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "sequelize": "^3.6.0"
+  }
+}
