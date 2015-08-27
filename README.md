@@ -37,13 +37,13 @@ version of the API, follow `api` with the version number, e.g. `/api/v2/`.
 
 As of August 26. 2015 there's only one version of the api.
 
-### Create and edit 
+### Create and edit books
 Put an item as defined above to the database:
 `PUT /api/book`
 
 This can be a new item, or an item with changed properties.
 
-### Get
+### Get books
 Get an item with a given ISBN or/and of a specific owner:
 
 `GET /book/:isbn` returns all data on all available owners of a specific book as an array.
@@ -51,3 +51,12 @@ Get an item with a given ISBN or/and of a specific owner:
 
 `:isbn` is replaced with the ISBN-number as a string, and `:owner` is replaced with
 an identifier for the owner.
+
+### Crowds
+`POST /api/crowd` to create a new crowd.
+
+`PUT /api/crowd/crowdId` to add (put) a member into the crowd.
+
+`GET /api/crowd` to get all crowds with name and id.
+
+`GET /api/crowd/:crowdId` to get members of a given `crowdId`.

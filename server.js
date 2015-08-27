@@ -7,7 +7,6 @@ var express = require('express');
 var router = require('./router');
 
 var app = express();
-
 function start() {
     router.setup(app); // Setup routes
     var port = process.env.PORT || 3000; // Configure port

@@ -3,7 +3,8 @@
  */
 'use strict';
 
-var bookController = require('./controllers/bookController');
+var bookController = require('./controllers/bookController'),
+    crowdController = require('./controllers/crowdController');
 
 function setup(app){
     var bodyParser = require('body-parser'); // Some setup for encoding of requests
@@ -22,6 +23,11 @@ function setup(app){
     app.put('/api/book', bookController.createNew);
     app.get('/api/book/:isbn', bookController.getWithISBN);
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
+
+    app.post('/api/crowd', crowdController.create);
+    app.put('/api/crowd/:crowdId', crowdController.addMember);
+    app.get('/api/crowd', crowdController.getAll);
+    app.get('/api/crowd/:crowdId',crowdController.get);
 
 }
 
