@@ -22,7 +22,7 @@ module.exports = {
         Crowds.updateOne({_id: crowdId},{
             $push: {members: username }
         }, function(err, result){
-           callback(result);  
+           callback(result);
         });
     },
 

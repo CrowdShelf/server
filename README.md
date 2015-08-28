@@ -25,7 +25,7 @@ An `book` is a book in our database that is owned by a user:
 A `crowd` has the following properties:
 
     {
-        id: String, 
+        _id: String, 
         name: String,
         creator: String,
         members: Array[String]
