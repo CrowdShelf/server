@@ -3,12 +3,18 @@
  * Logic of requests regarding crowds
  */
 
+var Crowds = require('../models/crowd.js');
+
 module.exports = {
     create: function(req, res){
+        Crowds.insertCrowd(crowd, function(){
 
+        });
     },
 
     addMember: function(req, res){
+        var username = req.body.username;
+        var crowd = req.body.crowdId;
 
     },
 

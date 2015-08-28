@@ -14,6 +14,7 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 An `book` is a book in our database that is owned by a user:
 
     {
+        _id: String,
         isbn: String
         owner: String,
         availavleForRent: Boolean, 
@@ -24,10 +25,14 @@ An `book` is a book in our database that is owned by a user:
 A `crowd` has the following properties:
 
     {
+        id: String, 
         name: String,
         creator: String,
         members: Array[String]
     }
+    
+Users are kept in a relational database, seperate from crowds and books. 
+A user is represented by its unique string username.
 
 ## API
 Remember header `Content-Type` should be `application/json`on all requests.

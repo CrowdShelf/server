@@ -25,7 +25,7 @@ function setup(app){
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
 
     app.post('/api/crowd', crowdController.create);
-    app.put('/api/crowd/:crowdId', crowdController.addMember);
+    app.put('/api/crowd/addmember', crowdController.addMember);
     app.get('/api/crowd', crowdController.getAll);
     app.get('/api/crowd/:crowdId',crowdController.get);
 

@@ -5,8 +5,9 @@
 'use strict';
 
 var mongo = require('mongodb').MongoClient;
-var Books;
 var url = 'mongodb://localhost:27017/test';
+
+var Books;
 mongo.connect(url, function(err, db) {
     Books = db.collection('Books');
 });
