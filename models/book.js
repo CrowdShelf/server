@@ -19,9 +19,6 @@ module.exports = {
         });
     },
 
-    remove: function(book, callback){
-
-    },
 
     findWithISBN: function(isbn, callback){
         Books.find({isbn: isbn}).toArray(function(err, result){
@@ -36,6 +33,23 @@ module.exports = {
            if (result === null) return callback(404);
             callback(result);
         });
+    },
+
+    addRenter: function(isbn, owner, renter, callback) {
+        Books.updateOne({isbn: isbn, owner: owner}, {
+            $push: {rentedTo: renter }
+        }, function(err, result){
+            callback(result);
+        });
+    },
+
+    removeRenter: function(isbn, owner, renter, callback){
+        Books.updateOne({isbn: isbn, owner: owner}, {
+            $pull: {rentedTo: renter }
+        }, function(err, result){
+            callback(result);
+        });
     }
+
 
 };

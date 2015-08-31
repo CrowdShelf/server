@@ -30,5 +30,17 @@ module.exports = {
             if (result === 404) return res.sendStatus(404);
             res.json(result);
         });
+    },
+
+    addRenter: function(req, res){
+        Books.addRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
+            res.json(result);
+        });
+    },
+
+    removeRenter: function(req, res){
+        Books.removeRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
+            res.json(result);
+        });
     }
 };

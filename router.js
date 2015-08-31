@@ -23,6 +23,8 @@ function setup(app){
     app.put('/api/book', bookController.createNew);
     app.get('/api/book/:isbn', bookController.getWithISBN);
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
+    app.put('/api/book/:isbn/:owner/addrenter/:renter', bookController.addRenter);
+    app.put('/api/book/:isbn/:owner/removerenter/:renter', bookController.removeRenter);
 
     app.post('/api/crowd', crowdController.create);
     app.put('/api/crowd/addmember', crowdController.addMember);

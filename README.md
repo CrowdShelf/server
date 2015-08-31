@@ -59,6 +59,8 @@ Get an item with a given ISBN or/and of a specific owner:
 
 `GET /book/:isbn` returns all data on all available owners of a specific book as an array.
 `GET /book/:isbn/:owner` returns data on a specfic book of a specific owner.
+`PUT /book/:isbn/:owner/addrenter/:renter` to add a renter to a book.
+`PUT /book/:isbn/:owner/removerenter/:renter` to remove a renter to a book.
 
 `:isbn` is replaced with the ISBN-number as a string, and `:owner` is replaced with
 an identifier for the owner.
