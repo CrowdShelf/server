@@ -32,7 +32,7 @@ module.exports = {
     },
 
     getAll: function(callback){
-        Crowds.find({}, function (err, result) {
+        Crowds.find({}).toArray(function (err, result) {
             callback(result);
         });
     },

@@ -22,7 +22,7 @@ module.exports = {
 
     getAll: function(req, res){
         Crowds.getAll(function(result){
-            res.json(result);
+            res.send(result);
         });
     },
 
