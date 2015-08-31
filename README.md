@@ -10,6 +10,10 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 3. Run `npm install` to install dependencies
 4. Run `npm start` and you'll be up and running on port 3000, or an environment defined port.
 
+## Deployment 
+### Heroku
+
+
 ## Data model
 A `book` is a book in our database that is owned by a user:
 

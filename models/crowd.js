@@ -30,5 +30,17 @@ module.exports = {
         Crowds.remove(crowd, function(err, result){
             callback(result);
         });
+    },
+
+    getAll: function(callback){
+        Crowds.find({}, function (err, result) {
+            callback(result);
+        }); 
+    },
+
+    getCrowd: function(crowdId, callback){
+        Crowds.findOne({_id: crowdId}, function(err, result){
+            callback(result);
+        });
     }
 };
