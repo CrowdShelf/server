@@ -12,7 +12,7 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 
 ## Deployment 
 ### Heroku
-
+The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`.
 
 ## Data model
 A `book` is a book in our database that is owned by a user:
@@ -22,7 +22,7 @@ A `book` is a book in our database that is owned by a user:
         isbn: String
         owner: String,
         availavleForRent: Integer, 
-        rentedTo: String,
+        rentedTo: Array[string], ,
         numberOfCopies: Integer,
     }
     
