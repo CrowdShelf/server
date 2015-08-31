@@ -4,8 +4,7 @@
  */
 
 var mongo = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/test';
-
+var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var Crowds;
 mongo.connect(url, function(err, db) {
     Crowds = db.collection('Crowds');
@@ -35,7 +34,7 @@ module.exports = {
     getAll: function(callback){
         Crowds.find({}, function (err, result) {
             callback(result);
-        }); 
+        });
     },
 
     getCrowd: function(crowdId, callback){

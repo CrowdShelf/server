@@ -5,7 +5,7 @@
 'use strict';
 
 var mongo = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/test';
+var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 
 var Books;
 mongo.connect(url, function(err, db) {

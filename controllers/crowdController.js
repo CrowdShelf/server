@@ -21,7 +21,7 @@ module.exports = {
     },
 
     getAll: function(req, res){
-        Crowds.
+
     },
 
     get: function(req, res){
