@@ -11,13 +11,13 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 4. Run `npm start` and you'll be up and running on port 3000, or an environment defined port.
 
 ## Data model
-An `book` is a book in our database that is owned by a user:
+A `book` is a book in our database that is owned by a user:
 
     {
         _id: String,
         isbn: String
         owner: String,
-        availavleForRent: Boolean, 
+        availavleForRent: Integer, 
         rentedTo: String,
         numberOfCopies: Integer,
     }
@@ -33,6 +33,8 @@ A `crowd` has the following properties:
     
 Users are kept in a relational database, seperate from crowds and books. 
 A user is represented by its unique string username.
+
+The `_id` fields are given by MongoDB upon creation, and identifies the object unqiuely in the database. When you create a new object, you don't post the `_id`-fields.
 
 ## API
 Remember header `Content-Type` should be `application/json`on all requests.
@@ -58,9 +60,9 @@ Get an item with a given ISBN or/and of a specific owner:
 an identifier for the owner.
 
 ### Crowds
-`POST /api/crowd` to create a new crowd.
+`POST /api/crowd` to post a new crowd.
 
-`PUT /api/crowd/crowdId` to add (put) a member into the crowd.
+`PUT /api/crowd/:crowdId` to add (put) a member into the crowd.
 
 `GET /api/crowd` to get all crowds with name and id.
 
