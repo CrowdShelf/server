@@ -21,10 +21,15 @@ module.exports = {
     },
 
     getAll: function(req, res){
-
+        Crowds.getAll(function(result){
+            res.json(result);
+        });
     },
 
     get: function(req, res){
-
+        var crowdId = req.params.crowdId;
+        Crowds.getCrowd(crowdId, function(result){
+           res.json(result);
+        });
     }
 };
