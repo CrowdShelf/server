@@ -23,6 +23,7 @@ function setup(app){
     app.put('/api/book', bookController.createNew);
     app.get('/api/book/:isbn', bookController.getWithISBN);
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
+    app.get('/api/book/:owner', bookController.getBooksOfOwner);
     app.put('/api/book/:isbn/:owner/addrenter/:renter', bookController.addRenter);
     app.put('/api/book/:isbn/:owner/removerenter/:renter', bookController.removeRenter);
 

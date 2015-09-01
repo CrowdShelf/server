@@ -7,9 +7,13 @@ var Books = require('../models/book');
 
 module.exports = {
     createNew: function(req, res){
-        var book = req.body; //@TODO check if isbn with owner is already in db, then just update/replace that entry
-        Books.insert(book, function(result){
-            res.sendStatus(201); // 201 Created
+        var book = req.body;
+        if(!validBookObject(book)) return res.sendStatus(422); // Unprocessable
+        Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
+            if (result) return res.sendStatus(409); // Already there, so conflict
+            Books.insert(book, function(result){ // Not there, so it can be created
+                return res.sendStatus(201); // 201 Created
+            });
         });
     },
 
@@ -23,6 +27,14 @@ module.exports = {
         });
     },
 
+    getBooksOfOwner: function (req, res){
+        var owner = req.params.owner;
+        Books.findWithOwner(owner, function(result){
+            if (result === 404) return res.sendStatus(404); 
+            res.json(result);
+        });
+    },
+
     getWithISBNAndOwner: function(req, res){
         var isbn = req.params.isbn;
         var owner = req.params.owner;
@@ -31,6 +43,8 @@ module.exports = {
             res.json(result);
         });
     },
+
+
 
     addRenter: function(req, res){
         Books.addRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
@@ -44,3 +58,9 @@ module.exports = {
         });
     }
 };
+
+function validBookObject(book){
+    if (isbn in book && owner in book && rentedTo in book
+        && availableForRent in book && numberOfCopies in book ) return true;
+    return false;
+}

@@ -27,6 +27,13 @@ module.exports = {
         });
     },
 
+    findWithOwner: function(owner, callback){
+        Books.find({owner: owner}).toArray(function(err, result){
+            if (result.length === 0) return callback(404);
+            callback(result);
+        })
+    },
+
     findWithISBNAndOwner: function(isbn, owner, callback){
         var foundBooks = [];
         Books.findOne({isbn: isbn, owner: owner}, function(err, result){
