@@ -8,7 +8,8 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 1. Clone the repository with `git@github.com:CrowdShelf/server.git`
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
-4. Run `npm start` and you'll be up and running on port 3000, or an environment defined port.
+4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
+5. Run `npm start` and you'll be up and running on port 3000, or an environment defined port.
 
 ## Deployment 
 ### Heroku
@@ -73,3 +74,18 @@ an identifier for the owner.
 `GET /api/crowd` to get all crowds with name and id.
 
 `GET /api/crowd/:crowdId` to get members of a given `crowdId`.
+
+
+### Users 
+#### Get 
+**Request** 
+`GET /user/:username`
+
+**Response***
+    {
+        username: String,
+        books: Array[Book],
+        crowds: Array{Crowd]
+    }
+    
+The `Book` and `Crowd` are as given in the data models above, and are the Crowds that the user is a part of, and the book he owns.
