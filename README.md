@@ -39,7 +39,9 @@ A `crowd` has the following properties:
 Users are kept in a relational database, seperate from crowds and books. 
 A user is represented by its unique string username.
 
-The `_id` fields are given by MongoDB upon creation, and identifies the object unqiuely in the database. When you create a new object, you don't post the `_id`-fields.
+The `_id` fields are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
+When you create a new object, the `_id`-fields are irrelevant. Add it if you want. The new object is returned
+with the mongodb `_id`.
 
 ## API
 Remember header `Content-Type` should be `application/json`on all requests.
@@ -70,8 +72,8 @@ This can be a new item, or an item with changed properties.
 HTTP Code | Comment
 --- | ---
 `200 OK` | Added/removed
-`422 Unprocessable entity` | Something wrong with the data given, e.g. missing field `username`. 
-`409 Conflict` | Already a renter, or not a renter. 
+`422 Unprocessable entity` | Something wrong with the data given, usually missing field `username`. 
+`409 Conflict` | Already a renter.
 
 
 #### Get books
@@ -83,7 +85,7 @@ Request | Response
 `GET /book/:isbn/:owner` | `book`-object for the specified `isbn` and `owner`. 
 
 
-**Error codes **
+**Error codes:**
 
 HTTP Code | Comment
 --- | ---
@@ -92,22 +94,21 @@ HTTP Code | Comment
 
 ### Crowds
 #### Create and edit 
-**Request:** `POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb,
-and including it in the posted data does not affect anything. 
+**Request:** `POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
 
-**Response:** The new `Crowd`-object with the `_id` from Mongodb.
+**Response:** The new `crowd`-object with the `_id` from Mongodb.
 
-**Errors **
+**Error codes **
 
 HTTP Code | Comment
 --- | ---
 `422 Unprocessable entity` | Something's wrong with the data sent, e.g. a missing field. 
 
 
-**Request: ** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
+**Request:** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
 or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
 
-**Data: ** `{username: newMeberUsername} `
+**Data: ** `{username: newMemberUsernme} `
 
 **Response: ** 
 
@@ -134,7 +135,8 @@ HTTP Code | Comment
 ### Users 
 **Request:**  `GET /user/:username`
 
-**Response: ***
+**Response: **
+
     {
         username: String,
         booksOwned: Array[Book],
