@@ -118,11 +118,12 @@ HTTP Code | Comment
 **Data response: ***
     {
         username: String,
-        books: Array[Book],
+        booksOwned: Array[Book],
+        booksRented: Array[Book],
         crowds: Array{Crowd]
     }
     
-The `Book` and `Crowd` are as given in the data models above, and are the Crowds that the user is a part of, and the book he owns.
+The `Book` and `Crowd` are as given in the data models above. The Crowds are those that the user is a part of.
 
 **Errors **
 HTTP Code | Comment

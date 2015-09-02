@@ -18,9 +18,9 @@ module.exports = {
 
     addMember: function(req, res){
         var username = req.body.username;
-        var crowd = req.body.crowdId;
-        Crowds.addMemberToCrowd(crowd, username, function(result){
-            //@todo
+        var crowdId = req.body.crowdId;
+        Crowds.addMemberToCrowd(crowdId, username, function(result){
+
         });
     },
 

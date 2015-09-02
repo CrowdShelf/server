@@ -8,8 +8,11 @@ module.exports = {
     getUser: function(req, res){
         var username = req.params.username;
         var obj = {username: username}; // Add the username
+        Books.findRentedBy(username, function(result){
+           obj.booksRented = result ? result: null;
+        });
         Books.findWithOwner(username, function(result){
-            obj.books = result ? result : null; // The user's books
+            obj.booksOwned = result ? result : null; // The user's books
             Crowds.getAll(function(result){
                 obj.crowds = [];
                 for (var i = 0; i < result.length; i++){
