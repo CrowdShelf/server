@@ -10,9 +10,8 @@ module.exports = {
         var book = req.body;
         if(!validBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
-            if (result) return res.sendStatus(409); // Already there, so conflict
             Books.insert(book, function(result){ // Not there, so it can be created
-                return res.sendStatus(201); // 201 Created
+                res.json(result);
             });
         });
     },
@@ -60,7 +59,7 @@ module.exports = {
 };
 
 function validBookObject(book){
-    if (isbn in book && owner in book && rentedTo in book
-        && availableForRent in book && numberOfCopies in book ) return true;
+    if (book.isbn && book.owner && book.rentedTo
+        && book.availableForRent && book.numberOfCopies ) return true;
     return false;
 }

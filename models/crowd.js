@@ -13,7 +13,7 @@ mongo.connect(url, function(err, db) {
 module.exports = {
     insertCrowd: function(crowd, callback){
         Crowds.insertOne(crowd, function(err, result){
-            callback(result);
+            callback(result.ops[0]);
         });
     },
 
@@ -36,7 +36,6 @@ module.exports = {
             callback(result);
         });
     },
-
     getCrowd: function(crowdId, callback){
         Crowds.findOne({_id: crowdId}, function(err, result){
             callback(result);

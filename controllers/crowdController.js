@@ -7,8 +7,11 @@ var Crowds = require('../models/crowd.js');
 
 module.exports = {
     create: function(req, res){
-        Crowds.insertCrowd(crowd, function(){
-            res.sendStatus(201);
+        var crowd = req.body;
+        Crowds.insertCrowd(crowd, function(insertData){
+            Crowds.getCrowd(insertData.electionId, function(result){
+                res.json(result);
+            });
         });
     },
 
@@ -16,7 +19,7 @@ module.exports = {
         var username = req.body.username;
         var crowd = req.body.crowdId;
         Crowds.addMemberToCrowd(crowd, username, function(result){
-
+            //@todo
         });
     },
 

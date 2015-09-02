@@ -15,7 +15,7 @@ mongo.connect(url, function(err, db) {
 module.exports = {
     insert: function(book, callback){
         Books.insertOne(book, function(err, result){
-           callback(result);
+            callback(result.ops[0]);
         });
     },
 
@@ -41,7 +41,7 @@ module.exports = {
             callback(result);
         });
     },
-
+    
     addRenter: function(isbn, owner, renter, callback) {
         Books.updateOne({isbn: isbn, owner: owner}, {
             $push: {rentedTo: renter }
