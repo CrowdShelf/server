@@ -8,6 +8,7 @@ var Crowds = require('../models/crowd.js');
 module.exports = {
     create: function(req, res){
         var crowd = req.body;
+        delete crowd._id; // Getting a -1 from clients
         Crowds.insertCrowd(crowd, function(insertData){
             Crowds.getCrowd(insertData.electionId, function(result){
                 res.json(result);
