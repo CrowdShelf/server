@@ -53,17 +53,15 @@ As of August 26. 2015 there's only one version of the api.
 
 ### Books
 #### Create 
-Put an item as defined above to the database:
-`PUT /book`
+**Request:** `PUT /book` puts a book as defined in the data model.
 
 This can be a new item, or an item with changed properties.
 
 #### Add and remove renters
 **Requests:** 
 
-`PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
-
-`PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
+* `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
+* `PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
 
 **Data:** `{username: usernameToAddOrRemove}`
 
@@ -98,7 +96,7 @@ HTTP Code | Comment
 
 **Response:** The new `crowd`-object with the `_id` from Mongodb.
 
-**Error codes **
+**Error codes**
 
 HTTP Code | Comment
 --- | ---
@@ -108,9 +106,9 @@ HTTP Code | Comment
 **Request:** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
 or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
 
-**Data: ** `{username: newMemberUsernme} `
+**Data:** `{username: newMemberUsernme} `
 
-**Response: ** 
+**Response:** 
 
 HTTP Code | Comment
 --- | ---
