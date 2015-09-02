@@ -4,7 +4,8 @@
 'use strict';
 
 var bookController = require('./controllers/bookController'),
-    crowdController = require('./controllers/crowdController');
+    crowdController = require('./controllers/crowdController'),
+    userController = require('./controllers/userController');
 
 function setup(app){
     var bodyParser = require('body-parser'); // Some setup for encoding of requests
@@ -23,15 +24,15 @@ function setup(app){
     app.put('/api/book', bookController.createNew);
     app.get('/api/book/:isbn', bookController.getWithISBN);
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
-    app.get('/api/book/:owner', bookController.getBooksOfOwner);
-    app.put('/api/book/:isbn/:owner/addrenter/:renter', bookController.addRenter);
-    app.put('/api/book/:isbn/:owner/removerenter/:renter', bookController.removeRenter);
+    app.put('/api/book/:isbn/:owner/addrenter', bookController.addRenter);
+    app.put('/api/book/:isbn/:owner/removerenter', bookController.removeRenter);
+
+    app.get('/api/user/:username', userController.getUser);
 
     app.post('/api/crowd', crowdController.create);
     app.put('/api/crowd/addmember', crowdController.addMember);
     app.get('/api/crowd', crowdController.getAll);
     app.get('/api/crowd/:crowdId',crowdController.get);
-
 }
 
 exports.setup = setup;
