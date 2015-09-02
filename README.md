@@ -21,10 +21,10 @@ A `book` is a book in our database that is owned by a user:
     {
         _id: String,
         isbn: String
-        owner: String,
-        availavleForRent: Integer, 
-        rentedTo: Array[string], ,
+        owner: String username,
         numberOfCopies: Integer,
+        availavleForRent: Integer, 
+        rentedTo: Array[String usernames]
     }
     
 A `crowd` has the following properties:
@@ -32,8 +32,8 @@ A `crowd` has the following properties:
     {
         _id: String, 
         name: String,
-        creator: String,
-        members: Array[String]
+        creator: String username,
+        members: Array[String usernames]
     }
     
 Users are kept in a relational database, seperate from crowds and books. 
@@ -58,11 +58,15 @@ This can be a new item, or an item with changed properties.
 
 #### Add and remove renters
 **Requests:** 
+
 `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
+
 `PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
 
 **Data:** `{username: usernameToAddOrRemove}`
+
 **Response:**
+
 HTTP Code | Comment
 --- | ---
 `200 OK` | Added/removed
@@ -73,26 +77,38 @@ HTTP Code | Comment
 #### Get books
 Get an item with a given ISBN or/and of a specific owner:
 
-`GET /book/:isbn` returns all data on all available owners of a specific book as an array.
-`GET /book/:isbn/:owner` returns data on a specfic book of a specific owner.
+Request | Response
+--- | ---
+`GET /book/:isbn` |  An array of `book`-objects of the specified `isbn`
+`GET /book/:isbn/:owner` | `book`-object for the specified `isbn` and `owner`. 
 
 
-`:isbn` is replaced with the ISBN-number as a string, and `:owner` is replaced with
-an identifier for the owner.
+**Error codes **
+
+HTTP Code | Comment
+--- | ---
+`404 Not found` | The ISBN or owner is not found.
+
 
 ### Crowds
-**Request:** `POST /api/crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb,
+#### Create and edit 
+**Request:** `POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb,
 and including it in the posted data does not affect anything. 
+
 **Response:** The new `Crowd`-object with the `_id` from Mongodb.
+
 **Errors **
 
 HTTP Code | Comment
 --- | ---
-`404 Not found` | Route is not found. You're either trying to update position of someone who's not driving, or you've given the wrong route code.
+`422 Unprocessable entity` | Something's wrong with the data sent, e.g. a missing field. 
 
 
-**Request: ** `PUT /crowd/addmember/:crowdId` to add (put) a member into the crowd. 
+**Request: ** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
+or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+
 **Data: ** `{username: newMeberUsername} `
+
 **Response: ** 
 
 HTTP Code | Comment
@@ -101,12 +117,15 @@ HTTP Code | Comment
 `422 Unprocessable entity` | Something wrong with the data given, e.g. missing field `username`. 
 `409 Conflict` | Already a member of the crowd 
 
-#### Get 
-`GET /api/crowd` to get all crowds with name, members and `_id`
+#### Get crowds 
 
-`GET /api/crowd/:crowdId` to get members of a given `crowdId`.
+Request | Response
+--- | ---
+`GET /crowd` | An array of all `crowd`-objects.
+`GET /api/crowd/:crowdId` | A `crowd`-object for the specified ID.
 
-**Response codes:**
+**Errors:**
+
 HTTP Code | Comment
 --- | ---
 `404 Not found` | Route is not found. You're either trying to update position of someone who's not driving, or you've given the wrong route code.
@@ -115,7 +134,7 @@ HTTP Code | Comment
 ### Users 
 **Request:**  `GET /user/:username`
 
-**Data response: ***
+**Response: ***
     {
         username: String,
         booksOwned: Array[Book],
@@ -125,7 +144,8 @@ HTTP Code | Comment
     
 The `Book` and `Crowd` are as given in the data models above. The Crowds are those that the user is a part of.
 
-**Errors **
+**Errors:**
+
 HTTP Code | Comment
 --- | ---
 `404 Not found` | Route is not found. You're either trying to update position of someone who's not driving, or you've given the wrong route code.
