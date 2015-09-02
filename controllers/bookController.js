@@ -8,7 +8,7 @@ var Books = require('../models/book');
 module.exports = {
     createNew: function(req, res){
         var book = req.body;
-        delete crowd._id; // Getting a -1 from clients 
+        delete crowd._id; // Getting a -1 from clients
         if(!validBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
             Books.insert(book, function(result){ // Not there, so it can be created

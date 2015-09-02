@@ -41,7 +41,7 @@ module.exports = {
             callback(result);
         });
     },
-    
+
     addRenter: function(isbn, owner, renter, callback) {
         Books.updateOne({isbn: isbn, owner: owner}, {
             $push: {rentedTo: renter }
