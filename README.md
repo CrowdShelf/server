@@ -23,7 +23,7 @@ A `book` is a book in our database that is owned by a user:
         isbn: String
         owner: String username,
         numberOfCopies: Integer,
-        availavleForRent: Integer, 
+        availableForRent: Integer, 
         rentedTo: Array[String usernames]
     }
     
@@ -133,7 +133,7 @@ HTTP Code | Comment
 ### Users 
 **Request:**  `GET /user/:username`
 
-**Response: **
+**Response:**
 
     {
         username: String,
