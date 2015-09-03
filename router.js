@@ -30,8 +30,8 @@ function setup(app){
     app.get('/api/user/:username', userController.getUser);
 
     app.post('/api/crowd', crowdController.create);
-    app.put('/api/crowd/addmember', crowdController.addMember);
-    app.put('/api/crowd/removemember', crowdController.addMember);
+    app.put('/api/crowd/:crowdId/addmember', crowdController.addMember);
+    app.put('/api/crowd/:crowdId/removemember', crowdController.removeMember);
     app.get('/api/crowd', crowdController.getAll);
     app.get('/api/crowd/:crowdId',crowdController.get);
 }

@@ -17,12 +17,20 @@ module.exports = {
         });
     },
 
-    addMemberToCrowd: function(crowdId, username, callback){
+    addMember: function(crowdId, username, callback){
         Crowds.updateOne({_id: crowdId},{
             $push: {members: username }
         }, function(err, result){
            callback(result);
         });
+    },
+
+    removeMember: function(crowdId, username, callback){
+        Crowds.updateOne({_id: crowdId}, {
+            $pull: {members: username}
+            }, function(err, result){
+                callback(result);
+        })
     },
 
     removeCrowd: function(crowd, callback){
