@@ -17,7 +17,7 @@ module.exports = {
                 obj.crowds = [];
                 for (var i = 0; i < result.length; i++){
                     if (username in result[i]){
-                        obj.crowds.push(result[i]);
+                        obj.crowds.push(result[i]._id);
                     }
                 }
                 return res.json(obj);  // send it

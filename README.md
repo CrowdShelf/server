@@ -141,10 +141,10 @@ HTTP Code | Comment
         username: String,
         booksOwned: Array[Book],
         booksRented: Array[Book],
-        crowds: Array{Crowd]
+        crowds: Array{crowd _id]
     }
     
-The `Book` and `Crowd` are as given in the data models above. The Crowds are those that the user is a part of.
+The `Book` is as given in the data models above. The Crowds are those that the user is a part of.
 
 **Errors:**
 
