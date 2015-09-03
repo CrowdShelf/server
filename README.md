@@ -9,7 +9,7 @@ We're using JIRA for issue tracking. We try to follow [Chrockford's style guide]
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
 4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
-5. Run `npm start` and you'll be up and running on port 3000, or an environment defined port.
+5. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
 
 ## Deployment 
 ### Heroku
@@ -32,7 +32,7 @@ A `crowd` has the following properties:
     {
         _id: String, 
         name: String,
-        creator: String username,
+        owner: String username,
         members: Array[String usernames]
     }
     
@@ -54,6 +54,8 @@ As of August 26. 2015 there's only one version of the api.
 ### Books
 #### Create 
 **Request:** `PUT /book` puts a book as defined in the data model.
+
+**Response:** The new book from the database.
 
 This can be a new item, or an item with changed properties.
 
