@@ -9,7 +9,7 @@ module.exports = {
     createNew: function(req, res){
         var book = req.body;
         delete book._id; // Getting a -1 from clients
-        if(!validBookObject(book)) return res.sendStatus(422); // Unprocessable
+        if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
             // @todo update if already there
             Books.insert(book, function(result){ // Not there, so it can be created
@@ -60,7 +60,7 @@ module.exports = {
     }
 };
 
-function validBookObject(book){
+function isValidBookObject(book){
     if (book.isbn && book.owner && book.rentedTo
         && book.availableForRent && book.numberOfCopies ) return true;
     return false;

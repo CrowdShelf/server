@@ -9,6 +9,7 @@ module.exports = {
     create: function(req, res){
         var crowd = req.body;
         delete crowd._id; // Getting a -1 from clients
+        if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
         Crowds.insertCrowd(crowd, function(insertData){
             Crowds.getCrowd(insertData.electionId, function(result){
                 res.json(result);
@@ -45,3 +46,8 @@ module.exports = {
         });
     }
 };
+
+function isValidCrowdObject(crowd){
+    if (crowd.owner && crowd.members && crowd.name) return true;
+    return false;
+}
