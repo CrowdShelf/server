@@ -62,6 +62,7 @@ module.exports = {
 
 function isValidBookObject(book){
     if (book.isbn && book.owner && book.rentedTo
-        && book.numAvailableForRent && book.numberOfCopies ) return true;
+        && book.numAvailableForRent && book.numberOfCopies
+        && Object.keys(book).length === 5) return true;
     return false;
 }
