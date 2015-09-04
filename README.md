@@ -22,8 +22,8 @@ A `book` is a book in our database that is owned by a user:
         _id: String,
         isbn: String
         owner: String username,
-        numberOfCopies: Integer,
-        availableForRent: Integer, 
+        numberOfCopies: Integer, # THe number of copies the owner has 
+        numAvailableForRent: Integer, # The number of copies the owner wants to rent out 
         rentedTo: Array[String usernames]
     }
     
