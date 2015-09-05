@@ -48,6 +48,9 @@ module.exports = {
 };
 
 function isValidCrowdObject(crowd){
-    if (crowd.owner && crowd.members && crowd.name) return true;
+    if (typeof crowd.owner === 'string'
+        && typeof crowd.members === 'object'
+        && typeof crowd.name === 'string'
+        && Object.keys(crowd).lengt === 3) return true;
     return false;
 }
