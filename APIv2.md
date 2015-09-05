@@ -2,7 +2,7 @@
 ## Data model
 
 The objects you can retrieve from the API are separated into three classes: `Book`, `Crowd`, and `User`.
-When retrieving an object, you can specify if you want it to contain references to other objects or the objects themselves.
+When retrieving an object, you can specify if you want one containing references to other objects or one containing nested objects.
 
 ##### `Book` object with references:
 
