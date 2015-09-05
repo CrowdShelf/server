@@ -9,7 +9,7 @@ module.exports = {
         var username = req.params.username;
         var obj = {username: username}; // Add the username
         Books.findRentedBy(username, function(result){
-           obj.booksRented = result ? result: null;
+           obj.booksRented = result !== 404 ? result:  [];
         });
         Books.findWithOwner(username, function(result){
             obj.booksOwned = result !== 404 ? result : []; // The user's books

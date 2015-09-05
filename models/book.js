@@ -36,6 +36,7 @@ module.exports = {
 
     findRentedBy: function(username, callback){
         Books.find({rentedTo: username}).toArray(function(err, result){
+            if (!result) return callback(404);
             callback(result);
         });
     },
@@ -43,7 +44,7 @@ module.exports = {
     findWithISBNAndOwner: function(isbn, owner, callback){
         var foundBooks = [];
         Books.findOne({isbn: isbn, owner: owner}, function(err, result){
-           if (result === null) return callback(404);
+            if (result === null) return callback(404);
             callback(result);
         });
     },
@@ -62,6 +63,10 @@ module.exports = {
         }, function(err, result){
             callback(result);
         });
+    },
+
+    updateBook: function(isbn, owner, newBook, callback){
+
     }
 
 };
