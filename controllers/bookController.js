@@ -12,9 +12,12 @@ module.exports = {
         if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
             if (result !== 404){ // Something was found, so we'll update item.
-
+                return Books.updateBook(book, function(result){
+                    if(result === 404) return res.sendStatus(404);
+                    res.json(result);
+                })
             }
-            Books.insert(book, function(result){ // Not there, so it can be created
+            return Books.insert(book, function(result){ // Not there, so it can be created
                 res.json(result);
             });
         });

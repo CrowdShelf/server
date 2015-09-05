@@ -65,8 +65,17 @@ module.exports = {
         });
     },
 
-    updateBook: function(isbn, owner, newBook, callback){
-
+    updateBook: function(newBook, callback){
+        Books.update({isbn: newBook.isbn, owner: newBook.owner},{
+            $set: {
+                rentedTo: newBook.rentedTo,
+                numAvailableForRent: newBook.numAvailableForRent,
+                numberOfCopies: newBook.numberOfCopies
+            }
+        }, function(err, result){
+            if(result) return callback();
+            return callback(404);
+        });
     }
 
 };
