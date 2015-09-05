@@ -9,10 +9,10 @@ When retrieving an object, you can specify if you want it to contain references 
     {
         _id: String,
         isbn: String,
-        owner: String, # username
+        ownerName: String, # username
         numberOfCopies: Integer,
         numAvailableForRent: Integer,  
-        rentedTo: Array[String] # usernames
+        rentedToNames: Array[String] # usernames
     }
     
 `numberOfCopies` indicates the number of copies the owner has, while `numAvailableForRent` indicates the number of copies the owner wants to rent out.
@@ -31,9 +31,9 @@ When retrieving an object, you can specify if you want it to contain references 
 
     {
         username: String, # Unique identifier
-        booksOwned: Array[String], # _id of the books
-        booksRented: Array[String], # _id of the books
-        crowds: Array[String] # _id of the crowds
+        booksOwnedIds: Array[String], # _id of the books
+        booksRentedIds: Array[String], # _id of the books
+        crowdsIds: Array[String] # _id of the crowds
     }
 
 The list of `Crowd` id's or objects are the crowds that the user is a member of. 
@@ -51,8 +51,8 @@ The list of `Crowd` id's or objects are the crowds that the user is a member of.
     {
         _id: String, 
         name: String,
-        owner: String, # username
-        members: Array[String] # usernames
+        ownerName: String, # username
+        membersNames: Array[String] # usernames
     }
 
 ##### `Crowd` object with nested objects:
