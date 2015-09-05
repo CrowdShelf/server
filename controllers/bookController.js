@@ -11,7 +11,9 @@ module.exports = {
         delete book._id; // Getting a -1 from clients
         if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
-            // @todo update if already there
+            if (result !== 404){ // Something was found, so we'll update item.
+
+            }
             Books.insert(book, function(result){ // Not there, so it can be created
                 res.json(result);
             });
@@ -61,8 +63,10 @@ module.exports = {
 };
 
 function isValidBookObject(book){
-    if (book.isbn && book.owner && book.rentedTo
-        && book.numAvailableForRent && book.numberOfCopies
+    if (typeof book.isbn === 'string' && typeof book.owner === 'string'
+        && typeof book.rentedTo === 'object' // Should be array
+        && typeof book.numAvailableForRent === 'number'
+        && typeof book.numberOfCopies === 'number'
         && Object.keys(book).length === 5) return true;
     return false;
 }
