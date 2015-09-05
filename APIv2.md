@@ -71,6 +71,7 @@ Unless explicitly specified, you will always retrieve objects with references.
 ### Books
 #### Create
 _not affected_
+
 **Request:** `PUT /book` puts a book as defined in the data model.
 
 **Response:** The new book from the database.
@@ -79,6 +80,7 @@ This can be a new item, or an item with changed properties.
 
 #### Add and remove renters
 _not affected_
+
 **Requests:** 
 
 * `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
@@ -97,6 +99,7 @@ HTTP Code | Comment
 
 #### Get books
 _affected_
+
 Get an item with a given ISBN or/and of a specific owner:
 
 Request | Response
@@ -116,6 +119,7 @@ HTTP Code | Comment
 ### Crowds
 #### Create
 _not affected_
+
 **Request:** `POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
 
 **Response:** The new `crowd`-object with the `_id` from Mongodb.
@@ -128,6 +132,7 @@ HTTP Code | Comment
 
 #### Add and remove members
 _not affected_
+
 **Request:** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
 or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
 
@@ -143,6 +148,7 @@ HTTP Code | Comment
 
 #### Get crowds 
 _affected_
+
 Request | Response
 --- | ---
 `GET /crowd` | An array of all `crowd`-objects (with references).
@@ -159,6 +165,7 @@ HTTP Code | Comment
 
 ### Users 
 _affected_
+
 Request | Response
 --- | ---
 `GET /user/:username` | `User`-object (with references) for the given username.
