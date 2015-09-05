@@ -12,7 +12,7 @@ module.exports = {
            obj.booksRented = result ? result: null;
         });
         Books.findWithOwner(username, function(result){
-            obj.booksOwned = result ? result : null; // The user's books
+            obj.booksOwned = result !== 404 ? result : []; // The user's books
             Crowds.getAll(function(result){
                 obj.crowds = [];
                 for (var i = 0; i < result.length; i++){
