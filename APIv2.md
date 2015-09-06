@@ -103,8 +103,8 @@ _not affected_
 **Requests:** 
 
 * `PUT /book/:id/addrenter` to add a renter to a book.
-* `PUT /book/isbn=:isbn/:owner/removerenter` to remove a renter to a book.
-* `PUT /book/:id/:owner/addrenter` to add a renter to a book.
+* `PUT /book/:id/removerenter` to remove a renter to a book.
+* `PUT /book/isbn=:isbn/:owner/addrenter` to add a renter to a book.
 * `PUT /book/isbn=:isbn/:owner/removerenter` to remove a renter to a book.
 
 **Data:** `{username: usernameToAddOrRemove}`
