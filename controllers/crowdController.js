@@ -5,6 +5,8 @@
 
 var Crowds = require('../models/crowd.js');
 
+var userController = require('../controllers/userController.js');
+
 module.exports = {
     create: function(req, res){
         var crowd = req.body;
@@ -21,6 +23,7 @@ module.exports = {
         var username = req.body.username;
         var crowdId = req.params.crowdId;
         Crowds.addMember(crowdId, username, function(result){
+            if(result === 404) return res.sendStatus(404);
             res.sendStatus(200);
         });
     },
@@ -29,6 +32,7 @@ module.exports = {
         var crowdId = req.params.crowdId,
             username = req.body.username;
         Crowds.removeMember(crowdId, username, function(result){
+            if(result === 404) return res.sendStatus(404);
             res.sendStatus(200);
         });
     },
@@ -42,10 +46,18 @@ module.exports = {
     get: function(req, res){
         var crowdId = req.params.crowdId;
         Crowds.getCrowd(crowdId, function(result){
-           res.json(result);
+            if (result === 404) return res.sendStatus(404);
+            res.json(result);
         });
     }
 };
+
+function buildCrowdObject(doc, res){
+    var members = [];
+    for (var i = 0; i < doc.members.length; i++){
+        userController.getUser()
+    }
+}
 
 function isValidCrowdObject(crowd){
     if (crowd.owner && crowd.members && crowd.name) return true;

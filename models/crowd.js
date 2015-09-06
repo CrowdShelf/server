@@ -21,7 +21,8 @@ module.exports = {
         Crowds.updateOne({_id: crowdId},{
             $push: {members: username }
         }, function(err, result){
-           callback(result);
+            if(!result) return callback(404);
+            callback(result);
         });
     },
 
@@ -29,6 +30,7 @@ module.exports = {
         Crowds.updateOne({_id: crowdId}, {
             $pull: {members: username}
             }, function(err, result){
+                if(!result) return callback(404);
                 callback(result);
         })
     },
@@ -46,6 +48,7 @@ module.exports = {
     },
     getCrowd: function(crowdId, callback){
         Crowds.findOne({_id: crowdId}, function(err, result){
+            if(!result) return callback(404);
             callback(result);
         });
     }
