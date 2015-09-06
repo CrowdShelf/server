@@ -40,13 +40,14 @@ A `crowd` has the following properties:
     
 Users are kept in a relational database, seperate from crowds and books. 
 A user is represented by its unique string username, and the object contain nested book objects: 
-
+```
 {
         username: String,
         booksOwned: Array[Book],
         booksRented: Array[Book],
         crowds: Array[String] # The _id's for the crowds
-    }
+}
+```
 
 The `_id` fields for `Book` and `Crowd` are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
 When you create a new object, the `_id`-fields are irrelevant. Add it if you want. The new object is returned
