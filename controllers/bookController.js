@@ -8,11 +8,19 @@ var Books = require('../models/book');
 module.exports = {
     createNew: function(req, res){
         var book = req.body;
+        var oldBookId = book._id;
         delete book._id; // Getting a -1 from clients
         if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
-            // @todo update if already there
-            Books.insert(book, function(result){ // Not there, so it can be created
+            var oldResult = result;
+            if (result !== 404){ // Something was found, so we'll update item.
+                return Books.updateBook(book, function(result){
+                    if(result === 404) return res.sendStatus(404);
+                    result._id = oldResult._id;
+                    res.json(result);
+                })
+            }
+            return Books.insert(book, function(result){ // Not there, so it can be created
                 res.json(result);
             });
         });
@@ -61,7 +69,10 @@ module.exports = {
 };
 
 function isValidBookObject(book){
-    if (book.isbn && book.owner && book.rentedTo
-        && book.availableForRent && book.numberOfCopies ) return true;
+    if (typeof book.isbn === 'string' && typeof book.owner === 'string'
+        && typeof book.rentedTo === 'object' // Should be array
+        && typeof book.numAvailableForRent === 'number'
+        && typeof book.numberOfCopies === 'number'
+        && Object.keys(book).length === 5) return true;
     return false;
 }
