@@ -20,26 +20,35 @@ A `book` is a book in our database that is owned by a user:
 
     {
         _id: String,
-        isbn: String
-        owner: String username,
-        numberOfCopies: Integer, # THe number of copies the owner has 
-        numAvailableForRent: Integer, # The number of copies the owner wants to rent out 
-        rentedTo: Array[String usernames]
+        isbn: String,
+        owner: String, # username
+        numberOfCopies: Integer, 
+        numAvailableForRent: Integer,
+        rentedTo: Array[String] # usernames
     }
-    
+
+`numberOfCopies` specifies the number of copies the owner of the book has, while `numAvailableForrent` specifies the number of copies the owner wants to rent out.
+
 A `crowd` has the following properties:
 
     {
         _id: String, 
         name: String,
-        owner: String username,
-        members: Array[String usernames]
+        owner: String, # username
+        members: Array[String] # usernames
     }
     
 Users are kept in a relational database, seperate from crowds and books. 
-A user is represented by its unique string username.
+A user is represented by its unique string username, and the object contain nested book objects: 
 
-The `_id` fields are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
+{
+        username: String,
+        booksOwned: Array[Book],
+        booksRented: Array[Book],
+        crowds: Array[String] # The _id's for the crowds
+    }
+
+The `_id` fields for `Book` and `Crowd` are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
 When you create a new object, the `_id`-fields are irrelevant. Add it if you want. The new object is returned
 with the mongodb `_id`.
 
@@ -53,9 +62,13 @@ As of August 26. 2015 there's only one version of the api.
 
 ### Books
 #### Create 
-**Request:** `PUT /book` puts a book as defined in the data model.
+**Request:** 
 
-**Response:** The new book from the database.
+`PUT /book` puts a book as defined in the data model.
+
+**Response:** 
+
+The new book object from the database.
 
 This can be a new item, or an item with changed properties.
 
@@ -65,7 +78,9 @@ This can be a new item, or an item with changed properties.
 * `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
 * `PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
 
-**Data:** `{username: usernameToAddOrRemove}`
+**Data:** 
+
+`{username: usernameToAddOrRemove}`
 
 **Response:**
 
@@ -94,9 +109,13 @@ HTTP Code | Comment
 
 ### Crowds
 #### Create and edit 
-**Request:** `POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
+**Request:** 
 
-**Response:** The new `crowd`-object with the `_id` from Mongodb.
+`POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
+
+**Response:** 
+
+The new `crowd`-object with the `_id` from Mongodb.
 
 **Error codes**
 
@@ -105,10 +124,14 @@ HTTP Code | Comment
 `422 Unprocessable entity` | Something's wrong with the data sent, e.g. a missing field. 
 
 
-**Request:** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
-or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+**Request:** 
 
-**Data:** `{username: newMemberUsernme} `
+* `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
+* `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+
+**Data:** 
+
+`{username: newMemberUsernme} `
 
 **Response:** 
 
@@ -123,7 +146,7 @@ HTTP Code | Comment
 Request | Response
 --- | ---
 `GET /crowd` | An array of all `crowd`-objects.
-`GET /api/crowd/:crowdId` | A `crowd`-object for the specified ID.
+`GET /crowd/:crowdId` | A `crowd`-object for the specified ID.
 
 **Errors:**
 
@@ -133,16 +156,13 @@ HTTP Code | Comment
 
 
 ### Users 
-**Request:**  `GET /user/:username`
+**Request:**  
+
+`GET /user/:username`
 
 **Response:**
 
-    {
-        username: String,
-        booksOwned: Array[Book],
-        booksRented: Array[Book],
-        crowds: Array{crowd _id]
-    }
+The `User` object with the given username.
     
 The `Book` is as given in the data models above. The Crowds are those that the user is a part of.
 
