@@ -8,12 +8,15 @@ var Books = require('../models/book');
 module.exports = {
     createNew: function(req, res){
         var book = req.body;
+        var oldBookId = book._id;
         delete book._id; // Getting a -1 from clients
         if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
         Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
+            var oldResult = result;
             if (result !== 404){ // Something was found, so we'll update item.
                 return Books.updateBook(book, function(result){
                     if(result === 404) return res.sendStatus(404);
+                    result._id = oldResult._id;
                     res.json(result);
                 })
             }
