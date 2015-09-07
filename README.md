@@ -115,9 +115,10 @@ The new `crowd`-object with the `_id` from Mongodb.
 
 **Error codes**
 
-HTTP Code | Comment
---- | ---
-`422 Unprocessable entity` | Something's wrong with the data sent, e.g. a missing field. 
+HTTP Code | Error message | Comment
+--- | --- | ---
+`409 Conflict` | Crowd name already in use. |  We require unique crowd names.
+`422 Unprocessable entity` | | Something's wrong with the data sent, e.g. a missing field. 
 
 
 **Request:** 
