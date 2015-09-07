@@ -17,6 +17,12 @@ module.exports = {
         });
     },
 
+    findWithName: function(crowdName, callback){
+        Crowds.find({name: crowdName}).toArray(function(err, result){
+            callback(result);
+        });
+    },
+
     addMember: function(crowdId, username, callback){
         Crowds.updateOne({_id: crowdId},{
             $push: {members: username }

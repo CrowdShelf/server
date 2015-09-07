@@ -13,8 +13,11 @@ module.exports = {
         delete crowd._id; // Getting a -1 from clients
         // @todo owner has to be in members. Add if not.
         if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
-        Crowds.insertCrowd(crowd, function(insertData){
-            res.json(insertData);
+        Crowds.findWithName(crowd.name, function(result){
+            if (result.length === 0) return res.status(409).send('Crowd name already in use.');
+            Crowds.insertCrowd(crowd, function(insertData){
+                res.json(insertData);
+            });
         });
     },
 
