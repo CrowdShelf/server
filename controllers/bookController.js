@@ -4,6 +4,7 @@
  */
 
 var Books = require('../models/book');
+var Users = require('./userController');
 
 module.exports = {
     createNew: function(req, res){
@@ -32,7 +33,7 @@ module.exports = {
             if (result === 404){
                 return res.sendStatus(404);  // not found
             }
-            res.json(result);
+            res.json({books: result});
         });
     },
 
@@ -40,7 +41,7 @@ module.exports = {
         var owner = req.params.owner;
         Books.findWithOwner(owner, function(result){
             if (result === 404) return res.sendStatus(404); 
-            res.json(result);
+            res.json({books: result});
         });
     },
 
@@ -75,4 +76,14 @@ function isValidBookObject(book){
         && typeof book.numberOfCopies === 'number'
         && Object.keys(book).length === 5) return true;
     return false;
+}
+
+function addUsersToBooks(listOfBooks){
+    for (var i = 0; i < listOfBooks.length; i++){
+        var book = listOfBooks[i];
+        var userObjects = [];
+        for (var j = 0; book.rentedTo.length; j++){
+
+        }
+    }
 }

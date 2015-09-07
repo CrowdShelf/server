@@ -40,14 +40,14 @@ A `crowd` has the following properties:
     
 Users are kept in a relational database, seperate from crowds and books. 
 A user is represented by its unique string username, and the object contain nested book objects: 
-```
-{
+
+    {
         username: String,
         booksOwned: Array[Book],
         booksRented: Array[Book],
         crowds: Array[String] # The _id's for the crowds
-}
-```
+    }
+
 
 The `_id` fields for `Book` and `Crowd` are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
 When you create a new object, the `_id`-fields are irrelevant. Add it if you want. The new object is returned
@@ -97,7 +97,7 @@ Get an item with a given ISBN or/and of a specific owner:
 
 Request | Response
 --- | ---
-`GET /book/:isbn` |  An array of `book`-objects of the specified `isbn`
+`GET /book/:isbn` |  An object with a field `books` that is an array of `book`-objects of the specified `isbn`
 `GET /book/:isbn/:owner` | `book`-object for the specified `isbn` and `owner`. 
 
 
@@ -146,7 +146,7 @@ HTTP Code | Comment
 
 Request | Response
 --- | ---
-`GET /crowd` | An array of all `crowd`-objects.
+`GET /crowd` | An object with a field `crowds` that is an array of all `crowd`-objects.
 `GET /crowd/:crowdId` | A `crowd`-object for the specified ID.
 
 **Errors:**
