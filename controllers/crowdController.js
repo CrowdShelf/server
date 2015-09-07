@@ -11,11 +11,10 @@ module.exports = {
     create: function(req, res){
         var crowd = req.body;
         delete crowd._id; // Getting a -1 from clients
+        // @todo owner has to be in members. Add if not.
         if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
         Crowds.insertCrowd(crowd, function(insertData){
-            Crowds.getCrowd(insertData.electionId, function(result){
-                res.json(result);
-            });
+            res.json(insertData);
         });
     },
 
