@@ -39,7 +39,7 @@ module.exports = {
 
     getAll: function(req, res){
         Crowds.getAll(function(result){
-            res.send(result);
+            res.json(result);
         });
     },
 
