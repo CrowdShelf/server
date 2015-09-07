@@ -54,12 +54,7 @@ When you create a new object, the `_id`-fields are irrelevant. Add it if you wan
 with the mongodb `_id`.
 
 ## API
-Remember header `Content-Type` should be `application/json`on all requests.
-
-You'll need `/api/` in front of a request. If you want the latest API, you can just use that. If you want a specific 
-version of the API, follow `api` with the version number, e.g. `/api/v2/`.
-
-As of August 26. 2015 there's only one version of the api.
+Remember header `Content-Type` should be `application/json`on all requests. You'll need `/api/` in front of your request. 
 
 ### Books
 #### Create 
