@@ -63,6 +63,6 @@ function isValidCrowdObject(crowd){
     if (typeof crowd.owner === 'string'
         && typeof crowd.members === 'object'
         && typeof crowd.name === 'string'
-        && Object.keys(crowd).lengt === 3) return true;
+        && Object.keys(crowd).length === 3) return true;
     return false;
 }
