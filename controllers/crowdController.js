@@ -10,11 +10,11 @@ var userController = require('../controllers/userController.js');
 module.exports = {
     create: function(req, res){
         var crowd = req.body;
-        delete crowd._id; // Getting a -1 from clients
-        // @todo owner has to be in members. Add if not.
+        delete crowd._id; // Can get a value from clients
+        if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
         if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
         Crowds.findWithName(crowd.name, function(result){
-            if (result.length === 0) return res.status(409).send('Crowd name already in use.');
+            if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
             Crowds.insertCrowd(crowd, function(insertData){
                 res.json(insertData);
             });
@@ -41,7 +41,13 @@ module.exports = {
 
     getAll: function(req, res){
         Crowds.getAll(function(result){
-            res.json({ crowds: result } );
+            var toReturn = [];
+            for (var i = 0; i < result.length; i++){
+                buildCrowdObject(result[i], function(obj){
+                   toReturn.push(obj);
+                    if(i === result.length) return res.json({crowds: toReturn});
+                });
+            }
         });
     },
 
@@ -49,15 +55,23 @@ module.exports = {
         var crowdId = req.params.crowdId;
         Crowds.getCrowd(crowdId, function(result){
             if (result === 404) return res.sendStatus(404);
-            res.json(result);
+            buildCrowdObject(result, function(obj){
+                res.json(obj);
+            });
         });
     }
 };
 
-function buildCrowdObject(doc, res){
+function buildCrowdObject(doc, callback){
     var members = [];
     for (var i = 0; i < doc.members.length; i++){
-        userController.getUser()
+        userController.getUserByUsername(doc.members[i], function(obj){ // Get that username as user object
+            members.push(obj); // Push to list
+            if(i === doc.members.length) { // If've checked all the members
+                doc.members = members; // Set members list of object
+                return callback(doc); // And return doc to callback
+            }
+        })
     }
 }
 
