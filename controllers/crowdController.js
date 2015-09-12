@@ -42,19 +42,19 @@ module.exports = {
     getAll: function(req, res){
         Crowds.getAll(function(result){
             var toReturn = [];
-            for (var i = 0; i < result.length; i++){
-                buildCrowdObject(result[i], function(obj){
-                   toReturn.push(obj);
-                    if(i === result.length) return res.json({crowds: toReturn});
+            result.forEach(function(doc, index){
+                buildCrowdObject(doc, function(obj){
+                    toReturn.push(obj);
+                    if(index+1 === result.length) return res.json({crowds: toReturn});
                 });
-            }
+            });
         });
     },
 
     get: function(req, res){
         var crowdId = req.params.crowdId;
-        Crowds.getCrowd(crowdId, function(result){
-            if (result === 404) return res.sendStatus(404);
+        Crowds.getCrowdWithId(crowdId, function(result){
+            if (result === 404) return res.status(404).send('Crowd not found.');
             buildCrowdObject(result, function(obj){
                 res.json(obj);
             });
@@ -62,17 +62,17 @@ module.exports = {
     }
 };
 
-function buildCrowdObject(doc, callback){
-    var members = [];
-    for (var i = 0; i < doc.members.length; i++){
-        userController.getUserByUsername(doc.members[i], function(obj){ // Get that username as user object
-            members.push(obj); // Push to list
-            if(i === doc.members.length) { // If've checked all the members
-                doc.members = members; // Set members list of object
-                return callback(doc); // And return doc to callback
+function buildCrowdObject(crowdDoc, callback){
+    var membersAsUserObjects = [];
+    crowdDoc.members.forEach(function(memberName, index){
+        userController.getUserByUsername(memberName, function(obj){ // Get that username as user object
+            membersAsUserObjects.push(obj); // Push to list
+            if(index + 1 === crowdDoc.members.length) { // If've checked all the membersAsUserObjects
+                crowdDoc.members = membersAsUserObjects; // Set membersAsUserObjects list of object
+                return callback(crowdDoc); // And return crowdDoc to callback
             }
         })
-    }
+    });
 }
 
 function isValidCrowdObject(crowd){
