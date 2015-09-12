@@ -4,6 +4,8 @@
  */
 
 var mongo = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
+
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var Crowds;
 mongo.connect(url, function(err, db) {
@@ -24,7 +26,7 @@ module.exports = {
     },
 
     addMember: function(crowdId, username, callback){
-        Crowds.updateOne({_id: crowdId},{
+        Crowds.updateOne({_id: ObjectId(crowdId)},{
             $push: {members: username }
         }, function(err, result){
             if(!result) return callback(404);
@@ -33,7 +35,7 @@ module.exports = {
     },
 
     removeMember: function(crowdId, username, callback){
-        Crowds.updateOne({_id: crowdId}, {
+        Crowds.updateOne({_id: ObjectId(crowdId)}, {
             $pull: {members: username}
             }, function(err, result){
                 if(!result) return callback(404);
@@ -52,9 +54,15 @@ module.exports = {
             callback(result);
         });
     },
-    getCrowd: function(crowdId, callback){
-        Crowds.findOne({_id: crowdId}, function(err, result){
+    getCrowdWithId: function(crowdId, callback){
+        Crowds.findOne({_id : new ObjectId(crowdId) },function(err, result){
             if(!result) return callback(404);
+            return callback(result);
+        });
+    },
+
+    getCrowdWithMember: function(memberName, callback){
+        Crowds.find({members: { $in: [memberName] }}).toArray(function(err, result){
             callback(result);
         });
     }
