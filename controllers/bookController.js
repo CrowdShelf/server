@@ -66,6 +66,12 @@ module.exports = {
         Books.removeRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
             res.json(result);
         });
+    },
+
+    getAll: function(req, res){
+        Books.findAll(function(result){
+            res.json(result);
+        });
     }
 };
 

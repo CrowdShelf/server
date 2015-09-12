@@ -71,6 +71,12 @@ module.exports = {
                 if(result) return callback(newBook);
                 return callback(404);
         });
+    },
+
+    findAll: function(callback){
+        Books.find({}).toArray(function(err, result){
+            callback(result);
+        });
     }
 
 };

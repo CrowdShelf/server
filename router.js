@@ -22,6 +22,7 @@ function setup(app){
     });
 
     app.put('/api/book', bookController.createNew);
+    app.get('/api/book', bookController.getAll);
     app.get('/api/book/:isbn', bookController.getWithISBN);
     app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
     app.put('/api/book/:isbn/:owner/addrenter', bookController.addRenter);
