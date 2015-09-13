@@ -26,7 +26,7 @@ module.exports = {
         var crowdId = req.params.crowdId;
         Crowds.addMember(crowdId, username, function(result){
             if(result === 404) return res.sendStatus(404);
-            res.sendStatus(200);
+            res.status(200).send('Member added.');
         });
     },
 
@@ -35,7 +35,7 @@ module.exports = {
             username = req.body.username;
         Crowds.removeMember(crowdId, username, function(result){
             if(result === 404) return res.sendStatus(404);
-            res.sendStatus(200);
+            res.status(200).send('Member removed.');
         });
     },
 
@@ -45,7 +45,7 @@ module.exports = {
             result.forEach(function(doc, index){
                 buildCrowdObject(doc, function(obj){
                     toReturn.push(obj);
-                    if(index+1 === result.length) return res.json({crowds: toReturn});
+                    if (index+1 === result.length ) res.json({crowds: toReturn}); // Done
                 });
             });
         });
