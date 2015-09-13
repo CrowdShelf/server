@@ -3,8 +3,9 @@
  * Logic of book requests
  */
 
+var Joi = require('joi');
+
 var Books = require('../models/book');
-var Users = require('./userController');
 
 module.exports = {
     createNew: function(req, res){
@@ -75,13 +76,16 @@ module.exports = {
     }
 };
 
+var schema = Joi.object().keys({
+    owner: Joi.string().required(),
+    isbn: Joi.string().required(),
+    rentedTo: Joi.array().required(),
+    numAvailableForRent: Joi.number().integer().min(0).required(),
+    numberOfCopies: Joi.number().integer().min(0).required()
+});
+
 function isValidBookObject(book){
-    if (typeof book.isbn === 'string' && typeof book.owner === 'string'
-        && typeof book.rentedTo === 'object' // Should be array
-        && typeof book.numAvailableForRent === 'number'
-        && typeof book.numberOfCopies === 'number'
-        && Object.keys(book).length === 5) return true;
-    return false;
+    return Joi.validate(book, schema);
 }
 
 function addUsersToBooks(listOfBooks){

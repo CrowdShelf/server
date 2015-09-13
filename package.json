@@ -19,6 +19,7 @@
   "dependencies": {
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
+    "joi": "^6.7.0",
     "mongodb": "^2.0.42",
     "sequelize": "^3.6.0"
   }
