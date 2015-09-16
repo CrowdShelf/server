@@ -21,7 +21,7 @@ function setup(app){
         next();
     });
 
-    // Book v1 API
+    // Book v1 API: /v1/book
     app.route('/api/v1/book')
         .put(bookController.createNew)
         .get(bookController.getAll);
@@ -36,7 +36,19 @@ function setup(app){
         bookController.removeRenter(req, res);
     });
 
-    // API v2
+    // User API v1: /v1/user
+    app.get('/api/v1/user/:username', userController.getUser);
+
+
+    // Crowd API v1 /v1/crowd
+    app.post('/api/v1/crowd', crowdController.create);
+
+    app.put('/api/v1/crowd/:crowdId/addmember', crowdController.addMember);
+    app.put('/api/v1/crowd/:crowdId/removemember', crowdController.removeMember);
+    app.get('/api/v1/crowd', crowdController.getAll);
+    app.get('/api/v1/crowd/:crowdId',crowdController.get);
+
+    // Book API v2: /books
     app.route('/api/books')
         .put(bookController.createNew)
         .get(bookController.getAll);
@@ -46,8 +58,10 @@ function setup(app){
         .put(bookController.addRenter)
         .delete(bookController.removeRenter);
 
-    app.get('/api/user/:username', userController.getUser);
+    // User API v2: /users
+    app.get('/api/users/:username', userController.getUser);
 
+    // Crowd API v2: /crowds
     app.post('/api/crowd', crowdController.create);
 
     app.put('/api/crowd/:crowdId/addmember', crowdController.addMember);
