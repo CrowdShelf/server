@@ -21,6 +21,16 @@ Any questions? Feel free to ask!
 4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
 5. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
 
+## Project structure
+
+    server\
+        api\ - Setup methods for legacy APIs
+        controllers\ - Controllers for handling requsts
+        models\ - Models that handle database-operations
+        index.js - Starts a server
+        server.js - Sets the server up, defines port etc.
+        router.js - Sets the routing up by setting allowed headers etc. and calling API setup-methods 
+        
 ## Deployment 
 ### Heroku
 The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`.
@@ -83,18 +93,16 @@ This can be a new item, or an item with changed properties.
 #### Add and remove renters
 **Requests:** 
 
-* `PUT /books/:isbn/:owner/renter/:username` to add a renter to a book.
-* `DELETE /books/:isbn/:owner/renter/:username` to remove a renter to a book.
+* `PUT /books/:bookId/renter/:username` to add a renter to a book.
+* `DELETE /books/:bookId/renter/:username` to remove a renter to a book.
 
-**Data:** 
-
-`{username: usernameToAddOrRemove}`
+**Data:** `None`
 
 **Response:**
 
 HTTP Code | Comment
 --- | ---
-`200 OK` | Added/removed
+`200 OK` | 
 `422 Unprocessable entity` | Something wrong with the data given, usually missing field `username`. 
 `409 Conflict` | Already a renter.
 
@@ -104,16 +112,15 @@ Get an item with a given ISBN or/and of a specific owner:
 
 Request | Response
 --- | ---
-`GET /book/:isbn` |  An object with a field `books` that is an array of `book`-objects of the specified `isbn`
-`GET /book/:isbn/:owner` | `book`-object for the specified `isbn` and `owner`. 
+`GET /books/isbn/:isbn` |  An object with a field `books` that is an array of `book`-objects of the specified `isbn`
+`GET /books/:bookId` | `book`-object for the specified `isbn` and `owner`. 
 
 
 **Error codes:**
 
 HTTP Code | Comment
 --- | ---
-`404 Not found` | The ISBN or owner is not found.
-
+`404 Not found` | The ISBN or bookID was not found.
 
 ### Crowds
 #### Create and edit 
@@ -132,15 +139,14 @@ HTTP Code | Error message | Comment
 `409 Conflict` | Crowd name already in use. |  We require unique crowd names.
 `422 Unprocessable entity` | | Something's wrong with the data sent, e.g. a missing field. 
 
+#### Add and remove members
 
 **Request:** 
 
-* `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
-* `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+* `PUT /crowds/:crowdId/members/:username` to add (put) a member into the crowd, 
+* `DELETE /crowds/:crowdId/members/:username` to remove a member from a crowd.
 
-**Data:** 
-
-`{username: newMemberUsernme} `
+**Data:**  `None`
 
 **Response:** 
 
@@ -204,3 +210,23 @@ HTTP Code | Comment
 `200 OK` | Added/removed
 `422 Unprocessable entity` | Something wrong with the data given, usually missing field `username`. 
 `409 Conflict` | Already a renter.
+
+#### Crowds
+##### Add and remove members
+
+**Request:** 
+
+* `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
+* `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+
+**Data:** 
+
+`{username: newMemberUsernme} `
+
+**Response:** 
+
+HTTP Code | Comment
+--- | ---
+`404 Not found` | Route is not found. You're either trying to update position of someone who's not driving, or you've given the wrong route code.
+`422 Unprocessable entity` | Something wrong with the data given, e.g. missing field `username`. 
+`409 Conflict` | Already a member of the crowd 
