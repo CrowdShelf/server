@@ -34,6 +34,7 @@ module.exports = {
         })
     },
 
+
     findRentedBy: function(username, callback){
         Books.find({rentedTo: username}).toArray(function(err, result){
             if (!result) return callback(404);
@@ -41,32 +42,30 @@ module.exports = {
         });
     },
 
-    findWithISBNAndOwner: function(isbn, owner, callback){
-        var foundBooks = [];
-        Books.findOne({isbn: isbn, owner: owner}, function(err, result){
-            if (result === null) return callback(404);
-            callback(result);
-        });
-    },
-
     addRenter: function(isbn, owner, renter, callback) {
         Books.updateOne({isbn: isbn, owner: owner}, {
             $push: {rentedTo: renter }
-        }, function(err, result){
-            callback(result);
+        },function(err, result){
+            if(result.matchedCount === 0) return callback(404);
+            findWithISBNAndOwner(isbn, owner, function(result){
+                callback(result)
+            });
         });
     },
 
     removeRenter: function(isbn, owner, renter, callback){
         Books.updateOne({isbn: isbn, owner: owner}, {
             $pull: {rentedTo: renter }
-        }, function(err, result){
-            callback(result);
+        }, function(err, result) {
+            if(result.matchedCount === 0) return callback(404);
+            findWithISBNAndOwner(isbn, owner, function(result){
+                callback(result)
+            });
         });
     },
 
     updateBook: function(newBook, callback){
-        Books.update({isbn: newBook.isbn, owner: newBook.owner},newBook,
+        Books.update({isbn: newBook.isbn, owner: newBook.owner}, newBook,
             function(err, result){
                 if(result) return callback(newBook);
                 return callback(404);
@@ -80,3 +79,15 @@ module.exports = {
     }
 
 };
+
+
+var findWithISBNAndOwner = function(isbn, owner, callback){
+    var foundBooks = [];
+    Books.findOne({isbn: isbn, owner: owner}, function(err, result){
+        if (result === null) return callback(404);
+        callback(result);
+    });
+};
+// Must be exported but also available within the module
+// @TODO do as with userController here as well, so that methods are available within its module
+module.exports.findWithISBNAndOwner = findWithISBNAndOwner;

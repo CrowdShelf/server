@@ -66,6 +66,8 @@ with the mongodb `_id`.
 ## API
 Remember header `Content-Type` should be `application/json`on all requests. You'll need `/api/` in front of your request. 
 
+This is the latest version of the API. If you look under API v1, you'll find what's different there.
+
 ### Books
 #### Create 
 **Request:** 
@@ -81,8 +83,8 @@ This can be a new item, or an item with changed properties.
 #### Add and remove renters
 **Requests:** 
 
-* `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
-* `PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
+* `PUT /books/:isbn/:owner/renter/:username` to add a renter to a book.
+* `DELETE /books/:isbn/:owner/renter/:username` to remove a renter to a book.
 
 **Data:** 
 
@@ -178,3 +180,27 @@ The `Book` is as given in the data models above. The Crowds are those that the u
 HTTP Code | Comment
 --- | ---
 `404 Not found` | Route is not found. You're either trying to update position of someone who's not driving, or you've given the wrong route code.
+
+
+### API v1
+This is the first version. It has some differences, which are listed here. Where there are no differences, only the latest API is available.
+
+This resources are under `/api/v1` and can be removed at any point. Use the latest version if you want to use this API.
+#### Books
+##### Add and remove renters
+**Requests:** 
+
+* `PUT /book/:isbn/:owner/addrenter` to add a renter to a book.
+* `PUT /book/:isbn/:owner/removerenter` to remove a renter to a book.
+
+**Data:** 
+
+`{username: usernameToAddOrRemove}`
+
+**Response:**
+
+HTTP Code | Comment
+--- | ---
+`200 OK` | Added/removed
+`422 Unprocessable entity` | Something wrong with the data given, usually missing field `username`. 
+`409 Conflict` | Already a renter.

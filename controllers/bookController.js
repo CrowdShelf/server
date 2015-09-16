@@ -58,13 +58,23 @@ module.exports = {
 
 
     addRenter: function(req, res){
-        Books.addRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
+        Books.addRenter(req.params.isbn, req.params.owner, req.params.username, function(result){
+            if(result === 404) {
+                return res
+                    .status(404)
+                    .send('Did not identify a book with those parameteres. Check owner and ISBN.');
+            }
             res.json(result);
         });
     },
 
     removeRenter: function(req, res){
-        Books.removeRenter(req.params.isbn, req.params.owner, req.params.renter, function(result){
+        Books.removeRenter(req.params.isbn, req.params.owner, req.params.username, function(result){
+            if(result === 404) {
+                return res
+                    .status(404)
+                    .send('Did not identify a book with those parameteres. Check owner and ISBN.');
+            }
             res.json(result);
         });
     },

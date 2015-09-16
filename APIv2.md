@@ -1,113 +1,89 @@
-# API V2
+Changes:
+Remove commands from URI (like "addrenter", "removemember").
+URI's should always point to resource. 
+Use HTTP commands to specify command (POST, PUT, GET, DELETE etc).
+
+Books should be individual objects for individual physical copies.
+Therefore, the numberOfCopies field is removed and 
+rentedTo Array[String] # Username
+is changed to 
+rentedTo String # Username. 
+
+Books should be identified by bookId, not ISBN. Books can be retrieved by ISBN, title, author
+etc by modifiers like ?isbn="21321312" 
+e.g. GET /books/?isbn="12323"
+
+Change main resource names to plural (crowd -> crowds)
+
+There should generally be PUT, GET and DELETE for each (sub-)field in an object given by the URI
+like PUT /book/:bookid/owner/ and GET /api/books/:bookid/renter
+
+PUT /api/book/:bookid/renter/:username
+DEL /api/book/:bookid/renter/:username
+
 ## Data model
-
-The objects you can retrieve from the API are separated into three classes: `Book`, `Crowd`, and `User`.
-When retrieving an object, you can specify if you want one containing references (`a flat object`) to other objects or one containing nested objects.
-
-##### `Book` object with references:
+A `book` is a book in our database that is owned by a user:
 
     {
         _id: String,
         isbn: String,
-        ownerName: String, # username
-        numberOfCopies: Integer,
-        numAvailableForRent: Integer,  
-        rentedToNames: Array[String] # usernames
+        owner: String, # username
+        rentedTo: String # username
+	// To be implemented later:
+	condition : String # like: New, worn out etc.
+	rentedToHistory: : Array[(String, Date, Date)] # username of borrower, date borrowed, date returned
+	picture : ??? # Picture of the book taken by its owner
     }
-    
-`numberOfCopies` indicates the number of copies the owner has, while `numAvailableForRent` indicates the number of copies the owner wants to rent out.
-##### `Book` object with nested objects:
+
+
+A `crowd` has the following properties:
 
     {
-        _id: String,
-        isbn: String
-        owner: User,
-        numberOfCopies: Integer,
-        numAvailableForRent: Integer,
-        rentedTo: Array[User] # Contains user objects with references
+        _id: String, 
+        name: String,
+        owner: String, # username
+        members: Array[String] # usernames
     }
     
-##### `User` object with references:
-
-    {
-        username: String, # Unique identifier
-        booksOwnedIds: Array[String], # _id of the books
-        booksRentedIds: Array[String], # _id of the books
-        crowdsIds: Array[String] # _id of the crowds
-    }
-
-The list of `Crowd` id's or objects are the crowds that the user is a member of. 
-##### `User` object with nested objects:
+Users are kept in a relational database, separate from crowds and books. 
+A user is represented by its unique string username, and the object contain nested book objects: 
 
     {
         username: String,
-        booksOwned: Array[Book], # Contains book objects with references
-        booksRented: Array[Book], # Contains book objects with references
-        crowds: Array[Crowd] # Contains crowd objects with references
-    }
-	
-##### `Crowd` object with references:
-
-    {
-        _id: String, 
-        name: String,
-        ownerName: String, # username
-        membersNames: Array[String] # usernames
+        booksOwned: Array[Book],
+        booksRented: Array[Book],
+        crowds: Array[String] # The _id's for the crowds
     }
 
-##### `Crowd` object with nested objects:
 
-    {
-        _id: String, 
-        name: String,
-        owner: User,
-        members: Array[User] # Contains user objects with references
-    }
-    
-Note that nesting of objects only go down one level. If you retrieve a `Crowd` with `User` objects, these `User` objects will contain references, not full `Book` or `Crowd` objects. 
-Unless explicitly specified, you will always retrieve objects with references. To retrieve an object with nested objects, put `?nested=true` at the end of you query. 
+The `_id` fields for `Book` and `Crowd` are given by MongoDB upon creation, and identifies the object unqiuely in the database. 
+When you create a new object, the `_id`-fields are irrelevant. Add it if you want. The new object is returned
+with the mongodb `_id`.
 
+## API
+Remember header `Content-Type` should be `application/json`on all requests. You'll need `/api/` in front of your request. 
 
 ### Books
-#### Create
-_not affected_
+#### Create 
+**Request:** 
 
-**Request:** `PUT /book` puts a book (with references) as defined in the data model.
+`PUT /book` puts a book as defined in the data model.
 
-**Response:** The new book from the database.
+**Response:** 
+
+The new book object from the database.
 
 This can be a new item, or an item with changed properties.
 
-#### Get books
-_affected_
-
-Get an item with a given ISBN or/and of a specific owner:
-
-Request | Response
---- | ---
-`GET /book/:id` |  `book`-object (containing references) of the specified `id`
-`GET /book/:id?nested=true` |  `book`-object (containing objects) of the specified `id`
-`GET /book/isbn=:isbn` |  An array of `book`-objects (containing references) of the specified `isbn`
-`GET /book/isbn=:isbn/:owner` | `book`-object (containing references) for the specified `isbn` and `owner`. 
-`GET /book/isbn=:isbn/:owner?nested=true` | `book`-object (containing objects) for the specified `isbn` and `owner`. 
-
-**Error codes:**
-
-HTTP Code | Comment
---- | ---
-`404 Not found` | The ISBN or owner is not found.
-
 #### Add and remove renters
-_not affected_
-
 **Requests:** 
 
-* `PUT /book/:id/addrenter` to add a renter to a book.
-* `PUT /book/:id/removerenter` to remove a renter to a book.
-* `PUT /book/isbn=:isbn/:owner/addrenter` to add a renter to a book.
-* `PUT /book/isbn=:isbn/:owner/removerenter` to remove a renter to a book.
+* `PUT /book/:bookid/renter/:username` to add a renter to a book.
+* `DEL /book/:bookid/renter/:username` to remove a renter to a book.
 
-**Data:** `{username: usernameToAddOrRemove}`
+**Data:** 
+
+`None`
 
 **Response:**
 
@@ -118,27 +94,50 @@ HTTP Code | Comment
 `409 Conflict` | Already a renter.
 
 
-### Crowds
-#### Create
-_not affected_
+#### Get books
+Get an item with a given ISBN or/and of a specific owner:
 
-**Request:** `POST /crowd` to post a new crowd on the data format given above (flat). Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
+Request | Response
+--- | ---
+`GET /books/` |  An object with a field `books` that is an array of all books`
+`GET /books/:bookId` | `book`-object for the specified `bookId`.
+`GET /books/?isbn=1234421` | An object with a field `books` that is an array of all books with the given ISBN 
+`GET /books/?isbn=1234421?owner="esso"` | An object with a field `books` that is an array of all books with the given ISBN and owner
+`GET /books/?author="McMurdoc" | An object with a field `books` that is an array of all books with the given author
+`GET /books/?title="The bible" | An object with a field `books` that is an array of all books with the given title
 
-**Response:** The new `crowd`-object (flat) with the `_id` from Mongodb.
-
-**Error codes**
+**Error codes:**
 
 HTTP Code | Comment
 --- | ---
-`422 Unprocessable entity` | Something's wrong with the data sent, e.g. a missing field. 
+`404 Not found` | The ISBN or owner is not found.
 
-#### Add and remove members
-_not affected_
+### Crowds
+#### Create and edit 
+**Request:** 
 
-**Request:** `PUT /crowd/:crowdId/addmember` to add (put) a member into the crowd, 
-or `PUT /crowd/:crowdId/removemember` to remove a member from a crowd.
+`POST /crowd` to post a new crowd on the data format given above. Note that `_id` is a value given by Mongodb, and including it in the posted data does not affect anything. 
 
-**Data:** `{username: newMemberUsernme} `
+**Response:** 
+
+The new `crowd`-object with the `_id` from Mongodb.
+
+**Error codes**
+
+HTTP Code | Error message | Comment
+--- | --- | ---
+`409 Conflict` | Crowd name already in use. |  We require unique crowd names.
+`422 Unprocessable entity` | | Something's wrong with the data sent, e.g. a missing field. 
+
+
+**Request:** 
+
+* `PUT /crowds/:crowdId/members/:username` to add (put) a member into the crowd, 
+* `DEL /crowds/:crowdId/members/:username` to remove a member from a crowd.
+
+**Data:** 
+
+`None`
 
 **Response:** 
 
@@ -149,14 +148,12 @@ HTTP Code | Comment
 `409 Conflict` | Already a member of the crowd 
 
 #### Get crowds 
-_affected_
 
 Request | Response
 --- | ---
-`GET /crowd` | An array of all `crowd`-objects (with references).
-`GET /crowd/:crowdId` | A `crowd`-object (with references) for the specified ID.
-`GET /crowd?nested=true` | An array of all `crowd`-objects (with nested objects).
-`GET /crowdobj/:crowdId?nested=true` | A `crowd`-object for the specified ID (with with nested objects).
+`GET /crowds` | An object with a field `crowds` that is an array of all `crowd`-objects.
+`GET /crowds/:crowdId` | A `crowd`-object for the specified ID.
+`DEL .. the above`
 
 **Errors:**
 
@@ -166,12 +163,17 @@ HTTP Code | Comment
 
 
 ### Users 
-_affected_
+**Request:**  
 
-Request | Response
---- | ---
-`GET /user/:username` | `User`-object (with references) for the given username.
-`GET /user/:username?nested=true` | `User`-object (with nested objects) for the given username.
+`GET /users/:username`
+`DEL /users/:username`
+
+**Response:**
+
+The `User` object with the given username.
+    
+The `Book` is as given in the data models above. The Crowds are those that the user is a part of.
+
 **Errors:**
 
 HTTP Code | Comment
