@@ -2,19 +2,20 @@ swagger: '2.0'
 info:
   description: |
     This is the CrowdShelf API.
-  version: 1.0.0
+  version: 2.0.1
   title: CrowsShelf API
   contact:
-    name: 'http://www.crowdshelf.io'
+    url: 'www.github.com/crowdshelf'
+    name: 'http://www.github.crowdshelf.io'
 host: crowdshelf.herokuapp.com
 basePath: /api
 schemes:
   - http
 paths:
-  /book:
+  /books:
     put:
       tags:
-        - book
+        - books
       summary: Add a new or a changed book to the database
       description: ''
       operationId: addBook
@@ -40,12 +41,28 @@ paths:
           description: Unprocessable entity
     get:
       tags:
-        - book
+        - books
       summary: Get all books
       description: ''
-      operationId: getAllBooks
+      operationId: getBooks
       produces:
         - application/json
+      parameters:
+        - in: query
+          name: isbn
+          description: Get all books with given ISBN
+          required: false
+          type: string
+        - in: query
+          name: owner
+          description: Get all books that the given user owns
+          required: false
+          type: string
+        - in: query
+          name: rentedTo
+          description: Get all books that the given user rents
+          required: false
+          type: string
       responses:
         '200':
           description: OK
@@ -53,10 +70,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Book'
-  '/book/{bookId}':
+  '/books/{bookId}':
     get:
       tags:
-        - book
+        - books
       summary: Get book by Id
       description: ''
       operationId: getBookById
@@ -75,10 +92,10 @@ paths:
             $ref: '#/definitions/Book'
         '404':
           description: Not found
-  '/book/{bookId}/renter':
+  '/books/{bookId}/renter':
     get:
       tags:
-        - book
+        - books
       summary: Get all the renters of a book
       description: ''
       operationId: getAllRenters
@@ -87,7 +104,7 @@ paths:
       parameters:
         - in: path
           name: bookId
-          description: id of book
+          description: Id of book
           required: true
           type: string
       responses:
@@ -99,22 +116,22 @@ paths:
               $ref: '#/definitions/User'
         '404':
           description: Book not found
-  '/book/{bookId}/renter/{username}':
+  '/books/{bookId}/renter/{userId}':
     put:
       tags:
-        - book
+        - books
       summary: Add a renter to a book
       description: ''
       operationId: addRenter
       parameters:
         - in: path
           name: bookId
-          description: _id of book to add renter to
+          description: Id of book to add renter to
           required: true
           type: string
         - in: path
-          name: username
-          description: username of user to be added as a renter
+          name: userId
+          description: Id of user to be added as a renter
           required: true
           type: string
       responses:
@@ -126,19 +143,19 @@ paths:
           description: '?? esso hva skjer her'
     delete:
       tags:
-        - book
+        - books
       summary: Remove a renter from a book
       description: ''
       operationId: removeRenter
       parameters:
         - in: path
           name: bookId
-          description: _id of book to remove renter from
+          description: Id of book to remove renter from
           required: true
           type: string
         - in: path
-          name: username
-          description: username of user to be removed as a renter
+          name: userId
+          description: Id of user to be removed as a renter
           required: true
           type: string
       responses:
@@ -148,10 +165,10 @@ paths:
           description: Not a renter kanskje?
         '422':
           description: '?? esso hva skjer her'
-  /crowd:
+  /crowds:
     post:
       tags:
-        - crowd
+        - crowds
       summary: Create a new crowd
       description: ''
       operationId: createCrowd
@@ -177,12 +194,18 @@ paths:
           description: 'Unprocessable entity: Something wrong with form data'
     get:
       tags:
-        - crowd
+        - crowds
       summary: Get all crowds
       description: ''
-      operationId: getAllCrowds
+      operationId: getCrowds
       produces:
         - application/json
+      parameters:
+        - in: query
+          name: member
+          description: Get the crowds which the given user id is a member of
+          required: false
+          type: string
       responses:
         '200':
           description: OK
@@ -192,10 +215,10 @@ paths:
               $ref: '#/definitions/Crowd'
         '404':
           description: No crowds
-  '/crowd/{crowdId}':
+  '/crowds/{crowdId}':
     get:
       tags:
-        - crowd
+        - crowds
       summary: Get crowd by Id
       description: ''
       operationId: getCrowd
@@ -204,7 +227,7 @@ paths:
       parameters:
         - in: path
           name: crowdId
-          description: ID of crowd that needs to be fetched
+          description: Id of crowd to get
           required: true
           type: string
       responses:
@@ -216,14 +239,14 @@ paths:
           description: Not found
     delete:
       tags:
-        - crowd
-      summary: Delete crowd by ID
+        - crowds
+      summary: Delete crowd by Id
       description: ''
       operationId: deleteCrowd
       parameters:
         - in: path
           name: crowdId
-          description: ID of the crowd that needs to be deleted
+          description: Id of the crowd to delete
           required: true
           type: string
       responses:
@@ -233,22 +256,22 @@ paths:
           description: Crowd not found
         '550':
           description: Permission denied. You need to be owner.
-  '/crowd/{crowdId}/members/{username}':
+  '/crowds/{crowdId}/members/{userId}':
     put:
       tags:
-        - crowd
+        - crowds
       summary: Add a member to a crowd
       description: ''
       operationId: addMember
       parameters:
         - in: path
           name: crowdId
-          description: ID of crowd to add a member to
+          description: Id of crowd to add a member to
           required: true
           type: string
         - in: path
-          name: username
-          description: username of user to add as member
+          name: userId
+          description: Id of user to add as member
           required: true
           type: string
       responses:
@@ -258,19 +281,19 @@ paths:
           description: asdsda
     delete:
       tags:
-        - crowd
+        - crowds
       summary: Remove a member from a crowd
       description: ''
       operationId: removeMember
       parameters:
         - in: path
           name: crowdId
-          description: ID of crowd to remove a member from
+          description: Id of crowd to remove a member from
           required: true
           type: string
         - in: path
-          name: username
-          description: username of user to remove as member
+          name: userId
+          description: Id of user to remove as member
           required: true
           type: string
       responses:
@@ -278,10 +301,10 @@ paths:
           description: OK
         '409':
           description: dasdasdad
-  /user:
+  /users:
     post:
       tags:
-        - user
+        - users
       summary: Create user
       description: ''
       operationId: createUser
@@ -299,12 +322,18 @@ paths:
           description: OK
     get:
       tags:
-        - user
-      summary: Get all user
+        - users
+      summary: Get users
       description: ''
       operationId: getAllUser
       produces:
         - application/json
+      parameters:
+        - in: query
+          name: name
+          description: Get users with the given name
+          required: false
+          type: string
       responses:
         '200':
           description: OK
@@ -314,19 +343,19 @@ paths:
               $ref: '#/definitions/User'
         '400':
           description: No users
-  '/user/{username}':
+  '/users/{userId}':
     get:
       tags:
-        - user
-      summary: Get user by username
+        - users
+      summary: Get user with the given Id
       description: ''
-      operationId: getUserByName
+      operationId: getUser
       produces:
         - application/json
       parameters:
         - in: path
-          name: username
-          description: The name that needs to be fetched.
+          name: userId
+          description: Id of user to get.
           required: true
           type: string
       responses:
@@ -340,24 +369,21 @@ definitions:
   User:
     type: object
     properties:
+      _rev:
+        type: string
+      _id:
+        type: string
       username:
         type: string
-      booksOwned:
-        type: array
-        items:
-          $ref: '#/definitions/Book'
-      booksRented:
-        type: array
-        items:
-          $ref: '#/definitions/Book'
-      crowds:
-        type: array
-        description: "array of crowd id's"
-        items:
-          type: string
+      name:
+        type: string
+      email:
+        type: string
   Book:
     type: object
     properties:
+      _rev:
+        type: string
       _id:
         type: string
       isbn:
@@ -366,18 +392,21 @@ definitions:
         type: string
       rentedTo:
         type: string
-        description: username
+        description: 'user _id'
   Crowd:
     type: object
     properties:
+      _rev:
+        type: string
       _id:
         type: string
       name:
         type: string
       owner:
         type: string
-        description: username
+        description: 'user _id'
       members:
         type: array
         items:
-          $ref: '#/definitions/User'
+          type: string
+          description: 'user _id'
