@@ -32,7 +32,7 @@ function setup(app){
         .get(bookController.getAll);
     app.get('/api/books/:isbn', bookController.getWithISBN);
     app.get('/api/books/:isbn/:owner', bookController.getWithISBNAndOwner);
-    app.route('/api/books/:isbn/:owner/renter/:username')
+    app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
         .delete(bookController.removeRenter);
 

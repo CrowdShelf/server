@@ -58,7 +58,7 @@ module.exports = {
 
 
     addRenter: function(req, res){
-        Books.addRenter(req.params.isbn, req.params.owner, req.params.username, function(result){
+        Books.addRenter(req.params.bookId, req.params.username, function(result){
             if(result === 404) {
                 return res
                     .status(404)
@@ -69,7 +69,7 @@ module.exports = {
     },
 
     removeRenter: function(req, res){
-        Books.removeRenter(req.params.isbn, req.params.owner, req.params.username, function(result){
+        Books.removeRenter(req.params.bookId, req.params.username, function(result){
             if(result === 404) {
                 return res
                     .status(404)

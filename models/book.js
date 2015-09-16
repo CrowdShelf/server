@@ -6,6 +6,8 @@
 
 var mongo = require('mongodb').MongoClient;
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
+var ObjectId = require('mongodb').ObjectID;
+
 
 var Books;
 mongo.connect(url, function(err, db) {
@@ -25,6 +27,13 @@ var findWithISBN = function(isbn, callback){
     });
 };
 
+var findWithID = function(id, callback){
+    Books.findOne({_id: ObjectId(id)}, function(err, result){
+        if(!result) return callback(404);
+        return callback(result);
+    });
+};
+
 var findWithOwner = function(owner, callback){
     Books.find({owner: owner}).toArray(function(err, result){
         if (result.length === 0) return callback(404);
@@ -40,24 +49,24 @@ var findRentedBy = function(username, callback){
     });
 };
 
-var addRenter = function(isbn, owner, renter, callback) {
+var addRenter = function(id, renter, callback) {
     // @TODO check if already a renter
-    Books.updateOne({isbn: isbn, owner: owner}, {
+    Books.updateOne({_id: ObjectId(id)}, {
         $push: {rentedTo: renter }
     },function(err, result){
         if(result.matchedCount === 0) return callback(404);
-        findWithISBNAndOwner(isbn, owner, function(result){
+        findWithID(id, function(result){
             callback(result)
         });
     });
 };
 
-var removeRenter = function(isbn, owner, renter, callback){
-    Books.updateOne({isbn: isbn, owner: owner}, {
+var removeRenter = function(id, renter, callback){
+    Books.updateOne({_id: ObjectId(id)}, {
         $pull: {rentedTo: renter }
     }, function(err, result) {
         if(result.matchedCount === 0) return callback(404);
-        findWithISBNAndOwner(isbn, owner, function(result){
+        findWithID(id, function(result){
             callback(result)
         });
     });
@@ -95,5 +104,4 @@ module.exports = {
     removeRenter: removeRenter,
     updateBook: updateBook,
     findAll: findAll
-
 };

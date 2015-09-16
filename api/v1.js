@@ -1,6 +1,9 @@
 /**
  * Created by esso on 16.09.15.
  */
+
+var Books = require('../models/book.js');
+
 var setup = function(app, bookController, crowdController, userController){
     // Book v1 API: /v1/book
     app.route('/api/v1/book')
@@ -10,11 +13,18 @@ var setup = function(app, bookController, crowdController, userController){
     app.get('/api/v1/book/:isbn/:owner', bookController.getWithISBNAndOwner);
     app.put('/api/v1/book/:isbn/:owner/addrenter', function(req, res){
         req.params.username = req.body.username; // Restructure to be able to use latest controller method
-        bookController.addRenter(req, res);
+        Books.findWithISBNAndOwner(req.params.isbn, req.params.owner, function(result){
+            req.params.bookId = result._id;
+            bookController.addRenter(req, res);
+        });
     });
+
     app.put('/api/v1/book/:isbn/:owner/removerenter', function(req, res){
         req.params.username = req.body.username; // Restructure to be able to use latest controller method
-        bookController.removeRenter(req, res);
+        Books.findWithISBNAndOwner(req.params.isbn, req.params.owner, function(result){
+            req.params.bookId = result._id;
+            bookController.removeRenter(req, res);
+        });
     });
 
     // User API v1: /v1/user
