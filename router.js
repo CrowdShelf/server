@@ -62,13 +62,13 @@ function setup(app){
     app.get('/api/users/:username', userController.getUser);
 
     // Crowd API v2: /crowds
-    app.post('/api/crowd', crowdController.create);
+    app.post('/api/crowds', crowdController.create);
 
-    app.put('/api/crowd/:crowdId/addmember', crowdController.addMember);
+    app.put('/api/crowds/:crowdId/addmember', crowdController.addMember);
 
-    app.put('/api/crowd/:crowdId/removemember', crowdController.removeMember);
-    app.get('/api/crowd', crowdController.getAll);
-    app.get('/api/crowd/:crowdId',crowdController.get);
+    app.put('/api/crowds/:crowdId/removemember', crowdController.removeMember);
+    app.get('/api/crowds', crowdController.getAll);
+    app.get('/api/crowds/:crowdId',crowdController.get);
 }
 
 exports.setup = setup;
