@@ -7,6 +7,8 @@ var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
     userController = require('./controllers/userController');
 
+var apiv1 = require('./api/v1.js');
+
 function setup(app){
     var bodyParser = require('body-parser'); // Some setup for encoding of requests
     app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -21,32 +23,8 @@ function setup(app){
         next();
     });
 
-    // Book v1 API: /v1/book
-    app.route('/api/v1/book')
-        .put(bookController.createNew)
-        .get(bookController.getAll);
-    app.get('/api/v1/book/:isbn', bookController.getWithISBN);
-    app.get('/api/v1/book/:isbn/:owner', bookController.getWithISBNAndOwner);
-    app.put('/api/v1/book/:isbn/:owner/addrenter', function(req, res){
-        req.params.username = req.body.username; // Restructure to be able to use latest controller method
-        bookController.addRenter(req, res);
-    });
-    app.put('/api/v1/book/:isbn/:owner/removerenter', function(req, res){
-        req.params.username = req.body.username; // Restructure to be able to use latest controller method
-        bookController.removeRenter(req, res);
-    });
-
-    // User API v1: /v1/user
-    app.get('/api/v1/user/:username', userController.getUser);
-
-
-    // Crowd API v1 /v1/crowd
-    app.post('/api/v1/crowd', crowdController.create);
-
-    app.put('/api/v1/crowd/:crowdId/addmember', crowdController.addMember);
-    app.put('/api/v1/crowd/:crowdId/removemember', crowdController.removeMember);
-    app.get('/api/v1/crowd', crowdController.getAll);
-    app.get('/api/v1/crowd/:crowdId',crowdController.get);
+    // Setup APIv1
+    apiv1.setup(app, bookController, crowdController, userController);
 
     // Book API v2: /books
     app.route('/api/books')
@@ -64,9 +42,10 @@ function setup(app){
     // Crowd API v2: /crowds
     app.post('/api/crowds', crowdController.create);
 
-    app.put('/api/crowds/:crowdId/addmember', crowdController.addMember);
+    app.route('/api/crowds/:crowdId/members/:username')
+        .put(crowdController.addMember)
+        .delete(crowdController.removeMember);
 
-    app.put('/api/crowds/:crowdId/removemember', crowdController.removeMember);
     app.get('/api/crowds', crowdController.getAll);
     app.get('/api/crowds/:crowdId',crowdController.get);
 }
