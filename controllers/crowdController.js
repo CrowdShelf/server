@@ -22,7 +22,7 @@ module.exports = {
     },
 
     addMember: function(req, res){
-        var username = req.body.username;
+        var username = req.params.username;
         var crowdId = req.params.crowdId;
         Crowds.addMember(crowdId, username, function(result){
             if(result === 404) return res.sendStatus(404);
@@ -32,7 +32,7 @@ module.exports = {
 
     removeMember: function(req, res){
         var crowdId = req.params.crowdId,
-            username = req.body.username;
+            username = req.params.username;
         Crowds.removeMember(crowdId, username, function(result){
             if(result === 404) return res.sendStatus(404);
             res.status(200).send('Member removed.');
