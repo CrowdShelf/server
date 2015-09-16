@@ -55,6 +55,14 @@ module.exports = {
         });
     },
 
+    getWithID: function(req, res){
+        var id = req.params.bookId;
+        Books.findWithID(id, function(result){
+            if(result === 404) return res.status(404).send('Book not found.');
+            res.json(result);
+        });
+    },
+
 
 
     addRenter: function(req, res){

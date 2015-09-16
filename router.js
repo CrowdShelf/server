@@ -30,8 +30,8 @@ function setup(app){
     app.route('/api/books')
         .put(bookController.createNew)
         .get(bookController.getAll);
-    app.get('/api/books/:isbn', bookController.getWithISBN);
-    app.get('/api/books/:isbn/:owner', bookController.getWithISBNAndOwner);
+    app.get('/api/books/isbn/:isbn', bookController.getWithISBN);
+    app.get('/api/books/:bookId', bookController.getWithID);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
         .delete(bookController.removeRenter);

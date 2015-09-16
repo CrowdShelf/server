@@ -103,5 +103,6 @@ module.exports = {
     addRenter: addRenter,
     removeRenter: removeRenter,
     updateBook: updateBook,
-    findAll: findAll
+    findAll: findAll,
+    findWithID: findWithID
 };
