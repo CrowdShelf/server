@@ -25,13 +25,12 @@ function setup(app){
     });
 
     // Setup APIv1
-    apiv1.setup(app, bookController, crowdController, userController);
+    //apiv1.setup(app, bookController, crowdController, userController);
 
     // Book API v2: /books
     app.route('/api/books')
-        .put(bookController.createNew)
-        .get(bookController.getAll);
-    app.get('/api/books?isbn=[isbn]&?owner=[owner]', bookController.getWithISBN);
+        .put(bookController.create)
+        .get(bookController.getBooks);  
     app.get('/api/books/:bookId', bookController.getWithID);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
