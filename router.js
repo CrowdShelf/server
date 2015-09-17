@@ -20,6 +20,7 @@ function setup(app){
         res.header("Access-Control-Allow-Origin", "*");
         res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.header('X-API-VERSION', 2);
         next();
     });
 
@@ -30,16 +31,16 @@ function setup(app){
     app.route('/api/books')
         .put(bookController.createNew)
         .get(bookController.getAll);
-    app.get('/api/books/isbn/:isbn', bookController.getWithISBN);
+    app.get('/api/books?isbn=[isbn]&?owner=[owner]', bookController.getWithISBN);
     app.get('/api/books/:bookId', bookController.getWithID);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
         .delete(bookController.removeRenter);
 
     // User API v2: /users
-    app.get('/api/users/:username', userController.getUser);
+    app.get('/api/users/:id', userController.getUser);
+    app.post('/api/users', userController.create);
 
-    // Crowd API v2: /crowds
     app.post('/api/crowds', crowdController.create);
 
     app.route('/api/crowds/:crowdId/members/:username')
