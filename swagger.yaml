@@ -13,32 +13,6 @@ schemes:
   - http
 paths:
   /books:
-    put:
-      tags:
-        - books
-      summary: Add a new or a changed book to the database
-      description: ''
-      operationId: addBook
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          description: Book object to be added or changed
-          required: true
-          schema:
-            $ref: '#/definitions/Book'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/Book'
-        '409':
-          description: Conflict
-        '422':
-          description: Unprocessable entity
     get:
       tags:
         - books
@@ -70,6 +44,33 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Book'
+    put:
+      tags:
+        - books
+      summary: Add a new or a changed book to the database
+      description: ''
+      operationId: addBook
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Book object to be added or changed
+          required: true
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Book'
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable entity
+    
   '/books/{bookId}':
     get:
       tags:
@@ -166,6 +167,29 @@ paths:
         '422':
           description: '?? esso hva skjer her'
   /crowds:
+    get:
+      tags:
+        - crowds
+      summary: Get all crowds
+      description: ''
+      operationId: getCrowds
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: member
+          description: Get the crowds which the given user id is a member of
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crowd'
+        '404':
+          description: No crowds
     post:
       tags:
         - crowds
@@ -192,29 +216,7 @@ paths:
           description: 'Conflict: Crowd name already in use'
         '422':
           description: 'Unprocessable entity: Something wrong with form data'
-    get:
-      tags:
-        - crowds
-      summary: Get all crowds
-      description: ''
-      operationId: getCrowds
-      produces:
-        - application/json
-      parameters:
-        - in: query
-          name: member
-          description: Get the crowds which the given user id is a member of
-          required: false
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Crowd'
-        '404':
-          description: No crowds
+
   '/crowds/{crowdId}':
     get:
       tags:
@@ -302,24 +304,6 @@ paths:
         '409':
           description: dasdasdad
   /users:
-    post:
-      tags:
-        - users
-      summary: Create user
-      description: ''
-      operationId: createUser
-      consumes:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          description: User object to create
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      responses:
-        '200':
-          description: OK
     get:
       tags:
         - users
@@ -343,6 +327,25 @@ paths:
               $ref: '#/definitions/User'
         '400':
           description: No users
+    post:
+      tags:
+        - users
+      summary: Create user
+      description: ''
+      operationId: createUser
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: User object to create
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK
+
   '/users/{userId}':
     get:
       tags:
@@ -394,6 +397,7 @@ definitions:
         type: string
         description: 'user _id'
   Crowd:
+    description: description
     type: object
     properties:
       _rev:
