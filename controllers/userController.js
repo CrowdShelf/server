@@ -3,15 +3,20 @@
  */
 var Books = require('../models/book');
 var Crowds = require('../models/crowd.js');
+var Users = require('../models/user.js');
 
-function getUser(req, res){
-    var username = req.params.username;
-    getUserByUsername(username, function(result){
+var create = function(req, res){
+
+};
+
+var getUser = function(req, res){
+    var id = req.params.id;
+    Users.find(id, function(result){
         res.json(result);
     });
-}
+};
 
-function getUserByUsername(username, callback){
+var getUserByUsername = function(username, callback){
     var obj = {username: username}; // Add the username
     Books.findRentedBy(username, function(result){
         obj.booksRented = result !== 404 ? result:  [];
@@ -26,10 +31,13 @@ function getUserByUsername(username, callback){
             })
         });
     });
-}
+};
+
+
 
 
 module.exports = {
     getUser: getUser,
-    getUserByUsername: getUserByUsername
+    getUserByUsername: getUserByUsername,
+    create: create
 };
