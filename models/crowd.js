@@ -12,58 +12,68 @@ mongo.connect(url, function(err, db) {
     Crowds = db.collection('Crowds');
 });
 
-module.exports = {
-    insertCrowd: function(crowd, callback){
-        Crowds.insertOne(crowd, function(err, result){
-            callback(result.ops[0]);
-        });
-    },
+var insertCrowd = function(crowd, callback){
+    Crowds.insertOne(crowd, function(err, result){
+        callback(result.ops[0]);
+    });
+};
 
-    findWithName: function(crowdName, callback){
-        Crowds.find({name: crowdName}).toArray(function(err, result){
-            callback(result);
-        });
-    },
+var findWithName = function(crowdName, callback){
+    Crowds.find({name: crowdName}).toArray(function(err, result){
+        callback(result);
+    });
+};
 
-    addMember: function(crowdId, username, callback){
-        Crowds.updateOne({_id: ObjectId(crowdId)},{
-            $push: {members: username }
+var addMember = function(crowdId, username, callback){
+    Crowds.updateOne({_id: ObjectId(crowdId)},{
+        $push: {members: username }
+    }, function(err, result){
+        if(!result) return callback(404);
+        callback(result);
+    });
+};
+
+var removeMember = function(crowdId, username, callback){
+    Crowds.updateOne({_id: ObjectId(crowdId)}, {
+        $pull: {members: username}
         }, function(err, result){
             if(!result) return callback(404);
             callback(result);
-        });
-    },
+    })
+};
 
-    removeMember: function(crowdId, username, callback){
-        Crowds.updateOne({_id: ObjectId(crowdId)}, {
-            $pull: {members: username}
-            }, function(err, result){
-                if(!result) return callback(404);
-                callback(result);
-        })
-    },
+var removeCrowd = function(crowd, callback){
+    Crowds.remove(crowd, function(err, result){
+        callback(result);
+    });
+};
 
-    removeCrowd: function(crowd, callback){
-        Crowds.remove(crowd, function(err, result){
-            callback(result);
-        });
-    },
+var getAll = function(callback){
+    Crowds.find({}).toArray(function (err, result) {
+        callback(result);
+    });
+};
 
-    getAll: function(callback){
-        Crowds.find({}).toArray(function (err, result) {
-            callback(result);
-        });
-    },
-    getCrowdWithId: function(crowdId, callback){
-        Crowds.findOne({_id : new ObjectId(crowdId) },function(err, result){
-            if(!result) return callback(404);
-            return callback(result);
-        });
-    },
+var getCrowdWithId = function(crowdId, callback){
+    Crowds.findOne({_id : new ObjectId(crowdId) },function(err, result){
+        if(!result) return callback(404);
+        return callback(result);
+    });
+};
 
-    getCrowdWithMember: function(memberName, callback){
-        Crowds.find({members: { $in: [memberName] }}).toArray(function(err, result){
-            callback(result);
-        });
-    }
+var getCrowdWithMember = function(memberName, callback){
+    Crowds.find({members: { $in: [memberName] }}).toArray(function(err, result){
+        callback(result);
+    });
+};
+
+module.exports = {
+    insertCrowd: insertCrowd,
+    removeCrowd: removeCrowd,
+    getCrowdWithMember: getCrowdWithMember,
+    getCrowdWithId: getCrowdWithId,
+    findWithName: findWithName,
+    getAll: getAll,
+    addMember: addMember,
+    removeMember: removeMember
 };
