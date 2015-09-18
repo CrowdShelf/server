@@ -69,9 +69,9 @@ paths:
           schema:
             $ref: '#/definitions/Book'
         '409':
-          description: Conflict??
+          description: Conflict with another book
         '422':
-          description: Unprocessable entity
+          description: Unprocessable entity. Something missing or something's wrong in the data given.
     
   '/books/{bookID}':
     get:
@@ -145,7 +145,7 @@ paths:
         '409':
           description: Conflict
         '422':
-          description: '?? '
+          description: Unprocessable entity. Something missing or something's wrong in the data given.
     delete:
       tags:
         - books
@@ -167,10 +167,10 @@ paths:
       responses:
         '200':
           description: OK
-        '409':
-          description: Not a renter kanskje?
+        '404':
+          description: That bookId or renter is not found.
         '422':
-          description: '?? '
+          description: Unprocessable entity. Something missing or something's wrong in the data given.
   /crowds:
     get:
       tags:
