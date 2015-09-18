@@ -309,7 +309,7 @@ paths:
         '200':
           description: OK
         '409':
-          description: dasdasdad
+          description: UserID already a member of the crowd.
         '550':
           description: Permission denied. 
   /users:
@@ -392,6 +392,8 @@ definitions:
         type: string
       username:
         type: string
+      name:
+        type: string 
       email:
         type: string
   Book:
