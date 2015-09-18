@@ -7,6 +7,8 @@ var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
     userController = require('./controllers/userController');
 
+var express = require('express');
+
 var apiv1 = require('./api/v1.js');
 
 function setup(app){
@@ -23,6 +25,9 @@ function setup(app){
         res.header('X-API-VERSION', 2);
         next();
     });
+
+    app.use('/api', express.static('public'));
+
 
     // Setup APIv1
     //apiv1.setup(app, bookController, crowdController, userController);
