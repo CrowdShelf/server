@@ -16,25 +16,25 @@ paths:
     get:
       tags:
         - books
-      summary: Get all books
-      description: ''
+      summary: Get all or an assortment of books
+      description: 'Use optional queries to refine your search'
       operationId: getBooks
       produces:
         - application/json
       parameters:
         - in: query
           name: isbn
-          description: Get all books with given ISBN
+          description: Get all books with the given ISBN
           required: false
           type: string
         - in: query
           name: owner
-          description: Get all books that the given user owns
+          description: Get all books owned by the given user ID
           required: false
           type: string
         - in: query
           name: rentedTo
-          description: Get all books that the given user rents
+          description: Get all books rented by the given user ID
           required: false
           type: string
       responses:
@@ -44,10 +44,12 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Book'
+        '999':
+          description: Not found (no results from query)
     put:
       tags:
         - books
-      summary: Add a new or a changed book to the database
+      summary: Add a new book or change an existing one
       description: ''
       operationId: addBook
       consumes:
@@ -67,23 +69,23 @@ paths:
           schema:
             $ref: '#/definitions/Book'
         '409':
-          description: Conflict
+          description: Conflict??
         '422':
           description: Unprocessable entity
     
-  '/books/{bookId}':
+  '/books/{bookID}':
     get:
       tags:
         - books
-      summary: Get book by Id
+      summary: Get book by ID
       description: ''
-      operationId: getBookById
+      operationId: getBookByID
       produces:
         - application/json
       parameters:
         - in: path
-          name: bookId
-          description: Book id
+          name: bookID
+          description: Book ID
           required: true
           type: string
       responses:
@@ -93,19 +95,20 @@ paths:
             $ref: '#/definitions/Book'
         '404':
           description: Not found
-  '/books/{bookId}/renter':
+  '/books/{bookID}/renter':
     get:
       tags:
         - books
-      summary: Get all the renters of a book
+        - users
+      summary: Get the renter of a book
       description: ''
-      operationId: getAllRenters
+      operationId: getRenter
       produces:
         - application/json
       parameters:
         - in: path
-          name: bookId
-          description: Id of book
+          name: bookID
+          description: Book ID
           required: true
           type: string
       responses:
@@ -117,22 +120,23 @@ paths:
               $ref: '#/definitions/User'
         '404':
           description: Book not found
-  '/books/{bookId}/renter/{userId}':
+  '/books/{bookID}/renter/{userID}':
     put:
       tags:
         - books
+        - users
       summary: Add a renter to a book
       description: ''
       operationId: addRenter
       parameters:
         - in: path
-          name: bookId
-          description: Id of book to add renter to
+          name: bookID
+          description: ID of book to add renter to
           required: true
           type: string
         - in: path
-          name: userId
-          description: Id of user to be added as a renter
+          name: userID
+          description: ID of user to be added as a renter
           required: true
           type: string
       responses:
@@ -141,22 +145,23 @@ paths:
         '409':
           description: Conflict
         '422':
-          description: '?? esso hva skjer her'
+          description: '?? '
     delete:
       tags:
         - books
+        - users
       summary: Remove a renter from a book
       description: ''
       operationId: removeRenter
       parameters:
         - in: path
-          name: bookId
-          description: Id of book to remove renter from
+          name: bookID
+          description: ID of book to remove renter from
           required: true
           type: string
         - in: path
-          name: userId
-          description: Id of user to be removed as a renter
+          name: userID
+          description: ID of user to be removed as a renter
           required: true
           type: string
       responses:
@@ -165,7 +170,7 @@ paths:
         '409':
           description: Not a renter kanskje?
         '422':
-          description: '?? esso hva skjer her'
+          description: '?? '
   /crowds:
     get:
       tags:
@@ -178,7 +183,7 @@ paths:
       parameters:
         - in: query
           name: member
-          description: Get the crowds which the given user id is a member of
+          description: Get the crowds which the given user ID is a member of
           required: false
           type: string
       responses:
@@ -203,7 +208,7 @@ paths:
       parameters:
         - in: body
           name: body
-          description: crowd to be created
+          description: Crowd to be created
           required: true
           schema:
             $ref: '#/definitions/Crowd'
@@ -217,19 +222,19 @@ paths:
         '422':
           description: 'Unprocessable entity: Something wrong with form data'
 
-  '/crowds/{crowdId}':
+  '/crowds/{crowdID}':
     get:
       tags:
         - crowds
-      summary: Get crowd by Id
+      summary: Get crowd by ID
       description: ''
       operationId: getCrowd
       produces:
         - application/json
       parameters:
         - in: path
-          name: crowdId
-          description: Id of crowd to get
+          name: crowdID
+          description: ID of crowd to get
           required: true
           type: string
       responses:
@@ -242,13 +247,13 @@ paths:
     delete:
       tags:
         - crowds
-      summary: Delete crowd by Id
+      summary: Delete crowd by ID
       description: ''
       operationId: deleteCrowd
       parameters:
         - in: path
-          name: crowdId
-          description: Id of the crowd to delete
+          name: crowdID
+          description: ID of the crowd to delete
           required: true
           type: string
       responses:
@@ -258,22 +263,23 @@ paths:
           description: Crowd not found
         '550':
           description: Permission denied. You need to be owner.
-  '/crowds/{crowdId}/members/{userId}':
+  '/crowds/{crowdID}/members/{userID}':
     put:
       tags:
         - crowds
+        - users
       summary: Add a member to a crowd
       description: ''
       operationId: addMember
       parameters:
         - in: path
-          name: crowdId
-          description: Id of crowd to add a member to
+          name: crowdID
+          description: ID of crowd to add a member to
           required: true
           type: string
         - in: path
-          name: userId
-          description: Id of user to add as member
+          name: userID
+          description: ID of user to add as member
           required: true
           type: string
       responses:
@@ -284,18 +290,19 @@ paths:
     delete:
       tags:
         - crowds
+        - users
       summary: Remove a member from a crowd
       description: ''
       operationId: removeMember
       parameters:
         - in: path
-          name: crowdId
-          description: Id of crowd to remove a member from
+          name: crowdID
+          description: ID of crowd to remove a member from
           required: true
           type: string
         - in: path
-          name: userId
-          description: Id of user to remove as member
+          name: userID
+          description: ID of user to remove as member
           required: true
           type: string
       responses:
@@ -303,19 +310,26 @@ paths:
           description: OK
         '409':
           description: dasdasdad
+        '550':
+          description: Permission denied. 
   /users:
     get:
       tags:
         - users
       summary: Get users
       description: ''
-      operationId: getAllUser
+      operationId: getUsers
       produces:
         - application/json
       parameters:
         - in: query
           name: name
           description: Get users with the given name
+          required: false
+          type: string
+        - in: query
+          name: email
+          description: Get user with the given email
           required: false
           type: string
       responses:
@@ -346,19 +360,19 @@ paths:
         '200':
           description: OK
 
-  '/users/{userId}':
+  '/users/{userID}':
     get:
       tags:
         - users
-      summary: Get user with the given Id
+      summary: Get user with the given ID
       description: ''
       operationId: getUser
       produces:
         - application/json
       parameters:
         - in: path
-          name: userId
-          description: Id of user to get.
+          name: userID
+          description: ID of user to get.
           required: true
           type: string
       responses:
@@ -378,8 +392,6 @@ definitions:
         type: string
       username:
         type: string
-      name:
-        type: string
       email:
         type: string
   Book:
@@ -395,7 +407,7 @@ definitions:
         type: string
       rentedTo:
         type: string
-        description: 'user _id'
+        description: 'user ID'
   Crowd:
     description: description
     type: object
@@ -408,9 +420,9 @@ definitions:
         type: string
       owner:
         type: string
-        description: 'user _id'
+        description: 'user ID'
       members:
         type: array
         items:
           type: string
-          description: 'user _id'
+          description: 'user ID'
