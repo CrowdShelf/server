@@ -51,13 +51,7 @@ var removeMember = function(req, res){
 
 var getAll = function(req, res){
     Crowds.findAll(function(result){
-        var toReturn = [];
-        result.forEach(function(doc, index){
-            buildCrowdObject(doc, function(obj){
-                toReturn.push(obj);
-                if (index+1 === result.length ) res.json({crowds: toReturn}); // Done
-            });
-        });
+        res.json({crowds: result}); 
     });
 };
 
@@ -75,6 +69,7 @@ var getCrowds = function(req, res){
     var name = req.query.name ? req.query.name : null,
         members = req.query.members ? req.query.members : null,
         owner = req.query.owner ? req.query.owner : null;
+    return getAll(req, res);
     if(name && !members && !owner) return getWithName(req, res);
     if(!name && members && !owner) return getWithMembers(req, res);
     if(!name && !members && owner) return getWithOwner(req, res);

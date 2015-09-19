@@ -128,7 +128,7 @@ var removeRenter = function(req, res){
 
 var getAll = function(req, res){
     Books.findAll(function(result){
-        res.json(result);
+        res.json({books: result});
     });
 };
 
