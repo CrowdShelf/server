@@ -25,6 +25,12 @@ var update = function (req, res) {
     stndResponse.notImplemented(res);
 };
 
+var getWithName = function(req, res){
+    Crowds.findWithName(crowd.name, function(result){
+        res.json(result);
+    });
+};
+
 var addMember = function(req, res){
     var username = req.params.username;
     var crowdId = req.params.crowdId;
@@ -67,9 +73,16 @@ var getWithID = function(req, res){
 
 var getCrowds = function(req, res){
     var name = req.query.name ? req.query.name : null,
-        member = req.query.member ? req.query.member : null;
-    if (name && !member) return findWithName(req, res);
-    if(name && member) return stndResponse.notImplemented(res);
+        members = req.query.members ? req.query.members : null,
+        owner = req.query.owner ? req.query.owner : null;
+    if(name && !members && !owner) return getWithName(req, res);
+    if(!name && members && !owner) return stndResponse.notImplemented(res);
+    if(!name && !members && owner) return stndResponse.notImplemented(res);
+    if(name && members && !owner) return stndResponse.notImplemented(res);
+    if(!name && members && owner ) return stndResponse.notImplemented(res);
+    if (name && !members && owner) return stndResponse.notImplemented(res);
+    if (name && members && owner) return stndResponse.notImplemented(res);
+    return getAll(req, res);
 };
 
 

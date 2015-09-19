@@ -1,16 +1,28 @@
 /**
- * Created by esso on 19.09.15.
+ * Created by Stein-Otto Svorstøl on 19.09.15.
+ * Standard responses to be used in controllers to respond to requests.
+ * Only takes the res-objects as paramteter, and returns general message and/or status code
  */
+
+/*
+ * notFound
+ * @param {res}
+ * @description Resource not found
+ */
+var notFound = function(res){
+    return res.status(404).send('Resource not found.');
+};
 
 /*
  * notImplemented
  * @param {res}
- * @description Informs requestor that feature is not implemented
+ * @description Feature not implemented
  */
 var notImplemented = function(res){
-    res.send('Not implemented.');
+    return res.status(200).send('Not implemented.');
 };
 
 module.exports = {
-    notImplemented: notImplemented
+    notImplemented: notImplemented,
+    notFound: notFound
 };
