@@ -52,8 +52,8 @@ var getBooks = function(req, res){
     if(isbn && !owner && rentedTo) return getWithISBNAndRentedTo(req, res);
     // rentedTo and owner
     if(!isbn && owner && rentedTo) return getBooksOfOwnerRentedTo(req, res);
-    // if none: getAllBooks
-    return getAllBooks(req, res);
+    // if none: getAll
+    return getAll(req, res);
 };
 
 var getWithISBNOwnedByRentedTo = function(req, res){
@@ -126,7 +126,7 @@ var removeRenter = function(req, res){
     });
 };
 
-var getAllBooks = function(req, res){
+var getAll = function(req, res){
     Books.findAll(function(result){
         res.json(result);
     });
@@ -146,6 +146,7 @@ var addUsersToBooks = function(listOfBooks){
 
 
 module.exports = {
+    getAll: getAll,
     getBooks: getBooks,
     create:create,
     update: update,

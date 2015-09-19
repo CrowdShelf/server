@@ -50,7 +50,7 @@ var removeMember = function(req, res){
 };
 
 var getAll = function(req, res){
-    Crowds.getAll(function(result){
+    Crowds.findAll(function(result){
         var toReturn = [];
         result.forEach(function(doc, index){
             buildCrowdObject(doc, function(obj){
@@ -63,7 +63,7 @@ var getAll = function(req, res){
 
 var getWithID = function(req, res){
     var crowdId = req.params.crowdId;
-    Crowds.getCrowdWithId(crowdId, function(result){
+    Crowds.findWithId(crowdId, function(result){
         if (result === 404) return res.status(404).send('Crowd not found.');
         buildCrowdObject(result, function(obj){
             res.json(obj);
@@ -76,16 +76,47 @@ var getCrowds = function(req, res){
         members = req.query.members ? req.query.members : null,
         owner = req.query.owner ? req.query.owner : null;
     if(name && !members && !owner) return getWithName(req, res);
-    if(!name && members && !owner) return stndResponse.notImplemented(res);
-    if(!name && !members && owner) return stndResponse.notImplemented(res);
-    if(name && members && !owner) return stndResponse.notImplemented(res);
-    if(!name && members && owner ) return stndResponse.notImplemented(res);
-    if (name && !members && owner) return stndResponse.notImplemented(res);
-    if (name && members && owner) return stndResponse.notImplemented(res);
+    if(!name && members && !owner) return getWithMembers(req, res);
+    if(!name && !members && owner) return getWithOwner(req, res);
+    if(name && members && !owner) return getWithNameAndMembers(req, res);
+    if(!name && members && owner ) return getWithMembersAndOwner(req, res);
+    if (name && !members && owner) return getWithNameAndOwner(req, res);
+    if (name && members && owner) return getWithNameMembersOwner(req, res);
     return getAll(req, res);
 };
 
+var getWithOwner = function (req, res) {
+    Crowds.findWithOwner(req.query.owner, function(result){
+        if(result === 404) return stndResponse.notFound(res);
+        return res.json(result);
+    });
+};
 
+var getWithMembers = function(req, res){
+    Crowds.findWithMembers(req.query.members, function(result){
+        res.json(result);
+    });
+};
+
+var getWithNameAndOwner = function (req, res) {
+    Crowds.findWithNameAndOwner(req.query.name, req.query.owner, function(result){
+        if(result === 404) return stndResponse.notFound(res);
+        return res.json(result);
+    });
+};
+
+var getWithNameAndMembers = function (req, res) {
+    Crowds.findWithNameAndMembers(req.query.name, req.query.members, function(result){
+        res.json(result);
+    });
+};
+
+
+var getWithNameMembersOwner = function (req, res) {
+    Crowds.findWithNameMembersOwner(req.query.name, req.query.members, req.query.owner, function(result){
+        return res.json(result);
+    });
+};
 
 var buildCrowdObject = function(crowdDoc, callback){
     var membersAsUserObjects = [];

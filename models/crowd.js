@@ -6,11 +6,22 @@
 var mongo = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
+var Joi = require('joi');
+
+
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var Crowds;
 mongo.connect(url, function(err, db) {
+    if(err) console.log(err);
     Crowds = db.collection('Crowds');
 });
+
+var schema = Joi.object().keys({
+    name: Joi.string().required(),
+    owner: Joi.string().required(),
+    members: Joi.array().required()
+});
+
 
 var insertCrowd = function(crowd, callback){
     Crowds.insertOne(crowd, function(err, result){
@@ -18,11 +29,7 @@ var insertCrowd = function(crowd, callback){
     });
 };
 
-var findWithName = function(crowdName, callback){
-    Crowds.find({name: crowdName}).toArray(function(err, result){
-        callback(result);
-    });
-};
+
 
 var addMember = function(crowdId, username, callback){
     Crowds.updateOne({_id: ObjectId(crowdId)},{
@@ -48,32 +55,84 @@ var removeCrowd = function(crowd, callback){
     });
 };
 
-var getAll = function(callback){
+var findAll = function(callback){
     Crowds.find({}).toArray(function (err, result) {
         callback(result);
     });
 };
 
-var getCrowdWithId = function(crowdId, callback){
+var findWithId = function(crowdId, callback){
     Crowds.findOne({_id : new ObjectId(crowdId) },function(err, result){
         if(!result) return callback(404);
         return callback(result);
     });
 };
 
-var getCrowdWithMember = function(memberName, callback){
-    Crowds.find({members: { $in: [memberName] }}).toArray(function(err, result){
+var findWithName = function(crowdName, callback){
+    Crowds.find({name: crowdName}).toArray(function(err, result){
         callback(result);
     });
 };
 
+var findWithOwner = function(owner, callback){
+    Crowds.find({owner: owner}).toArray(function(err, result){
+        callback(result);
+    });
+};
+
+
+var findWithMembers = function(members, callback){
+    Crowds.find({members: { $in: members }}).toArray(function(err, result){
+        callback(result);
+    });
+};
+
+var findWithNameAndOwner = function(crowdName, owner, callback){
+    Crowds.find({name:crowdName, owner: owner}).toArray(function(err, result){
+        callback(result);
+    });
+};
+
+
+var findWithNameAndMembers = function(name, members, callback){
+    Crowds.find({name: name, members: {$in: members}}).toArray(function (err, result) {
+        callback(result);
+    });
+};
+
+
+var findWithMembersAndOwner = function(members, owner, callback){
+    Crowds.find({owner: owner, members: {$in: members}}).toArray(function (err, result) {
+        callback(result);
+    });
+};
+
+var findWitNamehMembersOwner = function(name, members, owner, callback){
+    Crowds.find({name: name, owner: owner, members: {$in: members}})
+        .toArray(function (err, result) {
+            callback(result);
+    });
+};
+
+
+var isValid = function (crowd){
+    return Joi.validate(crowd, schema);
+};
+
+
 module.exports = {
     insertCrowd: insertCrowd,
     removeCrowd: removeCrowd,
-    getCrowdWithMember: getCrowdWithMember,
-    getCrowdWithId: getCrowdWithId,
+    findWithId: findWithId,
     findWithName: findWithName,
-    getAll: getAll,
+    findWithMembers: findWithMembers,
+    findWithOwner: findWithOwner,
+    findWithNameAndOwner: findWithNameAndOwner,
+    findWithNameAndMembers: findWithNameAndMembers,
+    findWithMembersAndOwner: findWithMembersAndOwner,
+    findWithNameMembersOwner: findWitNamehMembersOwner,
+    findAll: findAll,
     addMember: addMember,
-    removeMember: removeMember
+    removeMember: removeMember,
+    isValid: isValid
 };

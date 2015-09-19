@@ -22,7 +22,7 @@ var getUserByUsername = function(username, callback){
         obj.booksRented = result !== 404 ? result:  [];
         Books.findWithOwner(username, function(result){
             obj.booksOwned = result !== 404 ? result : []; // The user's books
-            Crowds.getCrowdWithMember(username, function(result){
+            Crowds.findCrowdWithMember(username, function(result){
                 obj.crowds = [];
                 result.forEach(function(crowd, index){
                     obj.crowds.push(crowd._id);

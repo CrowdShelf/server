@@ -40,14 +40,15 @@ function setup(app){
     app.get('/api/users/:id', userController.getUser);
     app.post('/api/users', userController.create);
 
-    app.post('/api/crowds', crowdController.create);
+    app.route('/api/crowds')
+        .post( crowdController.create)
+        .put(crowdController.update)
+        .get(crowdController.getCrowds);
+    app.get('/api/crowds/:crowdId',crowdController.getWithID);
 
     app.route('/api/crowds/:crowdId/members/:username')
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
-
-    app.get('/api/crowds', crowdController.getCrowds);
-    app.get('/api/crowds/:crowdId',crowdController.getWithID);
 }
 
 exports.setup = setup;

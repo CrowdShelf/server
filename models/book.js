@@ -9,18 +9,17 @@ var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var ObjectId = require('mongodb').ObjectID;
 var Joi = require('joi');
 
+var Books;
+mongo.connect(url, function(err, db) {
+    if(err) console.log(err);
+    Books = db.collection('Books');
+});
+
 var schema = Joi.object().keys({
     owner: Joi.string().required(),
     isbn: Joi.string().required(),
-    rentedTo: Joi.array().required(),
-    numAvailableForRent: Joi.number().integer().min(0).required(),
-    numberOfCopies: Joi.number().integer().min(0).required()
-});
-
-
-var Books;
-mongo.connect(url, function(err, db) {
-    Books = db.collection('Books');
+    rentedTo: Joi.string().required(),
+    availableForRent: Joi.boolean().required()
 });
 
 var insert = function(book, callback){
@@ -97,7 +96,6 @@ var findAll = function(callback){
 };
 
 var findWithISBNAndOwner = function(isbn, owner, callback){
-    var foundBooks = [];
     Books.findOne({isbn: isbn, owner: owner}, function(err, result){
         if (result === null) return callback(404);
         callback(result);
