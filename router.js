@@ -34,7 +34,8 @@ function setup(app){
 
     // Book API v2: /books
     app.route('/api/books')
-        .put(bookController.create)
+        .post(bookController.create)
+        .put(bookController.update)
         .get(bookController.getBooks);  
     app.get('/api/books/:bookId', bookController.getWithID);
     app.route('/api/books/:bookId/renter/:username')

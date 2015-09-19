@@ -5,13 +5,22 @@
 
 var Joi = require('joi');
 
-var Books = require('../models/book');
+var Books = require('../models/book'),
+    stndResponse = require('../helpers/standardResponses.js');
 
 var create = function(req, res){
     var book = req.body;
+    return Books.insert(book, function(result){ // Not there, so it can be created
+        res.json(result);
+    });
+};
+
+var update = function(req, res){
+    return res.send('Not implemented.');
+    var book = req.body;
     var oldBookId = book._id;
     delete book._id; // Getting a -1 from clients
-    if(!isValidBookObject(book)) return res.sendStatus(422); // Unprocessable
+    if(!Books.isValid(book)) return res.sendStatus(422); // Unprocessable
     Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
         var oldResult = result;
         if (result !== 404){ // Something was found, so we'll update item.
@@ -28,16 +37,35 @@ var create = function(req, res){
 };
 
 var getBooks = function(req, res){
-    var isbn = req.query.isbn ? req.query.isbn : null;
-    var owner = req.query.owner ? req.query.owner : null;
-    // if both: with with owner and isbn
-    if(isbn && owner) return getWithISBNAndOwner(req, res);
-    // if isbn, not owner: Find with isbn
-    if(isbn && !owner) return getWithISBN(req, res);
+    var isbn = req.query.isbn ? req.query.isbn : null,
+        owner = req.query.owner ? req.query.owner : null,
+        rentedTo = req.query.rentedTo ? req.query.owner : null;
+    // Get with ISBN and owner
+    if(isbn && owner && !rentedTo) return getWithISBNAndOwner(req, res);
+    // if isbn, not owner or rentedTo: Find with isbn
+    if(isbn && !owner && !rentedTo) return getWithISBN(req, res);
     // if owner not isbn: Find with owner
-    if(!isbn && owner) return getBooksOfOwner(req, res);
+    if(!isbn && owner && !rentedTo) return getBooksOfOwner(req, res);
+    // if all
+    if(isbn && owner && rentedTo) return getWithISBNOwnedByRentedTo(req, res);
+    // rentedTo and isbn
+    if(isbn && !owner && rentedTo) return getWithISBNAndRentedTo(req, res);
+    // rentedTo and owner
+    if(!isbn && owner && rentedTo) return getBooksOfOwnerRentedTo(req, res);
     // if none: getAllBooks
     return getAllBooks(req, res);
+};
+
+var getWithISBNOwnedByRentedTo = function(req, res){
+    stndResponse.notImplemented(res);
+};
+
+var getWithISBNAndRentedTo = function(req, res){
+    stndResponse.notImplemented(res);
+};
+
+var getBooksOfOwnerRentedTo = function(req, res){
+    stndResponse.notImplemented(res);
 };
 
 var getWithISBN = function(req, res){
@@ -71,6 +99,7 @@ var getWithID = function(req, res){
     var id = req.params.bookId;
     Books.findWithID(id, function(result){
         if(result === 404) return res.status(404).send('Book not found.');
+        if(result === 422) return res.status(422).send('Invalid bookId');
         res.json(result);
     });
 };
@@ -103,19 +132,9 @@ var getAllBooks = function(req, res){
     });
 };
 
-var schema = Joi.object().keys({
-    owner: Joi.string().required(),
-    isbn: Joi.string().required(),
-    rentedTo: Joi.array().required(),
-    numAvailableForRent: Joi.number().integer().min(0).required(),
-    numberOfCopies: Joi.number().integer().min(0).required()
-});
 
-function isValidBookObject(book){
-    return Joi.validate(book, schema);
-}
 
-function addUsersToBooks(listOfBooks){
+var addUsersToBooks = function(listOfBooks){
     for (var i = 0; i < listOfBooks.length; i++){
         var book = listOfBooks[i];
         var userObjects = [];
@@ -123,11 +142,13 @@ function addUsersToBooks(listOfBooks){
 
         }
     }
-}
+};
+
 
 module.exports = {
     getBooks: getBooks,
     create:create,
+    update: update,
     getWithID: getWithID,
     addRenter: addRenter,
     removeRenter: removeRenter

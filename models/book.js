@@ -7,6 +7,15 @@
 var mongo = require('mongodb').MongoClient;
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var ObjectId = require('mongodb').ObjectID;
+var Joi = require('joi');
+
+var schema = Joi.object().keys({
+    owner: Joi.string().required(),
+    isbn: Joi.string().required(),
+    rentedTo: Joi.array().required(),
+    numAvailableForRent: Joi.number().integer().min(0).required(),
+    numberOfCopies: Joi.number().integer().min(0).required()
+});
 
 
 var Books;
@@ -28,6 +37,7 @@ var findWithISBN = function(isbn, callback){
 };
 
 var findWithID = function(id, callback){
+    if(!ObjectId.isValid(id)) return callback(422);
     Books.findOne({_id: ObjectId(id)}, function(err, result){
         if(!result) return callback(404);
         return callback(result);
@@ -94,6 +104,10 @@ var findWithISBNAndOwner = function(isbn, owner, callback){
     });
 };
 
+var isValid = function (book){
+    return Joi.validate(book, schema);
+};
+
 module.exports = {
     insert: insert,
     findWithISBN: findWithISBN,
@@ -104,5 +118,6 @@ module.exports = {
     removeRenter: removeRenter,
     updateBook: updateBook,
     findAll: findAll,
-    findWithID: findWithID
+    findWithID: findWithID,
+    isValid: isValid
 };

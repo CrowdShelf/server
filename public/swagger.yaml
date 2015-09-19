@@ -95,6 +95,8 @@ paths:
             $ref: '#/definitions/Book'
         '404':
           description: Not found
+        '422':
+          description: Unprocessable entity, invalid. bookId.
   '/books/{bookID}/renter/{userID}':
     put:
       tags:
