@@ -1,5 +1,5 @@
 # CrowdShelf server
-Server for the CrowdShelf apps, written with NodeJS, ExpressJS and Sequelize.
+Server for the CrowdShelf apps, written with NodeJS and Express.
 
 ## Workflow
 We're using JIRA for issue tracking. We try to follow [Chrockford's style guide](http://javascript.crockford.com/code.html) for our code.
@@ -33,7 +33,9 @@ Any questions? Feel free to ask!
         
 ## Deployment 
 ### Heroku
-The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`.
+The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`. 
+
+There's also CI on the `dev`-branch, which is the latest version of the API. You'll find it on `crowdshelf-dev.herokuapp.com/api`
 
 ## Data model
 A `book` is a book in our database that is owned by a user:
