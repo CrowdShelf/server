@@ -9,8 +9,6 @@ var bookController = require('./controllers/bookController'),
 
 var express = require('express');
 
-var apiv1 = require('./api/v1.js');
-
 function setup(app){
     var bodyParser = require('body-parser'); // Some setup for encoding of requests
     app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -28,14 +26,10 @@ function setup(app){
 
     app.use('/api', express.static('public'));
 
-
-    // Setup APIv1
-    //apiv1.setup(app, bookController, crowdController, userController);
-
     // Book API v2: /books
     app.route('/api/books')
         .post(bookController.create)
-        .put(bookController.update)
+        .put(bookController.update) // @TOOD
         .get(bookController.getBooks);  
     app.get('/api/books/:bookId', bookController.getWithID);
     app.route('/api/books/:bookId/renter/:username')
@@ -52,8 +46,8 @@ function setup(app){
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
 
-    app.get('/api/crowds', crowdController.getAll);
-    app.get('/api/crowds/:crowdId',crowdController.get);
+    app.get('/api/crowds', crowdController.getCrowds);
+    app.get('/api/crowds/:crowdId',crowdController.getWithID);
 }
 
 exports.setup = setup;
