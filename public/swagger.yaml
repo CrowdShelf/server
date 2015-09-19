@@ -2,15 +2,27 @@ swagger: '2.0'
 info:
   description: |
     This is the CrowdShelf API.
-  version: 2.0.1
+  version: 2.0.2
   title: CrowsShelf API
   contact:
     url: 'www.github.com/crowdshelf'
     name: 'http://www.github.crowdshelf.io'
-host: crowdshelf-dev.herokuapp.com
+host: crowdshelf.herokuapp.com
 basePath: /api
 schemes:
   - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags: 
+  - name: books
+    description: |
+      A book object corresponds to one physical copy
+  - name: users
+  - name: crowds
+    description: |
+      A crowd consists of users that can borrow each other's books
 paths:
   /books:
     get:
@@ -41,15 +53,13 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Book'
+            $ref: '#/definitions/BookList'
         '999':
           description: 'Not found (no results from query)'
-    put:
+    post:
       tags:
         - books
-      summary: Add a new book or change an existing one
+      summary: Add a new book
       description: ''
       operationId: addBook
       consumes:
@@ -59,20 +69,19 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Book object to be added or changed
+          description: |
+            Book object to be added. It is not necessary to include `_rev` and `_id` fields.
           required: true
           schema:
             $ref: '#/definitions/Book'
       responses:
         '200':
-          description: OK
+          description: |
+            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
           schema:
             $ref: '#/definitions/Book'
-        '409':
-          description: Conflict with another book.
         '422':
           description: Unprocessable entity. Something missing or something's wrong in the data given.
-    
   '/books/{bookID}':
     get:
       tags:
@@ -97,6 +106,39 @@ paths:
           description: Not found
         '422':
           description: Unprocessable entity, invalid. bookId.
+    put:
+      tags:
+        - books
+      summary: Change an existing book
+      description: ''
+      operationId: updateBook
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: bookID
+          type: string
+          required: true
+          description: Book ID
+        - in: body
+          name: body
+          description: |
+            Book object to be changed. It is not necessary to include `_rev` and `_id` fields.
+          required: true
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        '200':
+          description: |
+            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
+          schema:
+            $ref: '#/definitions/Book'
+        '409':
+          description: Conflict with another book.
+        '422':
+          description: Unprocessable entity. Something missing or something's wrong in the data given.
   '/books/{bookID}/renter/{userID}':
     put:
       tags:
@@ -177,9 +219,7 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Crowd'
+            $ref: '#/definitions/CrowdList'
         '404':
           description: No crowds
     post:
@@ -195,20 +235,21 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Crowd to be created
+          description: |
+            Crowd to be created. It is not necessary to include `_rev` and `_id` fields.
           required: true
           schema:
             $ref: '#/definitions/Crowd'
       responses:
         '200':
-          description: OK
+          description: |
+            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
           schema:
             $ref: '#/definitions/Crowd'
         '409':
           description: 'Conflict: Crowd name already in use'
         '422':
           description: 'Unprocessable entity: Something wrong with form data'
-
   '/crowds/{crowdID}':
     get:
       tags:
@@ -303,7 +344,7 @@ paths:
     get:
       tags:
         - users
-      summary: Get users
+      summary: Get all or an assortment of users
       description: ''
       operationId: getUsers
       produces:
@@ -323,15 +364,11 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/User'
-        '400':
-          description: No users
+            $ref: '#/definitions/UserList'
     post:
       tags:
         - users
-      summary: Create user
+      summary: Create a new user
       description: ''
       operationId: createUser
       consumes:
@@ -346,12 +383,11 @@ paths:
       responses:
         '200':
           description: OK
-
   '/users/{userID}':
     get:
       tags:
         - users
-      summary: Get user with the given ID
+      summary: Get user by ID
       description: ''
       operationId: getUser
       produces:
@@ -372,6 +408,7 @@ paths:
 definitions:
   User:
     type: object
+    description: ''
     properties:
       _rev:
         type: string
@@ -383,8 +420,16 @@ definitions:
         type: string
       email:
         type: string
+  UserList:
+    type: object
+    properties:
+      users:
+        type: array
+        items: 
+          $ref: '#/definitions/User'
   Book:
     type: object
+    description: ''
     properties:
       _rev:
         type: string
@@ -394,12 +439,20 @@ definitions:
         type: string
       owner:
         type: string
+        description: 'user ID'
       rentedTo:
         type: string
         description: 'user ID'
-  Crowd:
-    description: description
+  BookList:
     type: object
+    properties:
+      books:
+        type: array
+        items: 
+          $ref: '#/definitions/Book'  
+  Crowd:
+    type: object
+    description: ''
     properties:
       _rev:
         type: string
@@ -415,3 +468,10 @@ definitions:
         items:
           type: string
           description: 'user ID'
+  CrowdList:
+    type: object
+    properties:
+      crowds:
+        type: array
+        items: 
+          $ref: '#/definitions/Crowd'
