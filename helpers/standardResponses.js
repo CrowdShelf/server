@@ -31,8 +31,18 @@ var notImplemented = function(res){
     return res.status(200).send('Not implemented.');
 };
 
+/*
+ * resourceDeleted
+ * @param {res}
+ * @description Resource successfully deleted
+ */
+var resourceDeleted = function(res){
+   return res.status(200).send('Resource deleted.');
+};
+
 module.exports = {
     notImplemented: notImplemented,
     notFound: notFound,
-    unprocessableEntity: unprocessableEntity
+    unprocessableEntity: unprocessableEntity,
+    resourceDeleted: resourceDeleted
 };
