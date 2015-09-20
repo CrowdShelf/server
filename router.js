@@ -42,9 +42,11 @@ function setup(app){
 
     app.route('/api/crowds')
         .post( crowdController.create)
-        .put(crowdController.update)
         .get(crowdController.getCrowds);
-    app.get('/api/crowds/:crowdId',crowdController.getWithID);
+    app.route('/api/crowds/:crowdId')
+        .get(crowdController.getWithID)
+        .put(crowdController.update)
+        .delete(crowdController.remove);
 
     app.route('/api/crowds/:crowdId/members/:username')
         .put(crowdController.addMember)

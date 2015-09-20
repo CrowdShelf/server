@@ -14,6 +14,15 @@ var notFound = function(res){
 };
 
 /*
+ * unprocessableEntity
+ * @param {res}
+ * @description Something wrong with entity given
+ */
+var unprocessableEntity = function (res) {
+    return res.status(422).send('Unprocessable entity.')
+};
+
+/*
  * notImplemented
  * @param {res}
  * @description Feature not implemented
@@ -24,5 +33,6 @@ var notImplemented = function(res){
 
 module.exports = {
     notImplemented: notImplemented,
-    notFound: notFound
+    notFound: notFound,
+    unprocessableEntity: unprocessableEntity
 };

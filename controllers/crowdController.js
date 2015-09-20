@@ -8,6 +8,9 @@ var Crowds = require('../models/crowd.js');
 var userController = require('../controllers/userController.js'),
     stndResponse = require('../helpers/standardResponses.js');
 
+var ObjectId = require('mongodb').ObjectID;
+
+
 var create = function(req, res){
     var crowd = req.body;
     delete crowd._id; // Can get a value from clients
@@ -22,7 +25,17 @@ var create = function(req, res){
 };
 
 var update = function (req, res) {
-    stndResponse.notImplemented(res);
+    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
+    Crowds.updateCrowd(req.params.crowdId, req.body, function(result){
+        res.json(result);
+    });
+};
+
+var remove = function(req, res){
+    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
+    Crowds.removeCrowd(req.body, function(result){
+        res.json(result);
+    });
 };
 
 var getWithName = function(req, res){
@@ -137,6 +150,7 @@ var isValidCrowdObject = function(crowd){
 module.exports = {
     create: create,
     update: update,
+    remove: remove,
     addMember: addMember,
     removeMember: removeMember,
     getWithID: getWithID,

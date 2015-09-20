@@ -29,6 +29,12 @@ var insertCrowd = function(crowd, callback){
     });
 };
 
+var updateCrowd = function(id, crowd, callback){
+    Crowds.updateOne({_id: ObjectId(id)}, crowd, function(err, result){
+        if(!result) return callback(404);
+        return callback(result);
+    });
+};
 
 
 var addMember = function(crowdId, username, callback){
@@ -122,6 +128,7 @@ var isValid = function (crowd){
 
 module.exports = {
     insertCrowd: insertCrowd,
+    updateCrowd: updateCrowd,
     removeCrowd: removeCrowd,
     findWithId: findWithId,
     findWithName: findWithName,
