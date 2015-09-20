@@ -68,7 +68,7 @@ var findAll = function(callback){
 };
 
 var findWithId = function(crowdId, callback){
-    Crowds.findOne({_id : new ObjectId(crowdId) },function(err, result){
+    Crowds.findOne({_id : ObjectId(crowdId) },function(err, result){
         if(!result) return callback(404);
         return callback(result);
     });

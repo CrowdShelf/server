@@ -72,9 +72,7 @@ var getWithID = function(req, res){
     var crowdId = req.params.crowdId;
     Crowds.findWithId(crowdId, function(result){
         if (result === 404) return res.status(404).send('Crowd not found.');
-        buildCrowdObject(result, function(obj){
-            res.json(obj);
-        });
+        res.json(result);
     });
 };
 
@@ -126,18 +124,6 @@ var getWithNameMembersOwner = function (req, res) {
     });
 };
 
-var buildCrowdObject = function(crowdDoc, callback){
-    var membersAsUserObjects = [];
-    crowdDoc.members.forEach(function(memberName, index){
-        userController.getUserByUsername(memberName, function(obj){ // Get that username as user object
-            membersAsUserObjects.push(obj); // Push to list
-            if(index + 1 === crowdDoc.members.length) { // If've checked all the membersAsUserObjects
-                crowdDoc.members = membersAsUserObjects; // Set membersAsUserObjects list of object
-                return callback(crowdDoc); // And return crowdDoc to callback
-            }
-        })
-    });
-};
 
 var isValidCrowdObject = function(crowd){
     if (typeof crowd.owner === 'string'
