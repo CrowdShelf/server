@@ -211,8 +211,8 @@ paths:
           required: false
           type: string
         - in: query
-          name: members
-          description: Get the crowds which the given list of user IDs are members of
+          name: member
+          description: Get the crowds which the given user ID is a member of
           required: false
           type: string
       responses:

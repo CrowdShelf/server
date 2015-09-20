@@ -26,7 +26,7 @@ var update = function (req, res) {
 };
 
 var getWithName = function(req, res){
-    Crowds.findWithName(crowd.name, function(result){
+    Crowds.findWithName(req.query.name, function(result){
         res.json(result);
     });
 };
@@ -51,7 +51,7 @@ var removeMember = function(req, res){
 
 var getAll = function(req, res){
     Crowds.findAll(function(result){
-        res.json({crowds: result}); 
+        res.json({crowds: result});
     });
 };
 
@@ -67,16 +67,16 @@ var getWithID = function(req, res){
 
 var getCrowds = function(req, res){
     var name = req.query.name ? req.query.name : null,
-        members = req.query.members ? req.query.members : null,
+        member = req.query.member ? req.query.member : null,
         owner = req.query.owner ? req.query.owner : null;
-    return getAll(req, res);
-    if(name && !members && !owner) return getWithName(req, res);
-    if(!name && members && !owner) return getWithMembers(req, res);
-    if(!name && !members && owner) return getWithOwner(req, res);
-    if(name && members && !owner) return getWithNameAndMembers(req, res);
-    if(!name && members && owner ) return getWithMembersAndOwner(req, res);
-    if (name && !members && owner) return getWithNameAndOwner(req, res);
-    if (name && members && owner) return getWithNameMembersOwner(req, res);
+    // return getAll(req, res);
+    if(name && !member && !owner) return getWithName(req, res);
+    if(!name && member && !owner) return getWithMembers(req, res);
+    if(!name && !member && owner) return getWithOwner(req, res);
+    if(name && member && !owner) return getWithNameAndMembers(req, res);
+    if(!name && member && owner ) return getWithMembersAndOwner(req, res);
+    if (name && !member && owner) return getWithNameAndOwner(req, res);
+    if (name && member && owner) return getWithNameMembersOwner(req, res);
     return getAll(req, res);
 };
 
