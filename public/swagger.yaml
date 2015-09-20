@@ -5,7 +5,7 @@ info:
   version: 2.0.2
   title: CrowsShelf API
   contact:
-    url: 'www.github.com/crowdshelf'
+    url: www.github.com/crowdshelf
     name: 'http://www.github.crowdshelf.io'
 host: crowdshelf.herokuapp.com
 basePath: /api
@@ -15,7 +15,7 @@ consumes:
   - application/json
 produces:
   - application/json
-tags: 
+tags:
   - name: books
     description: |
       A book object corresponds to one physical copy
@@ -29,7 +29,7 @@ paths:
       tags:
         - books
       summary: Get all or an assortment of books
-      description: 'Use optional queries to refine your search'
+      description: Use optional queries to refine your search
       operationId: getBooks
       produces:
         - application/json
@@ -54,8 +54,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/BookList'
-        '999':
-          description: 'Not found (no results from query)'
     post:
       tags:
         - books
@@ -69,19 +67,21 @@ paths:
       parameters:
         - in: body
           name: body
-          description: |
-            Book object to be added. It is not necessary to include `_rev` and `_id` fields.
+          description: >
+            Book object to be added. It is not necessary to include `_rev` and
+            `_id` fields.
           required: true
           schema:
             $ref: '#/definitions/Book'
       responses:
         '200':
-          description: |
-            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
+          description: >
+            OK. The retrieved object will have correct values in the `_rev` and
+            `_id` fields.
           schema:
             $ref: '#/definitions/Book'
         '422':
-          description: Unprocessable entity. Something missing or something's wrong in the data given.
+          $ref: '#/responses/unprocessableEntity'
   '/books/{bookID}':
     get:
       tags:
@@ -103,9 +103,9 @@ paths:
           schema:
             $ref: '#/definitions/Book'
         '404':
-          description: Not found
+          $ref: '#/responses/notFound'
         '422':
-          description: Unprocessable entity, invalid. bookId.
+          $ref: '#/responses/unprocessableEntity'
     put:
       tags:
         - books
@@ -124,21 +124,23 @@ paths:
           description: Book ID
         - in: body
           name: body
-          description: |
-            Book object to be changed. It is not necessary to include `_rev` and `_id` fields.
+          description: >
+            Book object to be changed. It is not necessary to include `_rev` and
+            `_id` fields.
           required: true
           schema:
             $ref: '#/definitions/Book'
       responses:
         '200':
-          description: |
-            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
+          description: >
+            OK. The retrieved object will have correct values in the `_rev` and
+            `_id` fields.
           schema:
             $ref: '#/definitions/Book'
         '409':
           description: Conflict with another book.
         '422':
-          description: Unprocessable entity. Something missing or something's wrong in the data given.
+          $ref: '#/responses/unprocessableEntity'
   '/books/{bookID}/renter/{userID}':
     put:
       tags:
@@ -164,7 +166,9 @@ paths:
         '409':
           description: Conflict
         '422':
-          description: Unprocessable entity. Something missing or something's wrong in the data given.
+          $ref: '#/responses/unprocessableEntity'
+        '550':
+          description: 'esso skal vi ha pemission her'
     delete:
       tags:
         - books
@@ -189,7 +193,7 @@ paths:
         '409':
           description: Book ID or renter not found.
         '422':
-          description: Unprocessable entity. Something missing or something's wrong in the data given.
+          $ref: '#/responses/unprocessableEntity'
   /crowds:
     get:
       tags:
@@ -221,7 +225,7 @@ paths:
           schema:
             $ref: '#/definitions/CrowdList'
         '404':
-          description: No crowds
+          $ref: '#/responses/notFound'
     post:
       tags:
         - crowds
@@ -235,21 +239,23 @@ paths:
       parameters:
         - in: body
           name: body
-          description: |
-            Crowd to be created. It is not necessary to include `_rev` and `_id` fields.
+          description: >
+            Crowd to be created. It is not necessary to include `_rev` and `_id`
+            fields.
           required: true
           schema:
             $ref: '#/definitions/Crowd'
       responses:
         '200':
-          description: |
-            OK. The retrieved object will have correct values in the `_rev` and `_id` fields.
+          description: >
+            OK. The retrieved object will have correct values in the `_rev` and
+            `_id` fields.
           schema:
             $ref: '#/definitions/Crowd'
         '409':
           description: 'Conflict: Crowd name already in use'
         '422':
-          description: 'Unprocessable entity: Something wrong with form data'
+          $ref: '#/responses/unprocessableEntity'
   '/crowds/{crowdID}':
     get:
       tags:
@@ -271,7 +277,7 @@ paths:
           schema:
             $ref: '#/definitions/Crowd'
         '404':
-          description: Not found
+          $ref: '#/responses/notFound'
     delete:
       tags:
         - crowds
@@ -288,9 +294,9 @@ paths:
         '200':
           description: OK
         '404':
-          description: Crowd not found
+          $ref: '#/responses/notFound'
         '550':
-          description: Permission denied. You need to be owner.
+          $ref: '#/responses/permissionDenied'
   '/crowds/{crowdID}/members/{userID}':
     put:
       tags:
@@ -313,8 +319,12 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          $ref: '#/responses/notFound'
         '409':
           description: UserID already a member of the crowd.
+        '550':
+          $ref: '#/responses/permissionDenied'
     delete:
       tags:
         - crowds
@@ -336,10 +346,12 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          $ref: '#/responses/notFound'
         '409':
           description: UserID not a member of the crowd.
         '550':
-          description: Permission denied. 
+          $ref: '#/responses/permissionDenied'
   /users:
     get:
       tags:
@@ -404,7 +416,7 @@ paths:
           schema:
             $ref: '#/definitions/User'
         '404':
-          description: User not found
+          $ref: '#/responses/notFound'
 definitions:
   User:
     type: object
@@ -425,7 +437,7 @@ definitions:
     properties:
       users:
         type: array
-        items: 
+        items:
           $ref: '#/definitions/User'
   Book:
     type: object
@@ -439,17 +451,17 @@ definitions:
         type: string
       owner:
         type: string
-        description: 'user ID'
+        description: user ID
       rentedTo:
         type: string
-        description: 'user ID'
+        description: user ID
   BookList:
     type: object
     properties:
       books:
         type: array
-        items: 
-          $ref: '#/definitions/Book'  
+        items:
+          $ref: '#/definitions/Book'
   Crowd:
     type: object
     description: ''
@@ -462,16 +474,24 @@ definitions:
         type: string
       owner:
         type: string
-        description: 'user ID'
+        description: user ID
       members:
         type: array
+        description: user IDs
         items:
           type: string
-          description: 'user ID'
+          description: user ID
   CrowdList:
     type: object
     properties:
       crowds:
         type: array
-        items: 
+        items:
           $ref: '#/definitions/Crowd'
+responses:
+  notFound:
+    description: Resource not found.
+  unprocessableEntity:
+    description: 'Unprocessable entity: Something wrong with form data, e.g. a missing field.'
+  permissionDenied:
+    description: 'You do not have permission to modify this resource.'
