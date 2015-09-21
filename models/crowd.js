@@ -38,8 +38,8 @@ var updateCrowd = function(id, crowd, callback){
     });
 };
 
-var removeCrowd = function(crowd, callback){
-    Crowds.remove(crowd, function(err, result){
+var removeCrowd = function(id, callback){
+    Crowds.remove({_id: ObjectId(id)}, function(err, result){
         callback(result);
     });
 };

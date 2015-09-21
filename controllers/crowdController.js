@@ -34,8 +34,8 @@ var update = function (req, res) {
 
 var remove = function(req, res){
     if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
-    Crowds.removeCrowd(req.body, function(result){
-        if(result.result.ok === 1) return stndResponse.resourceDeleted(res);
+    Crowds.removeCrowd(req.params.crowdId, function(result){
+        if(result.result.n === 1) return stndResponse.resourceDeleted(res);
         return stndResponse.notFound(res);
     });
 };
