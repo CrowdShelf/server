@@ -9,7 +9,7 @@ var Joi = require('joi');
 var schema = Joi.object().keys({
     name: Joi.string().required(),
     username: Joi.string().required(),
-    email: Joi.string().required()
+    email: Joi.string().email().required()
 });
 
 
@@ -20,6 +20,7 @@ mongo.connect(url, function(err, db) {
 });
 
 var insertUser = function(user, callback){
+    if(!isValid(user)) return callback(422);
     Users.insertOne(user, function (err, result) {
         callback(result.ops[0]);
     });
@@ -32,6 +33,7 @@ var removeUser = function(id, callback){
 };
 
 var updateUser = function(id, newUser, callback){
+    if(!isValid(user)) return callback(422);
     Users.updateOne({_id: ObjectId(id)}, {$set: newUser}, function(err, result){
         if(!result) return callback(404);
         return callback(result);
@@ -43,6 +45,10 @@ var findWithID  = function(id, callback){
         if(!err) callback(result);
         else callback(err);
     });
+};
+
+var isValid = function (user){
+    return Joi.validate(user, schema);
 };
 
 
