@@ -36,6 +36,13 @@ var update = function(req, res){
     });
 };
 
+var remove = function (req, res) {
+    Books.remove(req.params.bookId, function(result){
+        if(result.result.ok === 1) return stndResponse.resourceDeleted(res);
+        return stndResponse.notFound(res);
+    });
+};
+
 var getBooks = function(req, res){
     var isbn = req.query.isbn ? req.query.isbn : null,
         owner = req.query.owner ? req.query.owner : null,
@@ -150,6 +157,7 @@ module.exports = {
     getBooks: getBooks,
     create:create,
     update: update,
+    remove: remove,
     getWithID: getWithID,
     addRenter: addRenter,
     removeRenter: removeRenter

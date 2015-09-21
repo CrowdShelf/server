@@ -30,9 +30,15 @@ var insertCrowd = function(crowd, callback){
 };
 
 var updateCrowd = function(id, crowd, callback){
-    Crowds.updateOne({_id: ObjectId(id)}, crowd, function(err, result){
+    Crowds.updateOne({_id: ObjectId(id)}, {$set: crowd}, function(err, result){
         if(!result) return callback(404);
         return callback(result);
+    });
+};
+
+var removeCrowd = function(crowd, callback){
+    Crowds.remove(crowd, function(err, result){
+        callback(result);
     });
 };
 
@@ -55,11 +61,7 @@ var removeMember = function(crowdId, username, callback){
     })
 };
 
-var removeCrowd = function(crowd, callback){
-    Crowds.remove(crowd, function(err, result){
-        callback(result);
-    });
-};
+
 
 var findAll = function(callback){
     Crowds.find({}).toArray(function (err, result) {

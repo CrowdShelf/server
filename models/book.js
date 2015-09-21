@@ -22,9 +22,15 @@ var schema = Joi.object().keys({
     availableForRent: Joi.boolean().required()
 });
 
-var insert = function(book, callback){
+var insertBook = function(book, callback){
     Books.insertOne(book, function(err, result){
         callback(result.ops[0]);
+    });
+};
+
+var removeBook = function (id, callback) {
+    Books.remove({_id: ObjectId(id)}, function(err, result){
+        callback(result);
     });
 };
 
@@ -107,14 +113,15 @@ var isValid = function (book){
 };
 
 module.exports = {
-    insert: insert,
+    insert: insertBook,
+    remove: removeBook,
+    updateBook: updateBook,
     findWithISBN: findWithISBN,
     findWithOwner: findWithOwner,
     findWithISBNAndOwner: findWithISBNAndOwner,
     findRentedBy: findRentedBy,
     addRenter: addRenter,
     removeRenter: removeRenter,
-    updateBook: updateBook,
     findAll: findAll,
     findWithID: findWithID,
     isValid: isValid

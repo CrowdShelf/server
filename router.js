@@ -31,13 +31,17 @@ function setup(app){
         .post(bookController.create)
         .put(bookController.update) // @TOOD
         .get(bookController.getBooks);  
-    app.get('/api/books/:bookId', bookController.getWithID);
+    app.route('/api/books/:bookId')
+        .get(bookController.getWithID)
+        .delete(bookController.remove);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
         .delete(bookController.removeRenter);
 
     // User API v2: /users
-    app.get('/api/users/:id', userController.getUser);
+    app.route('/api/users/:userId')
+        .get(userController.getUser)
+        .delete(userController.remove);
     app.post('/api/users', userController.create);
 
     app.route('/api/crowds')
