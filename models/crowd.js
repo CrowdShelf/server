@@ -7,6 +7,7 @@ var mongo = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
 var Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
@@ -18,12 +19,13 @@ mongo.connect(url, function(err, db) {
 
 var schema = Joi.object().keys({
     name: Joi.string().required(),
-    owner: Joi.string().required(),
-    members: Joi.array().required()
+    owner: Joi.objectId().required(),
+    members: Joi.array().items(Joi.objectId()).required()
 });
 
 
 var insertCrowd = function(crowd, callback){
+    if(!isValid(crowd)) return callback(422);
     Crowds.insertOne(crowd, function(err, result){
         callback(result.ops[0]);
     });

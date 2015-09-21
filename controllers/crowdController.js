@@ -17,6 +17,7 @@ var create = function(req, res){
     if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
     if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
     Crowds.findWithName(crowd.name, function(result){
+        if(result === 422) return stndResponse.unprocessableEntity(res);
         if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
         Crowds.insertCrowd(crowd, function(insertData){
             res.json(insertData);
