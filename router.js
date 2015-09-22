@@ -7,20 +7,22 @@ var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
     userController = require('./controllers/userController');
 
-var express = require('express');
+var express = require('express'),
+    bodyParser = require('body-parser');
 
 function setup(app){
-    var bodyParser = require('body-parser'); // Some setup for encoding of requests
+    // Some setup for encoding of requests
     app.use(bodyParser.json());       // to support JSON-encoded bodies
     app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
         extended: true
     }));
 
     app.use(function(req, res, next) { // Headers to allow CORS and different requests
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT');
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.header('X-API-VERSION', 2);
+        console.log(req.method+ '-request to: ' + req.url);
         next();
     });
 
