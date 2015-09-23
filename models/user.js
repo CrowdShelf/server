@@ -21,8 +21,10 @@ mongo.connect(url, function(err, db) {
 
 var insertUser = function(user, callback){
     if(!isValid(user)) return callback(422);
-    Users.insertOne(user, function (err, result) {
-        callback(result.ops[0]);
+    Users.insert(user, function(err, result){
+        if(err) return callback({error: err});
+        if(result.ops) return callback(result.ops[0]);
+        return callback(500);
     });
 };
 
