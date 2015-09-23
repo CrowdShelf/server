@@ -443,18 +443,19 @@ definitions:
     type: object
     description: ''
     properties:
-      _rev:
-        type: string
       _id:
         type: string
       isbn:
         type: string
       owner:
         type: string
-        description: user ID
+        description: A valid user ID
       rentedTo:
         type: string
-        description: user ID
+        description: A valid user ID
+      availableForRent:
+        type: boolean
+        description: Tells if the book is available for rent.
   BookList:
     type: object
     properties:
