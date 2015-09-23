@@ -10,8 +10,11 @@ var Books = require('../models/book'),
 
 var create = function(req, res){
     var book = req.body;
-    return Books.insert(book, function(result){ // Not there, so it can be created
-        res.json(result);
+    Books.insert(book, function(result){ // Not there, so it can be created
+        if(result.error) return res.json(result.error); // Just some error
+        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result === 500) return stndResponse.internalError(res);
+        return res.json(result);
     });
 };
 

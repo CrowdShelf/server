@@ -40,9 +40,19 @@ var resourceDeleted = function(res){
    return res.status(200).send('Resource deleted.');
 };
 
+/*
+ * internalError
+ * @param {res}
+ * @description Server experienced unknown error
+ */
+var internalError = function (res) {
+    return res.status(500).send('The server experienced an unknown error.')
+};
+
 module.exports = {
     notImplemented: notImplemented,
     notFound: notFound,
     unprocessableEntity: unprocessableEntity,
-    resourceDeleted: resourceDeleted
+    resourceDeleted: resourceDeleted,
+    internalError: internalError
 };

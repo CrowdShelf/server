@@ -8,6 +8,8 @@ var mongo = require('mongodb').MongoClient;
 var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var ObjectId = require('mongodb').ObjectID;
 var Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+
 
 var Books;
 mongo.connect(url, function(err, db) {
@@ -16,15 +18,18 @@ mongo.connect(url, function(err, db) {
 });
 
 var schema = Joi.object().keys({
-    owner: Joi.string().required(),
+    owner: Joi.objectId().required(),
     isbn: Joi.string().required(),
-    rentedTo: Joi.string().required(),
+    rentedTo: Joi.objectId().required(),
     availableForRent: Joi.boolean().required()
 });
 
 var insertBook = function(book, callback){
-    Books.insertOne(book, function(err, result){
-        callback(result.ops[0]);
+    if(!isValid(book)) return callback(422);
+    Books.insert(book, function(err, result){
+        if(err) return callback({error: err});
+        if(result.ops) return callback(result.ops[0]);
+        return callback(500);
     });
 };
 
@@ -109,7 +114,9 @@ var findWithISBNAndOwner = function(isbn, owner, callback){
 };
 
 var isValid = function (book){
-    return Joi.validate(book, schema);
+    var res = Joi.validate(book, schema);
+    if (!res.error) return true;
+    return false;
 };
 
 module.exports = {

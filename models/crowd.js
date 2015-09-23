@@ -126,7 +126,9 @@ var findWitNamehMembersOwner = function(name, members, owner, callback){
 
 
 var isValid = function (crowd){
-    return Joi.validate(crowd, schema);
+    var res = Joi.validate(crowd, schema);
+    if (!res.error) return true;
+    return false;
 };
 
 
