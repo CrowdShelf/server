@@ -48,7 +48,9 @@ var findWithID  = function(id, callback){
 };
 
 var isValid = function (user){
-    return Joi.validate(user, schema);
+    var res = Joi.validate(user, schema);
+    if (!res.error) return true;
+    return false;
 };
 
 
