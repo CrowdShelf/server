@@ -37,6 +37,16 @@ var insertBook = function(book, callback){
     });
 };
 
+var updateBook = function(id, newBook, callback){
+    if(!isValid(newBook)) return callback(422);
+    delete newBook._id; // If it's there, it shouldn't be set by anyting
+    Books.update({_id: ObjectId(id)}, {$set: newBook},
+        function(err, result){
+            if(result) return callback(newBook);
+            return callback(404);
+        });
+};
+
 var removeBook = function (id, callback) {
     Books.remove({_id: ObjectId(id)}, function(err, result){
         callback(result);
@@ -96,14 +106,7 @@ var removeRenter = function(id, renter, callback){
     });
 };
 
-var updateBook = function(id, newBook, callback){
-    delete newBook._id; // If it's there, it shouldn't be set by anyting
-    Books.update({_id: ObjectId(id)}, {$set: newBook},
-        function(err, result){
-            if(result) return callback(newBook);
-            return callback(404);
-    });
-};
+
 
 var findAll = function(callback){
     Books.find({}).toArray(function(err, result){

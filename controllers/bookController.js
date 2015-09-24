@@ -19,11 +19,10 @@ var create = function(req, res){
 };
 
 var update = function(req, res){
-    return res.send('Not implemented.');
     var book = req.body;
-    if(!Books.isValid(book)) return res.sendStatus(422); // Unprocessable
     return Books.updateBook(req.params.bookId, book, function(result){
-        if(result === 404) return res.sendStatus(404);
+        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result === 404) return stndResponse.notFound(res);
         res.json(result);
     })
 };
