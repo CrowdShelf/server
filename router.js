@@ -34,7 +34,7 @@ function setup(app){
         .get(bookController.getBooks);
     app.route('/api/books/:bookId')
         .get(bookController.getWithID)
-        .put(bookController.update) // @TOOD
+        .put(bookController.update)
         .delete(bookController.remove);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
