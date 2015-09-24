@@ -37,7 +37,7 @@ var remove = function (req, res) {
 var getBooks = function(req, res){
     var isbn = req.query.isbn ? req.query.isbn : null,
         owner = req.query.owner ? req.query.owner : null,
-        rentedTo = req.query.rentedTo ? req.query.owner : null;
+        rentedTo = req.query.rentedTo ? req.query.rentedTo : null;
     // Get with ISBN and owner
     if(isbn && owner && !rentedTo) return getWithISBNAndOwner(req, res);
     // if isbn, not owner or rentedTo: Find with isbn
