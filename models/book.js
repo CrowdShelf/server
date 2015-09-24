@@ -83,6 +83,45 @@ var findRentedBy = function(username, callback){
     });
 };
 
+var findAll = function(callback){
+    Books.find({}).toArray(function(err, result){
+        callback(result);
+    });
+};
+
+var findWithISBNAndOwner = function(isbn, owner, callback){
+    Books.findOne({isbn: isbn, owner: owner}, function(err, result){
+        if (result === null) return callback(404);
+        callback(result);
+    });
+};
+
+var findWithOwnerAndRentedTo = function (owner, rentee, callback) {
+    Books.find({owner: owner, rentedTo: rentee}).toArray(function (err, result) {
+        if(!err) callback(result);
+        callback({error: err})
+    })
+};
+
+var findWithISBNRentedTo = function (isbn, rentee, callback) {
+    findMultiple({owner:owner, rentedTo: rentee}, function (err, result) {
+        if(!err) callback(result);
+        callback({error: err})
+    });
+};
+
+var findWithISBNOwnedByRentedTo = function (isbn, owner, rentee, callback) {
+    findMultiple({isbn: isbn, owner: owner, rentedTo: rentee}, function (err, result) {
+        if(!err) callback(result);
+        callback({error: err})
+    })
+};
+
+
+var findMultiple = function (findObj, callback) {
+    Books.find(findObj).toArray(callback);
+};
+
 var addRenter = function(id, renter, callback) {
     // @TODO check if already a renter
     Books.updateOne({_id: ObjectId(id)}, {
@@ -108,18 +147,7 @@ var removeRenter = function(id, renter, callback){
 
 
 
-var findAll = function(callback){
-    Books.find({}).toArray(function(err, result){
-        callback(result);
-    });
-};
 
-var findWithISBNAndOwner = function(isbn, owner, callback){
-    Books.findOne({isbn: isbn, owner: owner}, function(err, result){
-        if (result === null) return callback(404);
-        callback(result);
-    });
-};
 
 var isValid = function (book){
     var res = Joi.validate(book, schema);
@@ -131,12 +159,15 @@ module.exports = {
     insert: insertBook,
     remove: removeBook,
     updateBook: updateBook,
-    findWithISBN: findWithISBN,
-    findWithOwner: findWithOwner,
-    findWithISBNAndOwner: findWithISBNAndOwner,
-    findRentedBy: findRentedBy,
     addRenter: addRenter,
     removeRenter: removeRenter,
+    findWithISBN: findWithISBN,
+    findWithOwner: findWithOwner,
+    findRentedBy: findRentedBy,
+    findWithISBNAndOwner: findWithISBNAndOwner,
+    findWithISBNOwnedByRentedTo: findWithISBNOwnedByRentedTo,
+    findWithISBNRentedTo: findWithISBNRentedTo,
+    findWithOwnerAndRentedTo: findWithOwnerAndRentedTo,
     findAll: findAll,
     findWithID: findWithID,
     isValid: isValid

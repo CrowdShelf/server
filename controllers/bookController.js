@@ -55,15 +55,27 @@ var getBooks = function(req, res){
 };
 
 var getWithISBNOwnedByRentedTo = function(req, res){
-    stndResponse.notImplemented(res);
+    var isbn = req.query.isbn,
+        owner = req.query.owner,
+        rentedTo = req.query.rentedTo;
+    Books.findWithISBNOwnedByRentedTo(isbn, owner, rentedTo, function (result) {
+       res.json(formatResultForClient(result));
+    });
 };
 
 var getWithISBNAndRentedTo = function(req, res){
-    stndResponse.notImplemented(res);
-};
+    var isbn = req.query.isbn,
+        rentedTo = req.query.rentedTo;
+    Books.findWithISBNRentedTo(isbn, rentedTo, function (result) {
+        res.json(formatResultForClient(result));
+    });};
 
 var getBooksOfOwnerRentedTo = function(req, res){
-    stndResponse.notImplemented(res);
+    var owner = req.query.owner,
+        rentedTo = req.query.rentedTo;
+    Books.findWithOwnerAndRentedTo(owner, rentedTo, function (result) {
+        res.json(formatResultForClient(result));
+    });
 };
 
 var getWithISBN = function(req, res){
@@ -72,7 +84,7 @@ var getWithISBN = function(req, res){
         if (result === 404){
             return res.sendStatus(404);  // not found
         }
-        res.json({books: result});
+        res.json(formatResultForClient(result));
     });
 };
 
@@ -80,7 +92,7 @@ var getBooksOfOwner = function (req, res){
     var owner = req.query.owner;
     Books.findWithOwner(owner, function(result){
         if (result === 404) return res.sendStatus(404);
-        res.json({books: result});
+        res.json(formatResultForClient(result));
     });
 };
 
@@ -89,7 +101,7 @@ var getWithISBNAndOwner = function(req, res){
     var owner = req.query.owner;
     Books.findWithISBNAndOwner(isbn, owner, function(result){
         if (result === 404) return res.sendStatus(404);
-        res.json(result);
+        res.json(formatResultForClient(result));
     });
 };
 
@@ -126,7 +138,7 @@ var removeRenter = function(req, res){
 
 var getAll = function(req, res){
     Books.findAll(function(result){
-        res.json({books: result});
+        res.json(formatResultForClient(result));
     });
 };
 
@@ -140,6 +152,10 @@ var addUsersToBooks = function(listOfBooks){
 
         }
     }
+};
+
+var formatResultForClient = function (result) {
+    return {books: result}
 };
 
 
