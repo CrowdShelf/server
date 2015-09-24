@@ -7,6 +7,7 @@ var ObjectId = require('mongodb').ObjectID;
 var Joi = require('joi');
 
 var schema = Joi.object().keys({
+    _id: Joi.number().valid(-1).optional(),
     name: Joi.string().required(),
     username: Joi.string().required(),
     email: Joi.string().email().required()
@@ -20,6 +21,7 @@ mongo.connect(url, function(err, db) {
 });
 
 var insertUser = function(user, callback){
+    delete user._id;
     if(!isValid(user)) return callback(422);
     Users.insert(user, function(err, result){
         if(err) return callback({error: err});
