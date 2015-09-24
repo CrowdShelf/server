@@ -1,0 +1,490 @@
+swagger: '2.0'
+info:
+  description: |
+    This is the CrowdShelf API.
+  version: 2.0.2
+  title: CrowsShelf API
+  contact:
+    url: www.github.com/crowdshelf
+    name: 'http://www.github.crowdshelf.io'
+host: crowdshelf-dev.herokuapp.com
+basePath: /api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: books
+    description: |
+      A book object corresponds to one physical copy
+  - name: users
+  - name: crowds
+    description: |
+      A crowd consists of users that can borrow each other's books
+paths:
+  /books:
+    get:
+      tags:
+        - books
+      summary: Get all or an assortment of books
+      description: Use optional queries to refine your search
+      operationId: getBooks
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: isbn
+          description: Get all books with the given ISBN
+          required: false
+          type: string
+        - in: query
+          name: owner
+          description: Get all books owned by the given user ID
+          required: false
+          type: string
+        - in: query
+          name: rentedTo
+          description: Get all books rented by the given user ID
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BookList'
+    post:
+      tags:
+        - books
+      summary: Add a new book
+      description: ''
+      operationId: addBook
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: >
+            Book object to be added. It is not necessary to include `_id` field.
+          required: true
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        '200':
+          description: >
+            OK. The retrieved object will have correct values in the `_id` field.
+          schema:
+            $ref: '#/definitions/Book'
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+  '/books/{bookID}':
+    get:
+      tags:
+        - books
+      summary: Get book by ID
+      description: ''
+      operationId: getBookByID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: bookID
+          description: Book ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Book'
+        '404':
+          $ref: '#/responses/notFound'
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+  '/books/{bookID}':
+    delete:
+      tags:
+        - books
+      summary: Delete a book by ID
+      description: ''
+      operationId: getBookByID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: bookID
+          description: Book ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Book'
+        '404':
+          $ref: '#/responses/notFound'
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+    put:
+      tags:
+        - books
+      summary: Change an existing book
+      description: ''
+      operationId: updateBook
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: bookID
+          type: string
+          required: true
+          description: Book ID
+        - in: body
+          name: body
+          description: >
+            Book object to be added. It is not necessary to include `_id` field.
+          required: true
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        '200':
+          description: >
+            OK. The retrieved object will have correct values in the `_id` field
+          schema:
+            $ref: '#/definitions/Book'
+        '409':
+          description: Conflict with another book.
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+  '/books/{bookID}/renter/{userID}':
+    put:
+      tags:
+        - books
+        - users
+      summary: Add a renter to a book
+      description: ''
+      operationId: addRenter
+      parameters:
+        - in: path
+          name: bookID
+          description: ID of book to add renter to
+          required: true
+          type: string
+        - in: path
+          name: userID
+          description: ID of user to be added as a renter
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '409':
+          description: Conflict
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+        '550':
+          description: 'esso skal vi ha permission her'
+    delete:
+      tags:
+        - books
+        - users
+      summary: Remove a renter from a book
+      description: ''
+      operationId: removeRenter
+      parameters:
+        - in: path
+          name: bookID
+          description: ID of book to remove renter from
+          required: true
+          type: string
+        - in: path
+          name: userID
+          description: ID of user to be removed as a renter
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '409':
+          description: Book ID or renter not found.
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+  /crowds:
+    get:
+      tags:
+        - crowds
+      summary: Get all crowds
+      description: ''
+      operationId: getCrowds
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: name
+          description: Get the crowds with the given name
+          required: false
+          type: string
+        - in: query
+          name: owner
+          description: Get the crowds owned by the given user ID
+          required: false
+          type: string
+        - in: query
+          name: member
+          description: Get the crowds which the given user ID is a member of
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CrowdList'
+        '404':
+          $ref: '#/responses/notFound'
+    post:
+      tags:
+        - crowds
+      summary: Create a new crowd
+      description: ''
+      operationId: createCrowd
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: >
+            Crowd to be created. It is not necessary to include `_rev` and `_id`
+            fields.
+          required: true
+          schema:
+            $ref: '#/definitions/Crowd'
+      responses:
+        '200':
+          description: >
+            OK. The retrieved object will have correct values in the `_rev` and
+            `_id` fields.
+          schema:
+            $ref: '#/definitions/Crowd'
+        '409':
+          description: 'Conflict: Crowd name already in use'
+        '422':
+          $ref: '#/responses/unprocessableEntity'
+  '/crowds/{crowdID}':
+    get:
+      tags:
+        - crowds
+      summary: Get crowd by ID
+      description: ''
+      operationId: getCrowd
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: crowdID
+          description: ID of crowd to get
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Crowd'
+        '404':
+          $ref: '#/responses/notFound'
+    delete:
+      tags:
+        - crowds
+      summary: Delete crowd by ID
+      description: ''
+      operationId: deleteCrowd
+      parameters:
+        - in: path
+          name: crowdID
+          description: ID of the crowd to delete
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          $ref: '#/responses/notFound'
+        '550':
+          $ref: '#/responses/permissionDenied'
+  '/crowds/{crowdID}/members/{userID}':
+    put:
+      tags:
+        - crowds
+        - users
+      summary: Add a member to a crowd
+      description: ''
+      operationId: addMember
+      parameters:
+        - in: path
+          name: crowdID
+          description: ID of crowd to add a member to
+          required: true
+          type: string
+        - in: path
+          name: userID
+          description: ID of user to add as member
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          $ref: '#/responses/notFound'
+        '409':
+          description: UserID already a member of the crowd.
+        '550':
+          $ref: '#/responses/permissionDenied'
+    delete:
+      tags:
+        - crowds
+        - users
+      summary: Remove a member from a crowd
+      description: ''
+      operationId: removeMember
+      parameters:
+        - in: path
+          name: crowdID
+          description: ID of crowd to remove a member from
+          required: true
+          type: string
+        - in: path
+          name: userID
+          description: ID of user to remove as member
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          $ref: '#/responses/notFound'
+        '409':
+          description: UserID not a member of the crowd.
+        '550':
+          $ref: '#/responses/permissionDenied'
+  /users:
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      description: ''
+      operationId: createUser
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: User object to create
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK
+  '/users/{userID}':
+    get:
+      tags:
+        - users
+      summary: Get user by ID
+      description: ''
+      operationId: getUser
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: userID
+          description: ID of user to get.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          $ref: '#/responses/notFound'
+definitions:
+  User:
+    type: object
+    description: ''
+    properties:
+      _id:
+        type: string
+      username:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+  UserList:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  Book:
+    type: object
+    description: ''
+    properties:
+      _id:
+        type: string
+      isbn:
+        type: string
+      owner:
+        type: string
+        description: A valid user ID
+      rentedTo:
+        type: string
+        description: A valid user ID
+      availableForRent:
+        type: boolean
+        description: Tells if the book is available for rent.
+  BookList:
+    type: object
+    properties:
+      books:
+        type: array
+        items:
+          $ref: '#/definitions/Book'
+  Crowd:
+    type: object
+    description: ''
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+        description: user ID
+      members:
+        type: array
+        description: user IDs
+        items:
+          type: string
+          description: user ID
+  CrowdList:
+    type: object
+    properties:
+      crowds:
+        type: array
+        items:
+          $ref: '#/definitions/Crowd'
+responses:
+  notFound:
+    description: Resource not found.
+  unprocessableEntity:
+    description: 'Unprocessable entity: Something wrong with form data, e.g. a missing field.'
+  permissionDenied:
+    description: 'You do not have permission to modify this resource.'

@@ -7,34 +7,58 @@ var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
     userController = require('./controllers/userController');
 
+var express = require('express'),
+    bodyParser = require('body-parser');
+
 function setup(app){
-    var bodyParser = require('body-parser'); // Some setup for encoding of requests
+    // Some setup for encoding of requests
     app.use(bodyParser.json());       // to support JSON-encoded bodies
     app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
         extended: true
     }));
 
     app.use(function(req, res, next) { // Headers to allow CORS and different requests
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT');
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.header('X-API-VERSION', 2);
+        console.log(req.method+ '-request to: ' + req.url);
         next();
     });
 
-    app.put('/api/book', bookController.createNew);
-    app.get('/api/book', bookController.getAll);
-    app.get('/api/book/:isbn', bookController.getWithISBN);
-    app.get('/api/book/:isbn/:owner', bookController.getWithISBNAndOwner);
-    app.put('/api/book/:isbn/:owner/addrenter', bookController.addRenter);
-    app.put('/api/book/:isbn/:owner/removerenter', bookController.removeRenter);
+    app.use('/api', express.static('public'));
 
-    app.get('/api/user/:username', userController.getUser);
+    // Book API v2: /books
+    app.route('/api/books')
+        .post(bookController.create)
+        .get(bookController.getBooks);
+    app.route('/api/books/:bookId')
+        .get(bookController.getWithID)
+        .put(bookController.update) // @TOOD
+        .delete(bookController.remove);
+    app.route('/api/books/:bookId/renter/:username')
+        .put(bookController.addRenter)
+        .delete(bookController.removeRenter);
 
-    app.post('/api/crowd', crowdController.create);
-    app.put('/api/crowd/:crowdId/addmember', crowdController.addMember);
-    app.put('/api/crowd/:crowdId/removemember', crowdController.removeMember);
-    app.get('/api/crowd', crowdController.getAll);
-    app.get('/api/crowd/:crowdId',crowdController.get);
+    // User API v2: /users
+    app.route('/api/users/:userId')
+        .get(userController.getUser)
+        .delete(userController.remove);
+    app.post('/api/users', userController.create);
+
+    app.route('/api/crowds')
+        .post( crowdController.create)
+        .get(crowdController.getCrowds);
+
+    app.route('/api/crowds/:crowdId')
+        .get(crowdController.getWithID)
+        .put(crowdController.update)
+        .delete(crowdController.remove);
+
+
+    app.route('/api/crowds/:crowdId/members/:username')
+        .put(crowdController.addMember)
+        .delete(crowdController.removeMember);
 }
 
 exports.setup = setup;

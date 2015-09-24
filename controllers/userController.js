@@ -1,35 +1,50 @@
 /**
  * Created by esso on 02.09.15.
  */
-var Books = require('../models/book');
-var Crowds = require('../models/crowd.js');
+var Users = require('../models/user.js');
 
-function getUser(req, res){
-    var username = req.params.username;
-    getUserByUsername(username, function(result){
+var ObjectId = require('mongodb').ObjectID;
+
+var stndResponse = require('../helpers/standardResponses.js');
+
+var create = function(req, res){
+    Users.insertUser(req.body, function(result){ // Not there, so it can be created
+        if(result.error) return res.json(result.error); // Just some error
+        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result === 500) return stndResponse.internalError(res);
+        return res.json(result);
+    });
+};
+
+var remove = function (req, res) {
+    var id = req.params.userId;
+    if(!ObjectId.isValid(id)) return stndResponse.unprocessableEntity(res);
+    Users.removeUser(id, function (result) {
         res.json(result);
     });
-}
+};
 
-function getUserByUsername(username, callback){
-    var obj = {username: username}; // Add the username
-    Books.findRentedBy(username, function(result){
-        obj.booksRented = result !== 404 ? result:  [];
-        Books.findWithOwner(username, function(result){
-            obj.booksOwned = result !== 404 ? result : []; // The user's books
-            Crowds.getCrowdWithMember(username, function(result){
-                obj.crowds = [];
-                result.forEach(function(crowd, index){
-                    obj.crowds.push(crowd._id);
-                    if (index +1 === result.length) return callback(obj);
-                });
-            })
-        });
+var update = function (req, res) {
+    Users.updateUser(req.params.userId, req.body, function (result) {
+        if(result === 422) return stndResponse.unprocessableEntity(res);
+        res.json(result);
     });
-}
+};
+
+var getUser = function(req, res){
+    var id = req.params.userId;
+    Users.findWithID(id, function(result){
+        res.json(result);
+    });
+};
+
+
+
 
 
 module.exports = {
-    getUser: getUser,
-    getUserByUsername: getUserByUsername
+    create: create,
+    update: update,
+    remove: remove,
+    getUser: getUser
 };
