@@ -18,14 +18,18 @@ mongo.connect(url, function(err, db) {
 });
 
 var schema = Joi.object().keys({
-    owner: Joi.objectId().required(),
-    isbn: Joi.string().required(),
-    rentedTo: Joi.objectId().required(),
-    availableForRent: Joi.boolean().required()
+    _id: [Joi.objectId(), Joi.number().valid(-1)],
+    owner: Joi.objectId(),
+    isbn: Joi.string(),
+    rentedTo: [Joi.objectId(), null],
+    availableForRent: Joi.boolean()
 });
+
+schema = schema.requiredKeys('owner', 'isbn', 'rentedTo', 'availableForRent');
 
 var insertBook = function(book, callback){
     if(!isValid(book)) return callback(422);
+    delete book._id;
     Books.insert(book, function(err, result){
         if(err) return callback({error: err});
         if(result.ops) return callback(result.ops[0]);
@@ -92,8 +96,9 @@ var removeRenter = function(id, renter, callback){
     });
 };
 
-var updateBook = function(newBook, callback){
-    Books.update({isbn: newBook.isbn, owner: newBook.owner}, newBook,
+var updateBook = function(id, newBook, callback){
+    delete newBook._id; // If it's there, it shouldn't be set by anyting
+    Books.update({_id: ObjectId(id)}, {$set: newBook},
         function(err, result){
             if(result) return callback(newBook);
             return callback(404);

@@ -21,22 +21,11 @@ var create = function(req, res){
 var update = function(req, res){
     return res.send('Not implemented.');
     var book = req.body;
-    var oldBookId = book._id;
-    delete book._id; // Getting a -1 from clients
     if(!Books.isValid(book)) return res.sendStatus(422); // Unprocessable
-    Books.findWithISBNAndOwner(book.isbn, book.owner, function(result){ // see if it's already there
-        var oldResult = result;
-        if (result !== 404){ // Something was found, so we'll update item.
-            return Books.updateBook(book, function(result){
-                if(result === 404) return res.sendStatus(404);
-                result._id = oldResult._id;
-                res.json(result);
-            })
-        }
-        return Books.insert(book, function(result){ // Not there, so it can be created
-            res.json(result);
-        });
-    });
+    return Books.updateBook(req.params.bookId, book, function(result){
+        if(result === 404) return res.sendStatus(404);
+        res.json(result);
+    })
 };
 
 var remove = function (req, res) {
