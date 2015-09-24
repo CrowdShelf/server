@@ -47,7 +47,13 @@ var updateUser = function(id, newUser, callback){
 var findWithID  = function(id, callback){
     Users.findOne({_id: ObjectId(id)}, function(err, result){
         if(!err) callback(result);
-        else callback(err);
+        else callback({error: err});
+    });
+};
+
+var findAll = function (callback) {
+    Users.find({}).toArray(function (err, result) {
+        if(!err) callback(result);
     });
 };
 
@@ -62,5 +68,6 @@ module.exports = {
     insertUser: insertUser,
     removeUser: removeUser,
     updateUser: updateUser,
-    findWithID: findWithID
+    findWithID: findWithID,
+    findAll: findAll
 };

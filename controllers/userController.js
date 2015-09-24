@@ -38,6 +38,12 @@ var getUser = function(req, res){
     });
 };
 
+var getAllUsers = function (req, res) {
+    Users.findAll(function (result) {
+        res.json({users: result});
+    });
+};
+
 
 
 
@@ -46,5 +52,6 @@ module.exports = {
     create: create,
     update: update,
     remove: remove,
-    getUser: getUser
+    getUser: getUser,
+    getAllUsers: getAllUsers
 };
