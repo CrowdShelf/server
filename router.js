@@ -31,10 +31,10 @@ function setup(app){
     // Book API v2: /books
     app.route('/api/books')
         .post(bookController.create)
-        .put(bookController.update) // @TOOD
-        .get(bookController.getBooks);  
+        .get(bookController.getBooks);
     app.route('/api/books/:bookId')
         .get(bookController.getWithID)
+        .put(bookController.update) // @TOOD
         .delete(bookController.remove);
     app.route('/api/books/:bookId/renter/:username')
         .put(bookController.addRenter)
