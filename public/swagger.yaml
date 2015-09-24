@@ -7,7 +7,7 @@ info:
   contact:
     url: www.github.com/crowdshelf
     name: 'http://www.github.crowdshelf.io'
-host: crowdshelf.herokuapp.com
+host: crowdshelf-dev.herokuapp.com
 basePath: /api
 schemes:
   - http
@@ -168,7 +168,7 @@ paths:
         '422':
           $ref: '#/responses/unprocessableEntity'
         '550':
-          description: 'esso skal vi ha pemission her'
+          description: 'esso skal vi ha permission her'
     delete:
       tags:
         - books
@@ -353,30 +353,6 @@ paths:
         '550':
           $ref: '#/responses/permissionDenied'
   /users:
-    get:
-      tags:
-        - users
-      summary: Get all or an assortment of users
-      description: ''
-      operationId: getUsers
-      produces:
-        - application/json
-      parameters:
-        - in: query
-          name: name
-          description: Get users with the given name
-          required: false
-          type: string
-        - in: query
-          name: email
-          description: Get user with the given email
-          required: false
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/UserList'
     post:
       tags:
         - users
