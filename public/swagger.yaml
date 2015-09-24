@@ -104,6 +104,30 @@ paths:
           $ref: '#/responses/notFound'
         '422':
           $ref: '#/responses/unprocessableEntity'
+  '/books/{bookID}':
+    delete:
+      tags:
+        - books
+      summary: Delete a book by ID
+      description: ''
+      operationId: getBookByID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: bookID
+          description: Book ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Book'
+        '404':
+          $ref: '#/responses/notFound'
+        '422':
+          $ref: '#/responses/unprocessableEntity'
     put:
       tags:
         - books
@@ -130,7 +154,7 @@ paths:
       responses:
         '200':
           description: >
-            OK. The retrieved object will have correct values in the `_id` field 
+            OK. The retrieved object will have correct values in the `_id` field
           schema:
             $ref: '#/definitions/Book'
         '409':
