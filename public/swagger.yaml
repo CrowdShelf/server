@@ -68,16 +68,14 @@ paths:
         - in: body
           name: body
           description: >
-            Book object to be added. It is not necessary to include `_rev` and
-            `_id` fields.
+            Book object to be added. It is not necessary to include `_id` field.
           required: true
           schema:
             $ref: '#/definitions/Book'
       responses:
         '200':
           description: >
-            OK. The retrieved object will have correct values in the `_rev` and
-            `_id` fields.
+            OK. The retrieved object will have correct values in the `_id` field.
           schema:
             $ref: '#/definitions/Book'
         '422':
@@ -125,16 +123,14 @@ paths:
         - in: body
           name: body
           description: >
-            Book object to be changed. It is not necessary to include `_rev` and
-            `_id` fields.
+            Book object to be added. It is not necessary to include `_id` field.
           required: true
           schema:
             $ref: '#/definitions/Book'
       responses:
         '200':
           description: >
-            OK. The retrieved object will have correct values in the `_rev` and
-            `_id` fields.
+            OK. The retrieved object will have correct values in the `_id` field 
           schema:
             $ref: '#/definitions/Book'
         '409':
@@ -398,8 +394,6 @@ definitions:
     type: object
     description: ''
     properties:
-      _rev:
-        type: string
       _id:
         type: string
       username:
@@ -443,8 +437,6 @@ definitions:
     type: object
     description: ''
     properties:
-      _rev:
-        type: string
       _id:
         type: string
       name:
