@@ -391,6 +391,19 @@ paths:
       responses:
         '200':
           description: OK
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: 'Get all users'
+      operationId: getUsers
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserList'
   '/users/{userID}':
     get:
       tags:
