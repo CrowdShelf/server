@@ -426,6 +426,28 @@ paths:
             $ref: '#/definitions/User'
         '404':
           $ref: '#/responses/notFound'
+  /login:
+    post:
+      tags:
+        - users
+      summary: Log user in
+      description: Returns the data for the user logged in
+      operationId: login
+      consumer:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Object with username and password
+          required: true
+          schema:
+            $ref: '#/definitions/UserToLogIn'
+      responses:
+        '200':
+          description: OK
+
 definitions:
   User:
     type: object
@@ -438,6 +460,14 @@ definitions:
       name:
         type: string
       email:
+        type: string
+  UserToLogIn:
+    type: object
+    description: The object to POST when you want to log in
+    properties:
+      username:
+        type: string
+      password:
         type: string
   UserList:
     type: object
