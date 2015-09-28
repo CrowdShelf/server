@@ -48,6 +48,8 @@ function setup(app){
         .post(userController.create)
         .get(userController.getAllUsers);
 
+    app.get('/api/login/:username', userController.login);
+
     app.route('/api/crowds')
         .post( crowdController.create)
         .get(crowdController.getCrowds);

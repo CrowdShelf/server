@@ -57,6 +57,14 @@ var findAll = function (callback) {
     });
 };
 
+var findWithUsername = function (username, callback) {
+    Users.findOne({username: username}, function (err, result) {
+        if(err) return callback({error: err});
+        if(!result) return callback(404);
+        return callback(result);
+    });
+};
+
 var isValid = function (user){
     var res = Joi.validate(user, schema);
     if (!res.error) return true;
@@ -69,5 +77,6 @@ module.exports = {
     removeUser: removeUser,
     updateUser: updateUser,
     findWithID: findWithID,
+    findWithUsername: findWithUsername,
     findAll: findAll
 };
