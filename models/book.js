@@ -86,35 +86,36 @@ var findRentedTo = function(rentee, callback){
 
 var findAll = function(callback){
     Books.find({}).toArray(function(err, result){
-        callback(result);
+        return callback(result);
     });
 };
 
 var findWithISBNAndOwner = function(isbn, owner, callback){
     Books.findOne({isbn: isbn, owner: owner}, function(err, result){
         if (result === null) return callback(404);
-        callback(result);
+        return callback(result);
     });
 };
 
 var findWithOwnerAndRentedTo = function (owner, rentee, callback) {
     Books.find({owner: owner, rentedTo: rentee}).toArray(function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+        if(!err) return callback(result);
+        return callback({error: err})
     })
 };
 
 var findWithISBNRentedTo = function (isbn, rentee, callback) {
-    findMultiple({owner:owner, rentedTo: rentee}, function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+    if(!ObjectId.isValid(rentee)) return callback(422);
+    findMultiple({isbn: isbn, rentedTo: rentee}, function (err, result) {
+        if(!err) return callback(result);
+        return callback({error: err})
     });
 };
 
 var findWithISBNOwnedByRentedTo = function (isbn, owner, rentee, callback) {
     findMultiple({isbn: isbn, owner: owner, rentedTo: rentee}, function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+        if(!err) return callback(result);
+        return callback({error: err})
     })
 };
 

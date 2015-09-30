@@ -44,6 +44,7 @@ var getBooks = function(req, res){
     if(isbn && !owner && !rentedTo) return getWithISBN(req, res);
     // if owner not isbn: Find with owner
     if(!isbn && owner && !rentedTo) return getBooksOfOwner(req, res);
+    // isbn and rentedTo
     if(!isbn && !owner && rentedTo) return getBooksRentedTo(req, res);
     // if all
     if(isbn && owner && rentedTo) return getWithISBNOwnedByRentedTo(req, res);
@@ -75,8 +76,11 @@ var getWithISBNAndRentedTo = function(req, res){
     var isbn = req.query.isbn,
         rentedTo = req.query.rentedTo;
     Books.findWithISBNRentedTo(isbn, rentedTo, function (result) {
-        res.json(formatResultForClient(result));
-    });};
+        if( result === 422) return stndResponse.unprocessableEntity(res);
+        if(result.error) return res.json({error: result.error});
+        return res.json(formatResultForClient(result));
+    });
+};
 
 var getBooksOfOwnerRentedTo = function(req, res){
     var owner = req.query.owner,
