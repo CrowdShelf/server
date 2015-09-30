@@ -77,8 +77,8 @@ var findWithOwner = function(owner, callback){
 };
 
 
-var findRentedBy = function(id, callback){
-    Books.find({rentedTo: ObjectId(id)}).toArray(function(err, result){
+var findRentedTo = function(rentee, callback){
+    Books.find({rentedTo: rentee}).toArray(function(err, result){
         if (!result) return callback(404);
         callback(result);
     });
@@ -168,7 +168,7 @@ module.exports = {
     removeRenter: removeRenter,
     findWithISBN: findWithISBN,
     findWithOwner: findWithOwner,
-    findRentedBy: findRentedBy,
+    findRentedTo: findRentedTo,
     findWithISBNAndOwner: findWithISBNAndOwner,
     findWithISBNOwnedByRentedTo: findWithISBNOwnedByRentedTo,
     findWithISBNRentedTo: findWithISBNRentedTo,

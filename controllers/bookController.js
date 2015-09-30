@@ -57,7 +57,7 @@ var getBooks = function(req, res){
 
 var getBooksRentedTo = function (req, res) {
     var rentedTo = req.query.rentedTo;
-    Books.findRentedBy(rentedTo, function (result) {
+    Books.findRentedTo(rentedTo, function (result) {
         res.json(formatResultForClient(result));
     });
 };
