@@ -187,8 +187,6 @@ paths:
           description: Conflict
         '422':
           $ref: '#/responses/unprocessableEntity'
-        '550':
-          description: 'esso skal vi ha permission her'
     delete:
       tags:
         - books
