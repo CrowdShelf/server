@@ -21,6 +21,7 @@ var schema = Joi.object().keys({
     _id: [Joi.objectId(), Joi.number().valid(-1)],
     owner: Joi.objectId(),
     isbn: Joi.string(),
+    googleId: Joi.string(),
     rentedTo: [Joi.objectId(), null],
     availableForRent: Joi.boolean()
 });
