@@ -45,7 +45,7 @@ var getAllUsers = function (req, res) {
 };
 
 var login = function (req, res) {
-    Users.findWithUsername(req.params.username, function (result) {
+    Users.findWithUsername(req.body.username, function (result) {
         if(result.error) return res.json(result.error);
         if(result === 404) return stndResponse.notFound(res);
         res.json(result);
