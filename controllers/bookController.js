@@ -124,10 +124,10 @@ var getWithID = function(req, res){
 
 var addRenter = function(req, res){
     Books.addRenter(req.params.bookId, req.params.username, function(result){
-        if(result === 404) {
+        if(result.error) {
             return res
                 .status(404)
-                .send('Did not identify a book with those parameteres. Check owner and ISBN.');
+                .send('Did not identify a book with that ID.');
         }
         res.json(result);
     });
@@ -135,7 +135,7 @@ var addRenter = function(req, res){
 
 var removeRenter = function(req, res){
     Books.removeRenter(req.params.bookId, req.params.username, function(result){
-        if(result === 404) {
+        if(result.error) {
             return res
                 .status(404)
                 .send('Did not identify a book with those parameteres. Check owner and ISBN.');

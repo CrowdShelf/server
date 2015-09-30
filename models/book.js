@@ -123,32 +123,29 @@ var findMultiple = function (findObj, callback) {
     Books.find(findObj).toArray(callback);
 };
 
-var addRenter = function(id, renter, callback) {
+var addRenter = function(bookId, renterId, callback) {
     // @TODO check if already a renter
-    Books.updateOne({_id: ObjectId(id)}, {
-        $push: {rentedTo: renter }
+    Books.update({_id: ObjectId(bookId)}, {
+        $set: {rentedTo: renterId }
     },function(err, result){
-        if(result.matchedCount === 0) return callback(404);
-        findWithID(id, function(result){
+        if(!result) return callback({error: err});
+        findWithID(bookId, function(result){
             callback(result)
         });
     });
 };
 
-var removeRenter = function(id, renter, callback){
-    Books.updateOne({_id: ObjectId(id)}, {
-        $pull: {rentedTo: renter }
+var removeRenter = function(bookId, renterId, callback){
+    // @TODO check if renterId is the renter of the bookId
+    Books.update({_id: ObjectId(bookId)}, {
+        $set: {rentedTo: null }
     }, function(err, result) {
-        if(result.matchedCount === 0) return callback(404);
-        findWithID(id, function(result){
+        if(!result) return callback({error: err});
+        findWithID(bookId, function(result){
             callback(result)
         });
     });
 };
-
-
-
-
 
 var isValid = function (book){
     return Joi.validate(book, schema);
