@@ -77,8 +77,8 @@ var findWithOwner = function(owner, callback){
 };
 
 
-var findRentedBy = function(username, callback){
-    Books.find({rentedTo: username}).toArray(function(err, result){
+var findRentedBy = function(id, callback){
+    Books.find({rentedTo: ObjectId(id)}).toArray(function(err, result){
         if (!result) return callback(404);
         callback(result);
     });
