@@ -10,7 +10,7 @@ var stndResponse = require('../helpers/standardResponses.js');
 var create = function(req, res){
     Users.insertUser(req.body, function(result){ // Not there, so it can be created
         if(result.error) return res.json(result.error); // Just some error
-        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         if(result === 500) return stndResponse.internalError(res);
         return res.json(result);
     });
@@ -18,7 +18,7 @@ var create = function(req, res){
 
 var remove = function (req, res) {
     var id = req.params.userId;
-    if(!ObjectId.isValid(id)) return stndResponse.unprocessableEntity(res);
+    if(!ObjectId.isValid(id)) return stndResponse.unprocessableEntity(res, {error: 'Invalid objectId'});
     Users.removeUser(id, function (result) {
         res.json(result);
     });
@@ -26,7 +26,7 @@ var remove = function (req, res) {
 
 var update = function (req, res) {
     Users.updateUser(req.params.userId, req.body, function (result) {
-        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         res.json(result);
     });
 };

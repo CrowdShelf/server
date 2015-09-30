@@ -16,10 +16,11 @@ var notFound = function(res){
 /*
  * unprocessableEntity
  * @param {res}
+ * @param {error}
  * @description Something wrong with entity given
  */
-var unprocessableEntity = function (res) {
-    return res.status(422).send('Unprocessable entity.')
+var unprocessableEntity = function (res, error) {
+    return res.status(422).json(error)
 };
 
 /*

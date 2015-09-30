@@ -22,7 +22,7 @@ mongo.connect(url, function(err, db) {
 
 var insertUser = function(user, callback){
     delete user._id;
-    if(!isValid(user)) return callback(422);
+    if(isValid(user).error) return callback({validationError: isValid(user).error});
     Users.insert(user, function(err, result){
         if(err) return callback({error: err});
         if(result.ops) return callback(result.ops[0]);
@@ -37,7 +37,7 @@ var removeUser = function(id, callback){
 };
 
 var updateUser = function(id, newUser, callback){
-    if(!isValid(user)) return callback(422);
+    if(isValid(user).error) return callback({validationError: isValid(user).error});
     Users.updateOne({_id: ObjectId(id)}, {$set: newUser}, function(err, result){
         if(!result) return callback(404);
         return callback(result);
@@ -66,9 +66,7 @@ var findWithUsername = function (username, callback) {
 };
 
 var isValid = function (user){
-    var res = Joi.validate(user, schema);
-    if (!res.error) return true;
-    return false;
+    return Joi.validate(user, schema);
 };
 
 

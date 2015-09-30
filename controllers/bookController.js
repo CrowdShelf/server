@@ -12,7 +12,7 @@ var create = function(req, res){
     var book = req.body;
     Books.insert(book, function(result){ // Not there, so it can be created
         if(result.error) return res.json(result.error); // Just some error
-        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         if(result === 500) return stndResponse.internalError(res);
         return res.json(result);
     });
@@ -21,7 +21,7 @@ var create = function(req, res){
 var update = function(req, res){
     var book = req.body;
     return Books.updateBook(req.params.bookId, book, function(result){
-        if(result === 422) return stndResponse.unprocessableEntity(res);
+        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         if(result === 404) return stndResponse.notFound(res);
         res.json(result);
     })
