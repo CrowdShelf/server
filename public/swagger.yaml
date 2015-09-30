@@ -122,8 +122,6 @@ paths:
       responses:
         '200':
           description: OK
-          schema:
-            $ref: '#/definitions/Book'
         '404':
           $ref: '#/responses/notFound'
         '422':
