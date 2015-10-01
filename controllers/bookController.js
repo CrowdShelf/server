@@ -6,15 +6,19 @@
 var Joi = require('joi');
 
 var Books = require('../models/book'),
+    userController = require('./userController'),
     stndResponse = require('../helpers/standardResponses.js');
 
 var create = function(req, res){
     var book = req.body;
-    Books.insert(book, function(result){ // Not there, so it can be created
-        if(result.error) return res.json(result.error); // Just some error
-        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
-        if(result === 500) return stndResponse.internalError(res);
-        return res.json(result);
+    userController.isValidUser(req.body.owner, function (result) {
+        if(!result) return stndResponse.unprocessableEntity(res, {error: 'Invalid userID used.'});
+        Books.insert(book, function(result){ // Not there, so it can be created
+            if(result.error) return res.json(result.error); // Just some error
+            if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
+            if(result === 500) return stndResponse.internalError(res);
+            return res.json(result);
+        });
     });
 };
 

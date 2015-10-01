@@ -20,7 +20,8 @@ var remove = function (req, res) {
     var id = req.params.userId;
     if(!ObjectId.isValid(id)) return stndResponse.unprocessableEntity(res, {error: 'Invalid objectId'});
     Users.removeUser(id, function (result) {
-        res.json(result);
+        if(result.ok === 1 && result.n === 1 ) return stndResponse.resourceDeleted(res);
+        return stndResponse.notFound(res);
     });
 };
 
@@ -52,6 +53,13 @@ var login = function (req, res) {
     });
 };
 
+var isValidUser = function (userID, callback) {
+    Users.findWithID(userID, function (result) {
+        if(!result) return callback(false); // Null, not found - not valid
+        if(!result.error && result !== 404) return callback(true);
+        return callback(false);
+    });
+};
 
 
 
@@ -62,5 +70,6 @@ module.exports = {
     remove: remove,
     getUser: getUser,
     getAllUsers: getAllUsers,
-    login: login
+    login: login,
+    isValidUser: isValidUser
 };
