@@ -13,11 +13,10 @@ var ObjectId = require('mongodb').ObjectID;
 
 var create = function(req, res){
     var crowd = req.body;
-    delete crowd._id; // Can get a value from clients
+    delete crowd._id; // Can get a value from clients, but it's not used as Mongo gives the ID
     if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
-    if (!isValidCrowdObject(crowd)) return res.sendStatus(422);
+    if (Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, Crowds.isValid(crowd).error);
     Crowds.findWithName(crowd.name, function(result){
-        if(result === 422) return stndResponse.unprocessableEntity(res);
         if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
         Crowds.insertCrowd(crowd, function(insertData){
             res.json(insertData);
@@ -82,9 +81,8 @@ var getCrowds = function(req, res){
     var name = req.query.name ? req.query.name : null,
         member = req.query.member ? req.query.member : null,
         owner = req.query.owner ? req.query.owner : null;
-    // return getAll(req, res);
     if(name && !member && !owner) return getWithName(req, res);
-    if(!name && member && !owner) return getWithMembers(req, res);
+    if(!name && member && !owner) return getWithMember(req, res);
     if(!name && !member && owner) return getWithOwner(req, res);
     if(name && member && !owner) return getWithNameAndMembers(req, res);
     if(!name && member && owner ) return getWithMembersAndOwner(req, res);
@@ -100,9 +98,10 @@ var getWithOwner = function (req, res) {
     });
 };
 
-var getWithMembers = function(req, res){
-    Crowds.findWithMembers(req.query.members, function(result){
-        res.json(result);
+var getWithMember = function(req, res){
+    Crowds.findWithMembers([req.query.member], function(result){
+        if(result.error) return res.json(result); // {error: err}
+        res.json(formatResultForClient(result));
     });
 };
 
@@ -126,6 +125,9 @@ var getWithNameMembersOwner = function (req, res) {
     });
 };
 
+var formatResultForClient = function (result) {
+    return {crowds: result}
+};
 
 var isValidCrowdObject = function(crowd){
     if (typeof crowd.owner === 'string'

@@ -25,7 +25,7 @@ var schema = Joi.object().keys({
 
 
 var insertCrowd = function(crowd, callback){
-    if(!isValid(crowd)) return callback(422);
+    if(!booleanIsValid(crowd)) return callback(422);
     Crowds.insertOne(crowd, function(err, result){
         callback(result.ops[0]);
     });
@@ -93,6 +93,7 @@ var findWithOwner = function(owner, callback){
 
 var findWithMembers = function(members, callback){
     Crowds.find({members: { $in: members }}).toArray(function(err, result){
+        if(err) return callback({error: err});
         callback(result);
     });
 };
@@ -125,10 +126,14 @@ var findWitNamehMembersOwner = function(name, members, owner, callback){
 };
 
 
-var isValid = function (crowd){
+var booleanIsValid = function (crowd){
     var res = Joi.validate(crowd, schema);
     if (!res.error) return true;
     return false;
+};
+
+var isValid = function (crowd) {
+    return Joi.validate(crowd, schema);
 };
 
 
