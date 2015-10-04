@@ -131,13 +131,16 @@ var getWithID = function(req, res){
 };
 
 var addRenter = function(req, res){
-    Books.addRenter(req.params.bookId, req.params.username, function(result){
-        if(result.error) {
-            return res
-                .status(404)
-                .send('Did not identify a book with that ID.');
-        }
-        return res.json(result);
+    userController.isValidUser(req.params.username, function (result) {
+        if(!result) return stndResponse.unprocessableEntity(res, {error: 'Invalid userID.'});
+        Books.addRenter(req.params.bookId, req.params.username, function (result) {
+            if (result.error) {
+                return res
+                    .status(404)
+                    .send('Did not identify a book with that ID.');
+            }
+            return res.json(result);
+        });
     });
 };
 
