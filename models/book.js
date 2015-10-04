@@ -131,6 +131,7 @@ var addRenter = function(bookId, renterId, callback) {
     },function(err, result){
         if(!result) return callback({error: err});
         findWithID(bookId, function(result){
+            if (result === 404) return callback({error: 'Invalid bookId'});
             callback(result)
         });
     });
@@ -143,6 +144,7 @@ var removeRenter = function(bookId, renterId, callback){
     }, function(err, result) {
         if(!result) return callback({error: err});
         findWithID(bookId, function(result){
+            if (result === 404) return callback({error: 'Invalid bookId'});
             callback(result)
         });
     });

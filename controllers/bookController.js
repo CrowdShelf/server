@@ -137,7 +137,7 @@ var addRenter = function(req, res){
                 .status(404)
                 .send('Did not identify a book with that ID.');
         }
-        res.json(result);
+        return res.json(result);
     });
 };
 
@@ -146,9 +146,9 @@ var removeRenter = function(req, res){
         if(result.error) {
             return res
                 .status(404)
-                .send('Did not identify a book with those parameteres. Check owner and ISBN.');
+                .send('Did not identify a book with that ID. ');
         }
-        res.json(result);
+        return res.json(result);
     });
 };
 
