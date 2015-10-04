@@ -22,6 +22,20 @@ var create = function(req, res){
     });
 };
 
+/*
+ * @description Checks if valid userId, sends stndResponse unproccesable if not.
+ * @param
+ * @returns callback(boolean)
+ */
+var checkForValidUserId = function (userId, res, callback) {
+    userController.isValidUser(userId, function (result) {
+        if (!result) {
+            callback(false);
+            stndResponse.unprocessableEntity(res, {error: 'Invalid userID used.'});
+        } else callback(true);
+    });
+};
+
 var update = function(req, res){
     var book = req.body;
     return Books.updateBook(req.params.bookId, book, function(result){
