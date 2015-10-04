@@ -11,8 +11,8 @@ var Books = require('../models/book'),
 
 var create = function(req, res){
     var book = req.body;
-    userController.isValidUser(req.body.owner, function (result) {
-        if(!result) return stndResponse.unprocessableEntity(res, {error: 'Invalid userID used.'});
+    checkForValidUserId(req.body.owner, res,function (result) {
+        if(!result) return; // not valid
         Books.insert(book, function(result){ // Not there, so it can be created
             if(result.error) return res.json(result.error); // Just some error
             if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
@@ -22,27 +22,16 @@ var create = function(req, res){
     });
 };
 
-/*
- * @description Checks if valid userId, sends stndResponse unproccesable if not.
- * @param
- * @returns callback(boolean)
- */
-var checkForValidUserId = function (userId, res, callback) {
-    userController.isValidUser(userId, function (result) {
-        if (!result) {
-            callback(false);
-            stndResponse.unprocessableEntity(res, {error: 'Invalid userID used.'});
-        } else callback(true);
-    });
-};
-
 var update = function(req, res){
     var book = req.body;
-    return Books.updateBook(req.params.bookId, book, function(result){
-        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
-        if(result === 404) return stndResponse.notFound(res);
-        res.json(result);
-    })
+    checkForValidUserId(book.owner, res, function (result) {
+        if(!result) return;
+        return Books.updateBook(req.params.bookId, book, function(result){
+            if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
+            if(result === 404) return stndResponse.notFound(res);
+            res.json(result);
+        });
+    });
 };
 
 var remove = function (req, res) {
@@ -145,8 +134,8 @@ var getWithID = function(req, res){
 };
 
 var addRenter = function(req, res){
-    userController.isValidUser(req.params.username, function (result) {
-        if(!result) return stndResponse.unprocessableEntity(res, {error: 'Invalid userID.'});
+    checkForValidUserId(req.params.username, res, function (result) {
+        if(!result) return; // Not valid
         Books.addRenter(req.params.bookId, req.params.username, function (result) {
             if (result.error) {
                 return res
@@ -175,17 +164,23 @@ var getAll = function(req, res){
     });
 };
 
-
-
-var addUsersToBooks = function(listOfBooks){
-    for (var i = 0; i < listOfBooks.length; i++){
-        var book = listOfBooks[i];
-        var userObjects = [];
-        for (var j = 0; book.rentedTo.length; j++){
-
-        }
-    }
+/*
+ * checkForValidUserId
+ * @description Checks if valid userId, sends stndResponse unproccesable if not.
+ * @param String userId
+ * @param Object res
+ * @param function callback
+ * @returns callback(boolean)
+ */
+var checkForValidUserId = function (userId, res, callback) {
+    userController.isValidUser(userId, function (result) {
+        if (!result) {
+            callback(false);
+            stndResponse.unprocessableEntity(res, {error: 'Invalid userID.'});
+        } else callback(true);
+    });
 };
+
 
 var formatResultForClient = function (result) {
     return {books: result}
