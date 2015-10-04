@@ -100,9 +100,7 @@ var getBooksOfOwnerRentedTo = function(req, res){
 var getWithISBN = function(req, res){
     var isbn = req.query.isbn;
     Books.findWithISBN(isbn, function(result){
-        if (result === 404){
-            return res.sendStatus(404);  // not found
-        }
+        if (result === 404) result = []; // Nothing found
         res.json(formatResultForClient(result));
     });
 };
@@ -110,7 +108,7 @@ var getWithISBN = function(req, res){
 var getBooksOfOwner = function (req, res){
     var owner = req.query.owner;
     Books.findWithOwner(owner, function(result){
-        if (result === 404) return res.sendStatus(404);
+        if (result === 404) result = []; // Nothing found
         res.json(formatResultForClient(result));
     });
 };
@@ -119,7 +117,7 @@ var getWithISBNAndOwner = function(req, res){
     var isbn = req.query.isbn;
     var owner = req.query.owner;
     Books.findWithISBNAndOwner(isbn, owner, function(result){
-        if (result === 404) return res.sendStatus(404);
+        if (result === 404) result = []; // Nothing found
         res.json(formatResultForClient(result));
     });
 };
