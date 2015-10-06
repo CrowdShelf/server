@@ -35,7 +35,9 @@ var update = function (req, res) {
 var getUser = function(req, res){
     var id = req.params.userId;
     Users.findWithID(id, function(result){
-        res.json(result);
+        if(result.error) return res.json({error: result.error})
+        if(result === 404) return stndResponse.notFound(res);
+        return res.json(result);
     });
 };
 
@@ -60,9 +62,6 @@ var isValidUser = function (userID, callback) {
         return callback(false);
     });
 };
-
-
-
 
 module.exports = {
     create: create,

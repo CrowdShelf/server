@@ -46,9 +46,9 @@ var updateUser = function(id, newUser, callback){
 
 var findWithID  = function(id, callback){
     Users.findOne({_id: ObjectId(id)}, function(err, result){
-        if(!err && !result) return callback(null);
-        if(!err) return callback(result);
-        return callback({error: err});
+        if(!err && !result) return callback(404); // NOt found
+        if(!err) return callback(result); // result
+        return callback({error: err}); // errors
     });
 };
 
