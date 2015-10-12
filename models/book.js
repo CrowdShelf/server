@@ -21,6 +21,7 @@ var schema = Joi.object().keys({
     _id: [Joi.objectId(), Joi.number().valid(-1)],
     owner: Joi.objectId(),
     isbn: Joi.string(),
+    googleId: Joi.string(),
     rentedTo: [Joi.objectId(), null],
     availableForRent: Joi.boolean()
 });
@@ -28,7 +29,7 @@ var schema = Joi.object().keys({
 schema = schema.requiredKeys('owner', 'isbn', 'rentedTo', 'availableForRent');
 
 var insertBook = function(book, callback){
-    if(!isValid(book)) return callback(422);
+    if(isValid(book).error) return callback({validationError: isValid(book).error});
     delete book._id;
     Books.insert(book, function(err, result){
         if(err) return callback({error: err});
@@ -38,7 +39,7 @@ var insertBook = function(book, callback){
 };
 
 var updateBook = function(id, newBook, callback){
-    if(!isValid(newBook)) return callback(422);
+    if(isValid(newBook).error) return callback({validationError: isValid(newBook).error});
     delete newBook._id; // If it's there, it shouldn't be set by anyting
     Books.update({_id: ObjectId(id)}, {$set: newBook},
         function(err, result){
@@ -76,8 +77,8 @@ var findWithOwner = function(owner, callback){
 };
 
 
-var findRentedBy = function(username, callback){
-    Books.find({rentedTo: username}).toArray(function(err, result){
+var findRentedTo = function(rentee, callback){
+    Books.find({rentedTo: rentee}).toArray(function(err, result){
         if (!result) return callback(404);
         callback(result);
     });
@@ -85,35 +86,36 @@ var findRentedBy = function(username, callback){
 
 var findAll = function(callback){
     Books.find({}).toArray(function(err, result){
-        callback(result);
+        return callback(result);
     });
 };
 
 var findWithISBNAndOwner = function(isbn, owner, callback){
     Books.findOne({isbn: isbn, owner: owner}, function(err, result){
         if (result === null) return callback(404);
-        callback(result);
+        return callback(result);
     });
 };
 
 var findWithOwnerAndRentedTo = function (owner, rentee, callback) {
     Books.find({owner: owner, rentedTo: rentee}).toArray(function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+        if(!err) return callback(result);
+        return callback({error: err})
     })
 };
 
 var findWithISBNRentedTo = function (isbn, rentee, callback) {
-    findMultiple({owner:owner, rentedTo: rentee}, function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+    if(!ObjectId.isValid(rentee)) return callback(422);
+    findMultiple({isbn: isbn, rentedTo: rentee}, function (err, result) {
+        if(!err) return callback(result);
+        return callback({error: err})
     });
 };
 
 var findWithISBNOwnedByRentedTo = function (isbn, owner, rentee, callback) {
     findMultiple({isbn: isbn, owner: owner, rentedTo: rentee}, function (err, result) {
-        if(!err) callback(result);
-        callback({error: err})
+        if(!err) return callback(result);
+        return callback({error: err})
     })
 };
 
@@ -122,34 +124,37 @@ var findMultiple = function (findObj, callback) {
     Books.find(findObj).toArray(callback);
 };
 
-var addRenter = function(id, renter, callback) {
+var addRenter = function(bookId, renterId, callback) {
     // @TODO check if already a renter
-    Books.updateOne({_id: ObjectId(id)}, {
-        $push: {rentedTo: renter }
+    Books.update({_id: ObjectId(bookId)}, {
+        $set: {rentedTo: renterId }
     },function(err, result){
-        if(result.matchedCount === 0) return callback(404);
-        findWithID(id, function(result){
+        if(!result) return callback({error: err});
+        findWithID(bookId, function(result){
+            if (result === 404) return callback({error: 'Invalid bookId'});
             callback(result)
         });
     });
 };
 
-var removeRenter = function(id, renter, callback){
-    Books.updateOne({_id: ObjectId(id)}, {
-        $pull: {rentedTo: renter }
+var removeRenter = function(bookId, renterId, callback){
+    // @TODO check if renterId is the renter of the bookId
+    Books.update({_id: ObjectId(bookId)}, {
+        $set: {rentedTo: null }
     }, function(err, result) {
-        if(result.matchedCount === 0) return callback(404);
-        findWithID(id, function(result){
+        if(!result) return callback({error: err});
+        findWithID(bookId, function(result){
+            if (result === 404) return callback({error: 'Invalid bookId'});
             callback(result)
         });
     });
 };
-
-
-
-
 
 var isValid = function (book){
+    return Joi.validate(book, schema);
+};
+
+var booleanIsValid = function (book) {
     var res = Joi.validate(book, schema);
     if (!res.error) return true;
     return false;
@@ -163,12 +168,12 @@ module.exports = {
     removeRenter: removeRenter,
     findWithISBN: findWithISBN,
     findWithOwner: findWithOwner,
-    findRentedBy: findRentedBy,
+    findRentedTo: findRentedTo,
     findWithISBNAndOwner: findWithISBNAndOwner,
     findWithISBNOwnedByRentedTo: findWithISBNOwnedByRentedTo,
     findWithISBNRentedTo: findWithISBNRentedTo,
     findWithOwnerAndRentedTo: findWithOwnerAndRentedTo,
     findAll: findAll,
     findWithID: findWithID,
-    isValid: isValid
+    isValid: booleanIsValid
 };

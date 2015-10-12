@@ -22,7 +22,7 @@ mongo.connect(url, function(err, db) {
 
 var insertUser = function(user, callback){
     delete user._id;
-    if(!isValid(user)) return callback(422);
+    if(isValid(user).error) return callback({validationError: isValid(user).error});
     Users.insert(user, function(err, result){
         if(err) return callback({error: err});
         if(result.ops) return callback(result.ops[0]);
@@ -37,7 +37,7 @@ var removeUser = function(id, callback){
 };
 
 var updateUser = function(id, newUser, callback){
-    if(!isValid(user)) return callback(422);
+    if(isValid(user).error) return callback({validationError: isValid(user).error});
     Users.updateOne({_id: ObjectId(id)}, {$set: newUser}, function(err, result){
         if(!result) return callback(404);
         return callback(result);
@@ -46,15 +46,28 @@ var updateUser = function(id, newUser, callback){
 
 var findWithID  = function(id, callback){
     Users.findOne({_id: ObjectId(id)}, function(err, result){
+        if(!err && !result) return callback(404); // NOt found
+        if(!err) return callback(result); // result
+        return callback({error: err}); // errors
+    });
+};
+
+var findAll = function (callback) {
+    Users.find({}).toArray(function (err, result) {
         if(!err) callback(result);
-        else callback(err);
+    });
+};
+
+var findWithUsername = function (username, callback) {
+    Users.findOne({username: username}, function (err, result) {
+        if(err) return callback({error: err});
+        if(!result) return callback(404);
+        return callback(result);
     });
 };
 
 var isValid = function (user){
-    var res = Joi.validate(user, schema);
-    if (!res.error) return true;
-    return false;
+    return Joi.validate(user, schema);
 };
 
 
@@ -62,5 +75,7 @@ module.exports = {
     insertUser: insertUser,
     removeUser: removeUser,
     updateUser: updateUser,
-    findWithID: findWithID
+    findWithID: findWithID,
+    findWithUsername: findWithUsername,
+    findAll: findAll
 };

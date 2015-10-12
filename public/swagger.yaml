@@ -79,7 +79,9 @@ paths:
           schema:
             $ref: '#/definitions/Book'
         '422':
-          $ref: '#/responses/unprocessableEntity'
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/ValidationError'
   '/books/{bookID}':
     get:
       tags:
@@ -122,8 +124,6 @@ paths:
       responses:
         '200':
           description: OK
-          schema:
-            $ref: '#/definitions/Book'
         '404':
           $ref: '#/responses/notFound'
         '422':
@@ -160,7 +160,9 @@ paths:
         '409':
           description: Conflict with another book.
         '422':
-          $ref: '#/responses/unprocessableEntity'
+          description: Unprocesable Entity
+          schema:
+            $ref: '#/definitions/ValidationError'
   '/books/{bookID}/renter/{userID}':
     put:
       tags:
@@ -187,8 +189,6 @@ paths:
           description: Conflict
         '422':
           $ref: '#/responses/unprocessableEntity'
-        '550':
-          description: 'esso skal vi ha permission her'
     delete:
       tags:
         - books
@@ -391,6 +391,23 @@ paths:
       responses:
         '200':
           description: OK
+        '422':
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/ValidationError'
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: 'Get all users'
+      operationId: getUsers
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserList'
   '/users/{userID}':
     get:
       tags:
@@ -413,6 +430,28 @@ paths:
             $ref: '#/definitions/User'
         '404':
           $ref: '#/responses/notFound'
+  /login:
+    post:
+      tags:
+        - users
+      summary: Log user in
+      description: Returns the data for the user logged in
+      operationId: login
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Object with username and password
+          required: true
+          schema:
+            $ref: '#/definitions/UserToLogIn'
+      responses:
+        '200':
+          description: OK
+
 definitions:
   User:
     type: object
@@ -425,6 +464,14 @@ definitions:
       name:
         type: string
       email:
+        type: string
+  UserToLogIn:
+    type: object
+    description: The object to POST when you want to log in
+    properties:
+      username:
+        type: string
+      password:
         type: string
   UserList:
     type: object
@@ -481,6 +528,42 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Crowd'
+  ValidationError:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the error, e.g. ValidationError
+        details:
+          type: array
+          items:
+            $ref: '#/definitions/ValidationErrorDetail'
+        _object:
+          type: object
+          description: The original object that was sent to the server
+
+  ValidationErrorDetail:
+    type: object
+    properties:
+      message:
+        type: string
+        description: A message describing the validation error.
+      path:
+        type: string
+        description: Path to the problem value
+      type:
+        type: string
+        description: Type of error
+      context:
+        type: object
+        properties:
+          value:
+            description: The problem value
+          key:
+            type: string
+            description: The object key where we experienced the problem.
+
+
 responses:
   notFound:
     description: Resource not found.
@@ -488,3 +571,4 @@ responses:
     description: 'Unprocessable entity: Something wrong with form data, e.g. a missing field.'
   permissionDenied:
     description: 'You do not have permission to modify this resource.'
+

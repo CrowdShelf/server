@@ -44,7 +44,11 @@ function setup(app){
     app.route('/api/users/:userId')
         .get(userController.getUser)
         .delete(userController.remove);
-    app.post('/api/users', userController.create);
+    app.route('/api/users')
+        .post(userController.create)
+        .get(userController.getAllUsers);
+
+    app.post('/api/login', userController.login);
 
     app.route('/api/crowds')
         .post( crowdController.create)
