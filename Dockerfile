@@ -1,4 +1,4 @@
-# Base Docker-image on centos
+# Base Docker-image on Ubuntu
 FROM    ubuntu:latest
 
 MAINTAINER M.Y. Stein-Otto Svorstol <stein-otto@svorstol.com>
@@ -13,37 +13,21 @@ RUN apt-get update && apt-get install -y mongodb-org curl
 # Create the MongoDB data directory
 RUN mkdir -p /data/db
 
-# Expose port 27017 from the container to the host so you can modify it if you want with a shell or whatever
+# Expose port 27017 from the container to the host
 EXPOSE 27017
 
-# Set usr/bin/mongod as the dockerized entry-point application
-ENTRYPOINT ["/usr/bin/mongod"]
+# Environment varaible for the node-server
+ENV MONGODB="mongodb://localhost:27017/test"
 
-# Replace shell with bash so we can source files
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-# NVM and node
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION stable
-
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash \
-    && source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
-
+# Install NodeJS
+RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
+RUN apt-get update && apt-get install -y nodejs
 
 # Copy project into Docker-folder /src
 COPY . /src
-# Install dependencies
-RUN cd /src && nvm use default && npm install
 
-# Server runs on 3000
+# Server runs on port 3000
 EXPOSE 3000
 
-# CMD for starting server 
-CMD ["node", "/src/index.js"]
-
+# Install dependencies and start server and database
+CMD cd /src && sh start.sh
