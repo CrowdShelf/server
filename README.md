@@ -37,6 +37,9 @@ The server is currently running on Heroku. It has CI with the `master`-branch. Y
 
 There's also CI on the `dev`-branch, which is the latest version of the API. You'll find it on `crowdshelf-dev.herokuapp.com/api`
 
+### Docker
+Build the image with `docker build -t crowdshelf/server .`, and run it with  `docker run crowdshelf/server`.
+
 ## Data model and API
 Latest API definition can be found on our servers:
 
