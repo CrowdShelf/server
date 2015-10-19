@@ -14,6 +14,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 var Books;
 mongo.connect(url, function(err, db) {
     if(err) console.log(err);
+    db.createCollection('Books');
     Books = db.collection('Books');
 });
 

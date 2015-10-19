@@ -17,6 +17,7 @@ var schema = Joi.object().keys({
 var Users;
 mongo.connect(url, function(err, db) {
     if(err) console.log(err);
+    db.createCollection('Users');
     Users = db.collection('Users');
 });
 

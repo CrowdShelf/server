@@ -14,6 +14,7 @@ var url = process.env.MONGODB || 'mongodb://localhost:27017/test';
 var Crowds;
 mongo.connect(url, function(err, db) {
     if(err) console.log(err);
+    db.createCollection('Crowds');
     Crowds = db.collection('Crowds');
 });
 
