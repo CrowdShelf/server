@@ -7,4 +7,4 @@ services:
 
 before_install:
   - docker build -t crowdshelf/server .
-  - docker run crowdshelf/server
+  - docker run --net host crowdshelf/server
