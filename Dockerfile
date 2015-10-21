@@ -24,7 +24,7 @@ RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # Git-clone project
-git clone https://github.com/CrowdShelf/server.git
+RUN git clone https://github.com/CrowdShelf/server.git
 
 # Server runs on port 3000
 EXPOSE 3000
