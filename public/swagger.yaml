@@ -6,7 +6,7 @@ info:
   title: CrowsShelf API
   contact:
     url: www.github.com/crowdshelf
-    name: 'http://www.github.crowdshelf.io'
+    name: 'http://www.github.crowdshelf.io' 
 host: crowdshelf.xyz
 basePath: /api
 schemes:
