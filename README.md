@@ -38,6 +38,8 @@ The server is currently running on Heroku. It has CI with the `master`-branch. Y
 There's also CI on the `dev`-branch, which is the latest version of the API. You'll find it on `crowdshelf-dev.herokuapp.com/api`
 
 ### Docker
+A Docker-image is avaiable on the Docker Hub. You can get it with `docker pull crowdshelf/server`.
+
 Build the image with `docker build -t crowdshelf/server .`, and run it with  `docker run --net host crowdshelf/server`.
 The ports `3000` and `27017` will be exposed. You can reach the API on `localhost:3000/api`.
 
