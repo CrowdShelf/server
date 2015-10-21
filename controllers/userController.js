@@ -43,7 +43,14 @@ var getUser = function(req, res){
 };
 
 var getAllUsers = function (req, res) {
-    Users.findAll(function (result) {
+    if (req.query.username){
+        return Users.findWithUsername(req.query.username, function (result) {
+            if(result.error) return res.json(result.error);
+            if(result === 404) return stndResponse.notFound(res);
+            res.json({users: [result] } );
+        });
+    }
+    Users.findAll(function (result) { // No query
         res.json({users: result});
     });
 };
