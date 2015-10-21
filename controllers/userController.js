@@ -47,7 +47,7 @@ var getAllUsers = function (req, res) {
         return Users.findWithUsername(req.query.username, function (result) {
             if(result.error) return res.json(result.error);
             if(result === 404) return stndResponse.notFound(res);
-            res.json(result);
+            res.json({users: [result] } );
         });
     }
     if(req.query) return stndResponse.notImplemented(res); // Query on anything else but username
