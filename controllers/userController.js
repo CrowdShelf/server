@@ -50,7 +50,6 @@ var getAllUsers = function (req, res) {
             res.json({users: [result] } );
         });
     }
-    if(req.query) return stndResponse.notImplemented(res); // Query on anything else but username
     Users.findAll(function (result) { // No query
         res.json({users: result});
     });
