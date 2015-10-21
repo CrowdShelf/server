@@ -7,7 +7,7 @@ info:
   contact:
     url: www.github.com/crowdshelf
     name: 'http://www.github.crowdshelf.io'
-host: crowdshelf-dev.herokuapp.com
+host: crowdshelf.xyz
 basePath: /api
 schemes:
   - http
