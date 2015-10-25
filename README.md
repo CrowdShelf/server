@@ -19,15 +19,14 @@ Any questions? Feel free to ask!
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
 4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
-5. You'll also need a SMTP-server. You can set this up locally or wherever you want, then export the following environment variables: `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER` and `EMAIL_PASS`.
-6. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
+5. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
 
 ## Project structure
 
     server\
+        api\ - Setup methods for legacy APIs
         controllers\ - Controllers for handling requsts
         models\ - Models that handle database-operations
-        helpers\ - Helper-services with methods used throughout the solution
         index.js - Starts a server
         server.js - Sets the server up, defines port etc.
         router.js - Sets the routing up by setting allowed headers etc. and calling API setup-methods 
@@ -40,9 +39,7 @@ There's also CI on the `dev`-branch, which is the latest version of the API. You
 
 ### Docker
 A Docker-image is avaiable on the [Docker Hub](https://hub.docker.com/r/crowdshelf/server/). 
-You can get it with `docker pull crowdshelf/server`, and run it with  
-`docker run --net host -e "EMAIL_HOST=yourhost" -e "EMAIL_HOST=yourport" -e "EMAIL_USER=youruser" -e "EMAIL_PASS=yourpass" crowdshelf/server`.
-The `-e`-parameter sets the environmental variables for your e-mail serivce.
+You can get it with `docker pull crowdshelf/server`, and run it with  `docker run --net host crowdshelf/server`.
 This will expose the ports `3000` and `27017` locally, which means you can reach the API under `localhost:3000/api`.
 
 You can also build the image yourself with `docker build -t crowdshelf/server .`
