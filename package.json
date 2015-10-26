@@ -18,6 +18,8 @@
   "homepage": "https://github.com/CrowdShelf/server#readme",
   "dependencies": {
     "body-parser": "^1.13.3",
+    "ejs": "^2.3.4",
+    "email-templates": "^2.0.1",
     "express": "^4.13.3",
     "joi": "^6.7.0",
     "joi-objectid": "^2.0.0",

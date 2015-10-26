@@ -1,6 +1,7 @@
 /**
  * Created by esso on 24.10.15.
  */
+'use strict';
 var nodemailer = require('nodemailer'),
     smtpTransport = require('nodemailer-smtp-transport');
 
@@ -25,11 +26,12 @@ var sendEmail = function (recipents, subject, content, callback) {
         from: 'CrowdShelf <noreply@svorstol.com>', // sender address
         to: recipents.join(), // list of receivers
         subject:  subject, // Subject line
-        html: content // html body
+        html: content.html, // html body
+        text: content.text
     };
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
-            callback(error)
+            return callback({error: error})
         }
         callback(info.response);
     });

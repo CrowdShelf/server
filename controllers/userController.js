@@ -5,7 +5,8 @@ var Users = require('../models/user.js');
 
 var ObjectId = require('mongodb').ObjectID;
 
-var stndResponse = require('../helpers/standardResponses.js');
+var stndResponse = require('../helpers/standardResponses.js'),
+    emailController = require('./emailController');
 
 var create = function(req, res){
     Users.insertUser(req.body, function(result){ // Not there, so it can be created
