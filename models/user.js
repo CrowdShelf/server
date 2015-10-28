@@ -10,7 +10,8 @@ var schema = Joi.object().keys({
     _id: Joi.number().valid(-1).optional(),
     name: Joi.string().required(),
     username: Joi.string().required(),
-    email: Joi.string().email().required()
+    email: Joi.string().email().required(),
+    password: Joi.string().optional()
 });
 
 

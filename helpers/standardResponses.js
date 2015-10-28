@@ -42,6 +42,15 @@ var resourceDeleted = function(res){
 };
 
 /*
+ * invalidToken
+ * @param {res}
+ * @description 401 Unauthorized
+ */
+var invalidToken = function (res) {
+    return res.status(401).send('Token expired or invalid.');
+};
+
+/*
  * internalError
  * @param {res}
  * @description Server experienced unknown error
@@ -53,6 +62,7 @@ var internalError = function (res) {
 module.exports = {
     notImplemented: notImplemented,
     notFound: notFound,
+    invalidToken: invalidToken,
     unprocessableEntity: unprocessableEntity,
     resourceDeleted: resourceDeleted,
     internalError: internalError
