@@ -6,7 +6,8 @@ var Users = require('../models/user.js');
 var ObjectId = require('mongodb').ObjectID;
 
 var stndResponse = require('../helpers/standardResponses.js'),
-    emailController = require('./emailController');
+    emailController = require('./emailController'),
+    tokens = require('../models/tokens');
 
 var create = function(req, res){
     Users.insertUser(req.body, function(result){ // Not there, so it can be created
@@ -58,9 +59,11 @@ var getAllUsers = function (req, res) {
 
 var login = function (req, res) {
     Users.findWithUsername(req.body.username, function (result) {
-        if(result.error) return res.json(result.error);
+        if(result.error) return res.json({error:  result.error});
         if(result === 404) return stndResponse.notFound(res);
-        res.json(result);
+        var user = result;
+        user.token = tokens.generate().token; // generate token
+        return res.json(user);
     });
 };
 
