@@ -21,12 +21,12 @@ function setup(app){
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.header('X-API-VERSION', 2);
+        res.header('X-API-VERSION', );
         console.log(req.method+ '-request to: ' + req.url);
         next();
     });
 
-    app.use('/api', express.static('public'));
+    app.use('/api', express.static('public')); // Swagger location
 
     // Book API v2: /books
     app.route('/api/books')
@@ -49,6 +49,7 @@ function setup(app){
         .get(userController.getAllUsers);
 
     app.post('/api/login', userController.login);
+    app.post('/api/login/:username/forgotpassword', userController.forgotPassword);
 
     app.route('/api/crowds')
         .post( crowdController.create)
@@ -58,7 +59,6 @@ function setup(app){
         .get(crowdController.getWithID)
         .put(crowdController.update)
         .delete(crowdController.remove);
-
 
     app.route('/api/crowds/:crowdId/members/:username')
         .put(crowdController.addMember)

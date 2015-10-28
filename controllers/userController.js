@@ -72,6 +72,10 @@ var isValidUser = function (userID, callback) {
     });
 };
 
+var forgotPassword = function (req, res) {
+    return stndResponse.notImplemented(res);
+};
+
 module.exports = {
     create: create,
     update: update,
@@ -79,5 +83,6 @@ module.exports = {
     getUser: getUser,
     getAllUsers: getAllUsers,
     login: login,
+    forgotPassword: forgotPassword,
     isValidUser: isValidUser
 };
