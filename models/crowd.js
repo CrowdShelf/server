@@ -49,7 +49,7 @@ var removeCrowd = function(id, callback){
 
 var addMember = function(crowdId, username, callback){
     Crowds.updateOne({_id: ObjectId(crowdId)},{
-        $push: {members: username }
+        $addToSet: {members: username }
     }, function(err, result){
         if(!result) return callback(404);
         callback(result);
