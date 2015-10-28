@@ -21,7 +21,7 @@ function setup(app){
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.header('X-API-VERSION', );
+        res.header('X-API-VERSION', 2);
         console.log(req.method+ '-request to: ' + req.url);
         next();
     });
