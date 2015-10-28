@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/CrowdShelf/server#readme",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.13.3",
     "ejs": "^2.3.4",
     "email-templates": "^2.0.1",
