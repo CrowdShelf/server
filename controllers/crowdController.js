@@ -14,8 +14,8 @@ var ObjectId = require('mongodb').ObjectID;
 var create = function(req, res){
     var crowd = req.body;
     delete crowd._id; // Can get a value from clients, but it's not used as Mongo gives the ID
+    if(Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, {error: Crowds.isValid(crowd).error});
     if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
-    if (Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, Crowds.isValid(crowd).error);
     Crowds.findWithName(crowd.name, function(result){
         if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
         Crowds.insertCrowd(crowd, function(insertData){
@@ -129,13 +129,6 @@ var formatResultForClient = function (result) {
     return {crowds: result}
 };
 
-var isValidCrowdObject = function(crowd){
-    if (typeof crowd.owner === 'string'
-        && typeof crowd.members === 'object'
-        && typeof crowd.name === 'string'
-        && Object.keys(crowd).length === 3) return true;
-    return false;
-};
 
 module.exports = {
     create: create,
