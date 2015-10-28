@@ -48,10 +48,14 @@ var getWithName = function(req, res){
 var addMember = function(req, res){
     var userId = req.params.userId;
     var crowdId = req.params.crowdId;
-    Crowds.addMember(crowdId, userId, function(result){
-        if(result === 404) return res.sendStatus(404);
-        res.status(200).send('Member added.');
+    userController.isValidUser(userId, function (result) {
+        if(!result) return res.json({error: 'Invalid userID.'});
+        Crowds.addMember(crowdId, userId, function(result){
+            if(result === 404) return res.sendStatus(404);
+            res.status(200).send('Member added.');
+        });
     });
+
 };
 
 var removeMember = function(req, res){
