@@ -21,10 +21,13 @@
     "ejs": "^2.3.4",
     "email-templates": "^2.0.1",
     "express": "^4.13.3",
+    "hat": "0.0.3",
     "joi": "^6.7.0",
     "joi-objectid": "^2.0.0",
     "mongodb": "^2.0.42",
     "nodemailer": "^1.8.0",
-    "nodemailer-smtp-transport": "^1.0.3"
+    "nodemailer-smtp-transport": "^1.0.3",
+    "passport": "^0.3.0",
+    "passport-unique-token": "^0.1.3"
   }
 }
