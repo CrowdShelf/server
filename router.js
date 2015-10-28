@@ -60,7 +60,7 @@ function setup(app){
         .put(crowdController.update)
         .delete(crowdController.remove);
 
-    app.route('/api/crowds/:crowdId/members/:username')
+    app.route('/api/crowds/:crowdId/members/:userId')
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
 }

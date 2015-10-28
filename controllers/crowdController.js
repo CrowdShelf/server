@@ -46,9 +46,9 @@ var getWithName = function(req, res){
 };
 
 var addMember = function(req, res){
-    var username = req.params.username;
+    var userId = req.params.userId;
     var crowdId = req.params.crowdId;
-    Crowds.addMember(crowdId, username, function(result){
+    Crowds.addMember(crowdId, userId, function(result){
         if(result === 404) return res.sendStatus(404);
         res.status(200).send('Member added.');
     });
@@ -56,8 +56,8 @@ var addMember = function(req, res){
 
 var removeMember = function(req, res){
     var crowdId = req.params.crowdId,
-        username = req.params.username;
-    Crowds.removeMember(crowdId, username, function(result){
+        userId = req.params.userId;
+    Crowds.removeMember(crowdId, userId, function(result){
         if(result === 404) return res.sendStatus(404);
         res.status(200).send('Member removed.');
     });
