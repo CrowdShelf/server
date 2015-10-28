@@ -6,13 +6,19 @@ var Users = require('../models/user.js');
 var ObjectId = require('mongodb').ObjectID;
 
 var stndResponse = require('../helpers/standardResponses.js'),
-    emailController = require('./emailController');
+    emailController = require('./emailController'),
+    passwordController = require('./passwordController'),
+    tokens = require('../models/tokens');
 
 var create = function(req, res){
-    Users.insertUser(req.body, function(result){ // Not there, so it can be created
+    var user = req.body;
+    if(!user.password) return stndResponse.unprocessableEntity(res, {error: 'Missing password.'});
+    user.password = passwordController.hash(user.password);
+    Users.insertUser(user, function(result){ // Not there, so it can be created
         if(result.error) return res.json(result.error); // Just some error
         if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         if(result === 500) return stndResponse.internalError(res);
+        delete result.password; // remove hash from object
         return res.json(result);
     });
 };
@@ -58,9 +64,17 @@ var getAllUsers = function (req, res) {
 
 var login = function (req, res) {
     Users.findWithUsername(req.body.username, function (result) {
-        if(result.error) return res.json(result.error);
+        if(result.error) return res.json({error:  result.error});
         if(result === 404) return stndResponse.notFound(res);
-        res.json(result);
+        var user = result;
+        passwordController.isValid(req.body.password, result.password, function (result) {
+            if(!result){ // Wrong password
+                return res.status(401).send('Wrong password.');
+            }
+            delete user.password; // Remove password from return object
+            user.token = tokens.generate().token; // generate token
+            return res.json(user);
+        })
     });
 };
 
