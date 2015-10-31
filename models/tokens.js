@@ -12,7 +12,10 @@ mongo.connect(url, function(err, db) {
     if(err) console.log(err);
     db.createCollection('Tokens');
     Tokens = db.collection('Tokens');
+    removeExpiredTokens();
 });
+
+var MINUTES_TOKEN_IS_VALID_FOR = 20;
 
 var removeToken  = function (token) {
     Tokens.remove({token: token}, {w:0});
@@ -20,13 +23,13 @@ var removeToken  = function (token) {
 
 /*
  * generate
- * @description Generates a new token with Hat, adds it to the db and gives
+ * @description Generates a new token and adds it to the db.
  * @returns A new token object
  */
 var generate = function () {
     var tokenObj = {
-        token: hat(),
-        expires: new Date()
+        token: hat(), // Random string from the hat-library
+        expires: new Date(new Date().getTime() + MINUTES_TOKEN_IS_VALID_FOR*60000)
     };
     Tokens.insertOne(tokenObj, {w: 0});
     return tokenObj;
@@ -42,6 +45,13 @@ var isValid = function (token, callback) {
             return callback(true);
         } // result
         return callback(false); // errors
+    });
+};
+
+var removeExpiredTokens = function () {
+    Tokens.removeMany({expires: {$lt: new Date()}}, function (err, result) {
+        if(err) console.log(err);
+        console.log(result.result);
     });
 };
 

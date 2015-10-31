@@ -50,6 +50,10 @@ var invalidToken = function (res) {
     return res.status(401).send('Token expired or invalid.');
 };
 
+var badRequest = function (res) {
+    return res.status(400).send('Invalid request.');
+};
+
 /*
  * internalError
  * @param {res}
@@ -65,5 +69,6 @@ module.exports = {
     invalidToken: invalidToken,
     unprocessableEntity: unprocessableEntity,
     resourceDeleted: resourceDeleted,
-    internalError: internalError
+    internalError: internalError,
+    badRequest: badRequest
 };

@@ -6,21 +6,26 @@ var Users = require('../models/user.js');
 var ObjectId = require('mongodb').ObjectID;
 
 var stndResponse = require('../helpers/standardResponses.js'),
-    emailController = require('./emailController'),
     passwordController = require('./passwordController'),
-    tokens = require('../models/tokens');
+    emailController = require('./emailController'),
+    tokens = require('../models/tokens'),
+    forgottenPasswordKeys = require('../models/forgottenPasswordKeys');
 
 var create = function(req, res){
     var user = req.body;
     if(!user.password) return stndResponse.unprocessableEntity(res, {error: 'Missing password.'});
-    user.password = passwordController.hash(user.password);
-    Users.insertUser(user, function(result){ // Not there, so it can be created
-        if(result.error) return res.json(result.error); // Just some error
-        if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
-        if(result === 500) return stndResponse.internalError(res);
-        delete result.password; // remove hash from object
-        return res.json(result);
+    //@TODO check if username and e-mail is available
+    passwordController.hash(user.password, function (hash) {
+        user.password = hash;
+        Users.insertUser(user, function(result){
+            if(result.error) return res.json(result.error); // Just some error
+            if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
+            if(result === 500) return stndResponse.internalError(res);
+            delete result.password; // remove hash from object
+            return res.json(result);
+        });
     });
+
 };
 
 var remove = function (req, res) {
@@ -67,6 +72,7 @@ var login = function (req, res) {
         if(result.error) return res.json({error:  result.error});
         if(result === 404) return stndResponse.notFound(res);
         var user = result;
+        console.log(result);
         passwordController.isValid(req.body.password, result.password, function (result) {
             if(!result){ // Wrong password
                 return res.status(401).send('Wrong password.');
@@ -86,8 +92,51 @@ var isValidUser = function (userID, callback) {
     });
 };
 
+/*
+ * forgotPassword
+ * @description Generate a password key and e-mail it to specified user
+ */
 var forgotPassword = function (req, res) {
-    return stndResponse.notImplemented(res);
+    if(!req.params.username) return stndResponse.badRequest(res); // Need username to get a key
+    var key = forgottenPasswordKeys.generate(); // Needs a key
+    Users.findWithUsername(req.params.username, function (result) { // Get user and send e-mail
+        if(result == 404) return stndResponse.notFound(res);
+        if(result.error) return res.json({error: result.error});
+        emailController.sendForgotPasswordEmail(result, key, function (result) {
+            res.status(200).send('A key has been sent to your inbox. Not there? Contact us.');
+        });
+    });
+};
+
+var resetPassword = function(req, res){
+    if (!req.params.username || !req.body.key || !req.body.password) {
+        return stndResponse.badRequest(res); // Need key, username and new password
+    }
+    forgottenPasswordKeys.isValid(req.body.key, function (result) {
+        if(!result) return res.status(401).send('Invalid key.');  // Invalid
+        // Valid, hash new password and replace it
+        Users.findWithUsername(req.params.username, function (result) {
+            if(!result || result == 404) return stndResponse.notFound(res);
+            if(result.error) return res.json({error: result.error});
+            var user = result;
+            delete user._id; // Don't want this to be changed.
+            passwordController.hash(req.body.password, function (hash) {
+                user.password = hash;
+                console.log(user.password === hash);
+                console.log(result.password === hash);
+                console.log(result.password === user.password);
+                Users.updateUser(result._id, user, function (result) {
+                    if(result.error) {
+                        console.log(result);
+                        return stndResponse.internalError(res);
+                    }
+                    if(result.validationError) return stndResponse.unprocessableEntity(res, result);
+                    if(result === 404) return stndResponse.notFound(res); //
+                    return res.status(200).send('New password is set.');
+                });
+            });
+        });
+    });
 };
 
 module.exports = {
@@ -96,7 +145,8 @@ module.exports = {
     remove: remove,
     getUser: getUser,
     getAllUsers: getAllUsers,
+    isValidUser: isValidUser,
     login: login,
     forgotPassword: forgotPassword,
-    isValidUser: isValidUser
+    resetPassword: resetPassword
 };
