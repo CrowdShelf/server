@@ -21,13 +21,16 @@ var sendRegistrationEmail = function (recipent, callback) {
  * @param recipentUser {User}
  * @param callback(result)
  */
-var sendForgotPasswordEmail = function (recipentUser, callback) {
+var sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
     // @TODO extract info from recipent object and generate HTML from a template
     // @TODO pass template HTML and other stuff to emai.send()
-    templates.build('resetPassword', {key: 'topkek'}, function (result) {
+    templates.build('resetPassword', {key: resetKey}, function (result) {
         if(result.error) return callback({error: result.error});
         email.send([recipentUser.email], 'Forgot password', result, function (result) {
-            if(result.error) return callback({error: result.error});
+            if(result.error) {
+                console.log(result.error);
+                return callback({error: result.error})
+            }
             callback({success: result});
         })
     });

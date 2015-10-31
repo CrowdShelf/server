@@ -39,12 +39,15 @@ var removeUser = function(id, callback){
 };
 
 var updateUser = function(id, newUser, callback){
-    if(isValid(user).error) return callback({validationError: isValid(user).error});
+    if(isValid(newUser).error) return callback({validationError: isValid(user).error});
+    console.log(newUser);
     Users.updateOne({_id: ObjectId(id)}, {$set: newUser}, function(err, result){
+        if(err) return callback({error: err});
         if(!result) return callback(404);
         return callback(result);
     });
 };
+
 
 var findWithID  = function(id, callback){
     Users.findOne({_id: ObjectId(id)}, function(err, result){
