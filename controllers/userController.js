@@ -38,7 +38,8 @@ var remove = function (req, res) {
 };
 
 var update = function (req, res) {
-    Users.updateUser(req.params.userId, req.body, function (result) {
+    var id = ObjectId(req.params.userId);
+    Users.updateUser(id, req.body, function (result) {
         if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
         res.json(result);
     });
@@ -72,7 +73,6 @@ var login = function (req, res) {
         if(result.error) return res.json({error:  result.error});
         if(result === 404) return stndResponse.notFound(res);
         var user = result;
-        console.log(result);
         passwordController.isValid(req.body.password, result.password, function (result) {
             if(!result){ // Wrong password
                 return res.status(401).send('Wrong password.');
@@ -122,12 +122,8 @@ var resetPassword = function(req, res){
             delete user._id; // Don't want this to be changed.
             passwordController.hash(req.body.password, function (hash) {
                 user.password = hash;
-                console.log(user.password === hash);
-                console.log(result.password === hash);
-                console.log(result.password === user.password);
                 Users.updateUser(result._id, user, function (result) {
                     if(result.error) {
-                        console.log(result);
                         return stndResponse.internalError(res);
                     }
                     if(result.validationError) return stndResponse.unprocessableEntity(res, result);
