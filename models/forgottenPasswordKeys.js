@@ -28,7 +28,6 @@ var generate = function () {
 };
 
 var isValid = function (key, callback) {
-    return callback(true);
     ForgotPasswordKeys.findOne({key: key}, function(err, result){
         if(!err && !result) return callback(false); // NOt found
         if(!err) {
@@ -44,7 +43,6 @@ var isValid = function (key, callback) {
 var removeExpiredKeys = function () {
     ForgotPasswordKeys.removeMany({expires: {$lt: new Date()}}, function (err, result) {
         if(err) console.log(err);
-        console.log(result.result);
     });
 };
 
