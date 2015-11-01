@@ -51,7 +51,6 @@ var isValid = function (token, callback) {
 var removeExpiredTokens = function () {
     Tokens.removeMany({expires: {$lt: new Date()}}, function (err, result) {
         if(err) console.log(err);
-        console.log(result.result);
     });
 };
 
