@@ -7,11 +7,13 @@ var bcrypt = require('bcrypt');
  * hash
  * @description Takes a cleartext password and returns a hash of it
  * @param password
- * @returns hash
+ * @param callback(hash)
+ * @returns function(hash)
  */
-var hash = function (password) {
-    var salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
+var hash = function (password, callback) {
+    bcrypt.hash(password, 8, function(err, hash) {
+        if(!err) callback(hash);
+    });
 };
 /*
  * isValid

@@ -48,9 +48,7 @@ function setup(app){
         .post(userController.create)
         .get(userController.getAllUsers);
 
-    app.post('/api/login', userController.login);
-    app.post('/api/login/:username/forgotpassword', userController.forgotPassword);
-
+    // /crowds
     app.route('/api/crowds')
         .post( crowdController.create)
         .get(crowdController.getCrowds);
@@ -63,6 +61,11 @@ function setup(app){
     app.route('/api/crowds/:crowdId/members/:userId')
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
+
+    // Login and passwords
+    app.post('/api/login', userController.login);
+    app.post('/api/forgotpassword/:username', userController.forgotPassword);
+    app.post('/api/resetpassword/:username', userController.resetPassword);
 }
 
 exports.setup = setup;
