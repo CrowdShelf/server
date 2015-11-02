@@ -58,7 +58,7 @@ var findWithID  = function(id, callback){
 
 var findAll = function (callback) {
     Users.find({}).toArray(function (err, result) {
-        if(!err) callback(result);
+        if(!err) return callback(result);
     });
 };
 

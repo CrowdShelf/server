@@ -1,11 +1,12 @@
 /**
  * Created by esso on 02.09.15.
  */
-var Users = require('../models/user.js');
 
-var ObjectId = require('mongodb').ObjectID;
+var ObjectId = require('mongodb').ObjectID,
+    _ = require('underscore');
 
-var stndResponse = require('../helpers/standardResponses.js'),
+var Users = require('../models/user.js'),
+    stndResponse = require('../helpers/standardResponses.js'),
     passwordController = require('./passwordController'),
     emailController = require('./emailController'),
     tokens = require('../models/tokens'),
@@ -60,11 +61,11 @@ var getAllUsers = function (req, res) {
         return Users.findWithUsername(req.query.username, function (result) {
             if(result.error) return res.json(result.error);
             if(result === 404) return stndResponse.notFound(res);
-            res.json({users: [result] } );
+            res.json({users: cleanUserObjects([result])  } );
         });
     }
     Users.findAll(function (result) { // No query
-        res.json({users: result});
+        res.json({users: cleanUserObjects(result) });
     });
 };
 
@@ -133,6 +134,15 @@ var resetPassword = function(req, res){
             });
         });
     });
+};
+
+var cleanUserObjects = function (arrayOfUsers) {
+    var cleanArrayOfUsers = [];
+    _.each(arrayOfUsers, function(user, index){
+        delete user.password;
+        cleanArrayOfUsers.push(user);
+    });
+    return cleanArrayOfUsers;
 };
 
 module.exports = {
