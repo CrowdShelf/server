@@ -479,7 +479,51 @@ paths:
       responses:
         '200':
           description: OK
-
+          schema:
+            type: object
+            $ref: '#/definitions/UserLoggedIn'
+  /forgotpassword/:username:
+    post:
+      tags:
+        - users
+      summary: Make server send you a reset password key
+      operationId: forgotpassword
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+  /resetpassword/:username:
+    post:
+      tags:
+        - users
+      summary: Set new password
+      operationId: resetpassword
+      parameters:
+        - in: body
+          name: body
+          description: Object with username and password
+          required: true
+          schema:
+            type: object
+            properties:
+              key:
+                type: integer
+                description: 'Key from e-mail'
+                required: true
+              password:
+                type: string
+                description: 'New password.'
+                required: true
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
 definitions:
   User:
     type: object
@@ -501,6 +545,21 @@ definitions:
         type: string
       password:
         type: string
+  UserLoggedIn:
+    type: object
+    description: ''
+    properties:
+      _id:
+        type: string
+      username:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      token:
+        type: string
+        description: 'Used for authentication.'
   UserList:
     type: object
     properties:
