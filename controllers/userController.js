@@ -15,18 +15,19 @@ var Users = require('../models/user.js'),
 var create = function(req, res){
     var user = req.body;
     if(!user.password) return stndResponse.unprocessableEntity(res, {error: 'Missing password.'});
-    //@TODO check if username and e-mail is available
-    passwordController.hash(user.password, function (hash) {
-        user.password = hash;
-        Users.insertUser(user, function(result){
-            if(result.error) return res.json(result.error); // Just some error
-            if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
-            if(result === 500) return stndResponse.internalError(res);
-            delete result.password; // remove hash from object
-            return res.json(result);
+    Users.isAvailableUser(user, function (isAvailable) {
+        if(!isAvailable) return res.json({error: 'There is already a user with that username or e-mail.'});
+        passwordController.hash(user.password, function (hash) {
+            user.password = hash;
+            Users.insertUser(user, function(result){
+                if(result.error) return res.json(result.error); // Just some error
+                if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
+                if(result === 500) return stndResponse.internalError(res);
+                delete result.password; // remove hash from object
+                return res.json(result);
+            });
         });
     });
-
 };
 
 var remove = function (req, res) {

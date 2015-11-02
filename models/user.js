@@ -74,6 +74,19 @@ var isValid = function (user){
     return Joi.validate(user, schema);
 };
 
+/*
+ * isAvailableUser
+ * @description Checks if the username and e-mail in a user object is already in the db
+ * @param User {}
+ * @param callback(boolean)
+ * @returns function
+ */
+var isAvailableUser = function (user, callback) {
+    Users.find({$or: [{username: user.username}, {email: user.email}] }, function (err, result) {
+        if(!err && result.length === 0) return callback(true);
+        return callback(false);
+    });
+};
 
 module.exports = {
     insertUser: insertUser,
@@ -81,5 +94,6 @@ module.exports = {
     updateUser: updateUser,
     findWithID: findWithID,
     findWithUsername: findWithUsername,
-    findAll: findAll
+    findAll: findAll,
+    isAvailableUser: isAvailableUser
 };
