@@ -15,10 +15,12 @@ Do you want to contribute? Do it like this:
 Any questions? Feel free to ask!
 
 ## Installation
+Get a local server by doing the following: 
+
 1. Clone the repository with `git@github.com:CrowdShelf/server.git`
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
-4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
+4. Set up [Mongodb](https://www.mongodb.org/) locally and export an environment variable `MONGODB` that defines its URL.
 5. You'll also need a SMTP-server. You can set this up locally or wherever you want, then export the following environment variables: `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER` and `EMAIL_PASS`.
 6. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
 
@@ -33,8 +35,7 @@ Any questions? Feel free to ask!
         router.js - Sets the routing up by setting allowed headers etc. and calling API setup-methods 
         
 ## Deployment 
-### Heroku
-The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`. 
+The server is currently running on a droplet on Digital Ocean. It has CI with the `master`-branch. You'll find it on `crowdshelf.xyz/api`. 
 
 There's also CI on the `dev`-branch, which is the latest version of the API. You'll find it on `crowdshelf-dev.herokuapp.com/api`
 
