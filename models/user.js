@@ -90,8 +90,7 @@ var isValid = function (user){
  * @returns function
  */
 var isAvailableUser = function (user, callback) {
-    Users.find({$or: [{username: user.username}, {email: user.email}] }, function (err, result) {
-        console.log(result);
+    Users.find({$or: [{username: user.username}, {email: user.email}] }).toArray(function (err, result) {
         if(!err && result.length === 0) return callback(true);
         return callback(false);
     });
