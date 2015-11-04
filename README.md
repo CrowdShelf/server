@@ -52,3 +52,6 @@ Latest API definition can be found on our servers:
 
 * [Latest - `dev`](http://crowdshelf-dev.herokuapp.com/api)
 * [Stable - `master`](http://crowdshelf.xyz/api)
+
+## Licence
+MIT-licence. See the `LICENCE`-file.
