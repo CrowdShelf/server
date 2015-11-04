@@ -49,10 +49,18 @@ var updateUser = function(id, newUser, callback){
 
 
 var findWithID  = function(id, callback){
-    Users.findOne({_id: ObjectId(id)}, function(err, result){
+    Users.findOne({_id: id}, function(err, result){
         if(!err && !result) return callback(404); // NOt found
         if(!err) return callback(result); // result
         return callback({error: err}); // errors
+    });
+};
+
+
+var findMultipleWithIds = function (listOfIds, callback) {
+    Users.find({_id: {$in: listOfIds }}).toArray(function (err, result) {
+        if(!err) return callback(result);
+        return callback({error: err});
     });
 };
 
@@ -94,6 +102,7 @@ module.exports = {
     removeUser: removeUser,
     updateUser: updateUser,
     findWithID: findWithID,
+    findMultipleWithIds: findMultipleWithIds,
     findWithUsername: findWithUsername,
     findAll: findAll,
     isAvailableUser: isAvailableUser

@@ -51,7 +51,7 @@ var update = function (req, res) {
 var getUser = function(req, res){
     var id = req.params.userId;
     if(!ObjectId.isValid(id)) return stndResponse.unprocessableEntity(res, {error: 'Invalid userID'}); 
-    Users.findWithID(id, function(result){
+    Users.findWithID(ObjectId(id), function(result){
         if(result.error) return res.json({error: result.error});
         if(result === 404) return stndResponse.notFound(res);
         return res.json(result);
@@ -88,10 +88,24 @@ var login = function (req, res) {
 };
 
 var isValidUser = function (userID, callback) {
-    Users.findWithID(userID, function (result) {
+    if (!ObjectId.isValid(userID)) return callback(false);
+    Users.findWithID(ObjectId(userID), function (result) {
         if(!result) return callback(false); // Null, not found - not valid
         if(!result.error && result !== 404) return callback(true);
         return callback(false);
+    });
+};
+
+var isValidListOfUsers = function (userIdList, callback) {
+    var listOfValidObjectIds = [];
+    _.each(userIdList, function (item) {
+        if(!ObjectId.isValid(item)) return callback(false);
+        listOfValidObjectIds.push(ObjectId(item));
+    });
+    Users.findMultipleWithIds(listOfValidObjectIds, function (result) {
+        if(result.error) return callback(false);
+        if(result.length === userIdList.length) return callback(true);
+        callback(false);
     });
 };
 
@@ -169,5 +183,6 @@ module.exports = {
     login: login,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
-    inviteUser: inviteUser
+    inviteUser: inviteUser,
+    isValidListOfUsers: isValidListOfUsers
 };

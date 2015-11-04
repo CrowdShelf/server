@@ -16,20 +16,34 @@ var create = function(req, res){
     delete crowd._id; // Can get a value from clients, but it's not used as Mongo gives the ID
     if(Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, {error: Crowds.isValid(crowd).error});
     if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
-    Crowds.findWithName(crowd.name, function(result){
-        if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
-        Crowds.insertCrowd(crowd, function(insertData){
-            res.json(insertData);
+    userController.isValidListOfUsers(crowd.members, function (isValid) {
+        if(!isValid) return stndResponse.unprocessableEntity(res, {error: 'One or more of the member IDs are invalid'});
+        Crowds.findWithName(crowd.name, function(result){
+            if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
+            Crowds.insertCrowd(crowd, function(insertData){
+                res.json(insertData);
+            });
+        });
+    });
+
+};
+
+var update = function (req, res) {
+    var crowd = req.body;
+    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
+    if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
+    userController.isValidListOfUsers(crowd.members, function (isValid) {
+        if(!isValid) return stndResponse.unprocessableEntity(res, {error: 'One or more of the member IDs are invalid'});
+        Crowds.findWithName(crowd.name, function(result){
+            if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
+            Crowds.updateCrowd(req.params.crowdId, crowd, function(result){
+                res.json(result);
+            });
         });
     });
 };
 
-var update = function (req, res) {
-    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
-    Crowds.updateCrowd(req.params.crowdId, req.body, function(result){
-        res.json(result);
-    });
-};
+
 
 var remove = function(req, res){
     if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
