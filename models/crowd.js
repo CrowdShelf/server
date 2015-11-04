@@ -35,6 +35,7 @@ var insertCrowd = function(crowd, callback){
 var updateCrowd = function(id, crowd, callback){
     if(!booleanIsValid(crowd)) return callback({validationError: isValid(crowd).error});
     Crowds.updateOne({_id: ObjectId(id)}, {$set: crowd}, function(err, result){
+        if(err) return callback({error: err});
         if(!result) return callback(404);
         return callback(result);
     });

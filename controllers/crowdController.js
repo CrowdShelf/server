@@ -37,6 +37,7 @@ var update = function (req, res) {
         Crowds.findWithName(crowd.name, function(result){
             if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
             Crowds.updateCrowd(req.params.crowdId, crowd, function(result){
+                if(result === 404) return stndResponse.notFound(res);
                 res.json(result);
             });
         });
