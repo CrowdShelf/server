@@ -24,6 +24,7 @@ var create = function(req, res){
                 if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
                 if(result === 500) return stndResponse.internalError(res);
                 delete result.password; // remove hash from object
+                emailController.sendRegistrationEmail(result, function(result) {return; });
                 return res.json(result);
             });
         });
@@ -137,6 +138,18 @@ var resetPassword = function(req, res){
     });
 };
 
+var inviteUser = function (req, res) {
+    var inviter = req.body.inviter;
+    var userToInvite = req.body.invitee;
+    if(!inviter.name || !userToInvite.name || !userToInvite.email) {
+        return stndResponse.unprocessableEntity(res, {error: 'Missing name and/or e-mail on either the person you want to invite, or yourself.'});
+    }
+    emailController.sendInvitationEmail(inviter, userToInvite, function (result) {
+        if (result.success) return res.status(200).send('Invite sent.');
+        return stndResponse.internalError(res);
+    })
+};
+
 var cleanUserObjects = function (arrayOfUsers) {
     var cleanArrayOfUsers = [];
     _.each(arrayOfUsers, function(user, index){
@@ -155,5 +168,6 @@ module.exports = {
     isValidUser: isValidUser,
     login: login,
     forgotPassword: forgotPassword,
-    resetPassword: resetPassword
+    resetPassword: resetPassword,
+    inviteUser: inviteUser
 };

@@ -72,6 +72,8 @@ function setup(app){
     app.post('/api/login', userController.login);
     app.post('/api/forgotpassword/:username', userController.forgotPassword);
     app.post('/api/resetpassword/:username', userController.resetPassword);
+
+    app.post('/api/invite', userController.inviteUser);
 }
 
 exports.setup = setup;
