@@ -482,12 +482,23 @@ paths:
           schema:
             type: object
             $ref: '#/definitions/UserLoggedIn'
-  /forgotpassword/:username:
+  /forgotpassword:
     post:
       tags:
         - users
       summary: Make server send you a reset password key
       operationId: forgotpassword
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                description: 'Your username'
+                required: true
       consumes:
         - application/json
       produces:
@@ -495,7 +506,7 @@ paths:
       responses:
         '200':
           description: OK
-  /resetpassword/:username:
+  /resetpassword:
     post:
       tags:
         - users
@@ -504,11 +515,15 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Object with username and password
+          description: Object with key, username and new password
           required: true
           schema:
             type: object
             properties:
+              username:
+                type: string
+                description: 'Your username'
+                required: true
               key:
                 type: integer
                 description: 'Key from e-mail'

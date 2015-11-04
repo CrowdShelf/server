@@ -4,14 +4,15 @@
  * Probably should be replaced with Passport.
  */
 var stndResponse = require('../helpers/standardResponses'),
-    Tokens = require('../models/tokens');
+    Tokens = require('../models/tokens'),
+    _ = require('underscore');
 
-var LEGAL_PATHS = ['/api', '/api/', '/api/login', '/api/login/', '/api/invite', '/api/invite/'];
+var LEGAL_PATHS = ['/login', '/invite', '/forgotpassword', '/resetpassword' ];
 
 var validate = function (req, res, next) {
     // If request is not of method OPTIONS or is a request that's legal, check the token
-    if ((req.method === 'OPTIONS' || isLegalPath(req.path) // Regular methods
-        || (req.method === 'POST' &&  (req.path === '/api/users' || req.path === '/api/users/') ) ))  // Registration
+    if (req.method === 'OPTIONS' || isLegalPath(req.path) // Regular methods
+        || (req.method === 'POST' &&  (req.path === '/api/users' || req.path === '/api/users/') ) )  // Registration
         return next();
     else if (req.method !== 'OPTIONS' && ( req.body.token || req.query.token) ) {
         var token = (req.body.token ? req.body.token : req.query.token); // Either body-token or query token
@@ -26,7 +27,11 @@ var validate = function (req, res, next) {
 };
 
 var isLegalPath =  function(path){
-    return LEGAL_PATHS.indexOf(path) > -1;
+    if(path === '/api' || path === '/api/') return true;
+    return _.each(LEGAL_PATHS, function (item, index) {
+        if('/api' + item  === path || '/api' + item  + '/' ===  path) return true;
+        if (index +1 === LEGAL_PATHS.length) return false;
+    });
 };
 
 module.exports = {

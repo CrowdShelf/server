@@ -53,6 +53,11 @@ function setup(app){
     app.route('/api/users')
         .post(userController.create)
         .get(userController.getAllUsers);
+    // Login and passwords
+    app.post('/api/login', userController.login);
+    app.post('/api/invite', userController.inviteUser);
+    app.post('/api/users/forgotpassword', userController.forgotPassword);
+    app.post('/api/users/resetpassword', userController.resetPassword);
 
     // /crowds
     app.route('/api/crowds')
@@ -68,12 +73,7 @@ function setup(app){
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
 
-    // Login and passwords
-    app.post('/api/login', userController.login);
-    app.post('/api/forgotpassword/:username', userController.forgotPassword);
-    app.post('/api/resetpassword/:username', userController.resetPassword);
 
-    app.post('/api/invite', userController.inviteUser);
 }
 
 exports.setup = setup;

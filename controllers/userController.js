@@ -100,9 +100,9 @@ var isValidUser = function (userID, callback) {
  * @description Generate a password key and e-mail it to specified user
  */
 var forgotPassword = function (req, res) {
-    if(!req.params.username) return stndResponse.badRequest(res); // Need username to get a key
+    if(!req.body.username) return stndResponse.badRequest(res); // Need username to get a key
     var key = forgottenPasswordKeys.generate(); // Needs a key
-    Users.findWithUsername(req.params.username, function (result) { // Get user and send e-mail
+    Users.findWithUsername(req.body.username, function (result) { // Get user and send e-mail
         if(result == 404) return stndResponse.notFound(res);
         if(result.error) return res.json({error: result.error});
         emailController.sendForgotPasswordEmail(result, key, function (result) {
@@ -112,13 +112,13 @@ var forgotPassword = function (req, res) {
 };
 
 var resetPassword = function(req, res){
-    if (!req.params.username || !req.body.key || !req.body.password) {
+    if (!req.body.username || !req.body.key || !req.body.password) {
         return stndResponse.badRequest(res); // Need key, username and new password
     }
     forgottenPasswordKeys.isValid(req.body.key, function (result) {
         if(!result) return res.status(401).send('Invalid key.');  // Invalid
         // Valid, hash new password and replace it
-        Users.findWithUsername(req.params.username, function (result) {
+        Users.findWithUsername(req.body.username, function (result) {
             if(!result || result == 404) return stndResponse.notFound(res);
             if(result.error) return res.json({error: result.error});
             var user = result;
