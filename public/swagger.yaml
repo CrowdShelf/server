@@ -559,7 +559,7 @@ definitions:
         type: string
       token:
         type: string
-        description: 'Used for authentication.'
+        description: 'Used for authentication. Add to body of all requets, or to query on GET-requests. Valid for 20 minutes.'
   UserList:
     type: object
     properties:
