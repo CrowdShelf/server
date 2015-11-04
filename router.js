@@ -5,7 +5,8 @@
 
 var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
-    userController = require('./controllers/userController');
+    userController = require('./controllers/userController'),
+    tokenController = require('./controllers/tokenController');
 
 var express = require('express'),
     bodyParser = require('body-parser');
@@ -17,6 +18,8 @@ function setup(app){
         extended: true
     }));
 
+
+    // Set headers
     app.use(function(req, res, next) { // Headers to allow CORS and different requests
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
@@ -25,6 +28,9 @@ function setup(app){
         console.log(req.method+ '-request to: ' + req.url);
         next();
     });
+
+    // Token check
+    app.use(tokenController.validate);
 
     app.use('/api', express.static('public')); // Swagger location
 

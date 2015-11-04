@@ -16,7 +16,7 @@ var create = function(req, res){
     var user = req.body;
     if(!user.password) return stndResponse.unprocessableEntity(res, {error: 'Missing password.'});
     Users.isAvailableUser(user, function (isAvailable) {
-        if(!isAvailable) return res.json({error: 'There is already a user with that username or e-mail.'});
+        if(!isAvailable) return res.status(409).json({error: 'There is already a user with that username or e-mail.'});
         passwordController.hash(user.password, function (hash) {
             user.password = hash;
             Users.insertUser(user, function(result){

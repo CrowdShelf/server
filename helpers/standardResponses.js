@@ -54,6 +54,7 @@ var badRequest = function (res) {
     return res.status(400).send('Invalid request.');
 };
 
+
 /*
  * internalError
  * @param {res}

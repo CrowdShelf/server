@@ -36,10 +36,11 @@ var generate = function () {
 };
 
 var isValid = function (token, callback) {
+    removeExpiredTokens();
     Tokens.findOne({token: token}, function(err, result){
         if(!err && !result) return callback(false); // NOt found
         if(!err) {
-            if (token.expires < new Date()) {
+            if (result.expires < new Date()) {
                 return callback(false);
             } //expired
             return callback(true);
