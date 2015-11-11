@@ -23,7 +23,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
  */
 var sendEmail = function (recipents, subject, content, callback) {
     var mailOptions = {
-        from: 'CrowdShelf <noreply@svorstol.com>', // sender address
+        from: 'CrowdShelf <' + process.env.EMAIL_ADDRESS +  '>', // sender address
         to: recipents.join(), // list of receivers
         subject:  subject, // Subject line
         html: content.html, // html body
