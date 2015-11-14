@@ -2,7 +2,7 @@
 Server for the CrowdShelf apps, written with NodeJS and Express.
 
 ## Workflow
-We're using JIRA for issue tracking. We try to follow [Chrockford's style guide](http://javascript.crockford.com/code.html) for our code.
+We're using JIRA for issue tracking. We try to follow [Chrockfords style guide](http://javascript.crockford.com/code.html) for our code.
 
 Do you want to contribute? Do it like this:
 
@@ -15,11 +15,15 @@ Do you want to contribute? Do it like this:
 Any questions? Feel free to ask!
 
 ## Installation
+Get a local server by doing the following: 
+
 1. Clone the repository with `git@github.com:CrowdShelf/server.git`
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
-4. Set up mongodb locally and export an environment variable `MONGODB` that defines its URL.
-5. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
+4. Set up [Mongodb](https://www.mongodb.org/) locally and export an environment variable `MONGODB` that defines its URL.
+5. You'll also need a SMTP-server. You can set this up locally or wherever you want, then export the following environment variables: `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_ADDRESS`, `EMAIL_USER` and `EMAIL_PASS`.
+6. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
+
 
 ## Project structure
 
@@ -32,14 +36,16 @@ Any questions? Feel free to ask!
         router.js - Sets the routing up by setting allowed headers etc. and calling API setup-methods 
         
 ## Deployment 
-### Heroku
-The server is currently running on Heroku. It has CI with the `master`-branch. You'll find it on `crowdshelf.herokuapp.com/api`. 
+The server is currently running on a droplet on Digital Ocean. It has CI with the `master`-branch. You'll find it on `crowdshelf.xyz/api`. 
 
 There's also CI on the `dev`-branch, which is the latest version of the API. You'll find it on `crowdshelf-dev.herokuapp.com/api`
 
 ### Docker
 A Docker-image is avaiable on the [Docker Hub](https://hub.docker.com/r/crowdshelf/server/). 
-You can get it with `docker pull crowdshelf/server`, and run it with  `docker run --net host crowdshelf/server`.
+
+You can get it with `docker pull crowdshelf/server`, and run it with  
+`docker run --net host -e "EMAIL_HOST=yourhost" -e "EMAIL_HOST=yourport" -e "EMAIL_USER=youruser" -e "EMAIL_PASS=yourpass" -e "EMAIL_ADDRESS=adress to send from" crowdshelf/server`.
+The `-e`-parameter sets the environmental variables for your e-mail serivce.
 This will expose the ports `3000` and `27017` locally, which means you can reach the API under `localhost:3000/api`.
 
 You can also build the image yourself with `docker build -t crowdshelf/server .`
@@ -48,3 +54,6 @@ Latest API definition can be found on our servers:
 
 * [Latest - `dev`](http://crowdshelf-dev.herokuapp.com/api)
 * [Stable - `master`](http://crowdshelf.xyz/api)
+
+## Licence
+MIT-licence. See the `LICENCE`-file.

@@ -5,7 +5,8 @@
 
 var bookController = require('./controllers/bookController'),
     crowdController = require('./controllers/crowdController'),
-    userController = require('./controllers/userController');
+    userController = require('./controllers/userController'),
+    tokenController = require('./controllers/tokenController');
 
 var express = require('express'),
     bodyParser = require('body-parser');
@@ -17,6 +18,8 @@ function setup(app){
         extended: true
     }));
 
+
+    // Set headers
     app.use(function(req, res, next) { // Headers to allow CORS and different requests
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE, PUT');
@@ -26,7 +29,10 @@ function setup(app){
         next();
     });
 
-    app.use('/api', express.static('public'));
+    // Token check
+    app.use(tokenController.validate);
+
+    app.use('/api', express.static('public')); // Swagger location
 
     // Book API v2: /books
     app.route('/api/books')
@@ -47,9 +53,13 @@ function setup(app){
     app.route('/api/users')
         .post(userController.create)
         .get(userController.getAllUsers);
-
+    // Login and passwords
     app.post('/api/login', userController.login);
+    app.post('/api/invite', userController.inviteUser);
+    app.post('/api/users/forgotpassword', userController.forgotPassword);
+    app.post('/api/users/resetpassword', userController.resetPassword);
 
+    // /crowds
     app.route('/api/crowds')
         .post( crowdController.create)
         .get(crowdController.getCrowds);
@@ -59,10 +69,11 @@ function setup(app){
         .put(crowdController.update)
         .delete(crowdController.remove);
 
-
-    app.route('/api/crowds/:crowdId/members/:username')
+    app.route('/api/crowds/:crowdId/members/:userId')
         .put(crowdController.addMember)
         .delete(crowdController.removeMember);
+
+
 }
 
 exports.setup = setup;

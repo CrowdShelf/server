@@ -26,14 +26,16 @@ var schema = Joi.object().keys({
 
 
 var insertCrowd = function(crowd, callback){
-    if(!booleanIsValid(crowd)) return callback(422);
+    if(!booleanIsValid(crowd)) return callback({validationError: isValid(crowd).error});
     Crowds.insertOne(crowd, function(err, result){
         callback(result.ops[0]);
     });
 };
 
 var updateCrowd = function(id, crowd, callback){
+    if(!booleanIsValid(crowd)) return callback({validationError: isValid(crowd).error});
     Crowds.updateOne({_id: ObjectId(id)}, {$set: crowd}, function(err, result){
+        if(err) return callback({error: err});
         if(!result) return callback(404);
         return callback(result);
     });
@@ -48,7 +50,7 @@ var removeCrowd = function(id, callback){
 
 var addMember = function(crowdId, username, callback){
     Crowds.updateOne({_id: ObjectId(crowdId)},{
-        $push: {members: username }
+        $addToSet: {members: username }
     }, function(err, result){
         if(!result) return callback(404);
         callback(result);
@@ -63,8 +65,6 @@ var removeMember = function(crowdId, username, callback){
             callback(result);
     })
 };
-
-
 
 var findAll = function(callback){
     Crowds.find({}).toArray(function (err, result) {

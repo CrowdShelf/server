@@ -14,22 +14,37 @@ var ObjectId = require('mongodb').ObjectID;
 var create = function(req, res){
     var crowd = req.body;
     delete crowd._id; // Can get a value from clients, but it's not used as Mongo gives the ID
+    if(Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, {error: Crowds.isValid(crowd).error});
     if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
-    if (Crowds.isValid(crowd).error) return stndResponse.unprocessableEntity(res, Crowds.isValid(crowd).error);
-    Crowds.findWithName(crowd.name, function(result){
-        if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
-        Crowds.insertCrowd(crowd, function(insertData){
-            res.json(insertData);
+    userController.isValidListOfUsers(crowd.members, function (isValid) {
+        if(!isValid) return stndResponse.unprocessableEntity(res, {error: 'One or more of the member IDs are invalid'});
+        Crowds.findWithName(crowd.name, function(result){
+            if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
+            Crowds.insertCrowd(crowd, function(insertData){
+                res.json(insertData);
+            });
+        });
+    });
+
+};
+
+var update = function (req, res) {
+    var crowd = req.body;
+    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
+    if (crowd.members.indexOf(crowd.owner) === -1 ) crowd.members.push(crowd.owner);
+    userController.isValidListOfUsers(crowd.members, function (isValid) {
+        if(!isValid) return stndResponse.unprocessableEntity(res, {error: 'One or more of the member IDs are invalid'});
+        Crowds.findWithName(crowd.name, function(result){
+            if (!result.length === 0) return res.status(409).send('Crowd name already in use.');
+            Crowds.updateCrowd(req.params.crowdId, crowd, function(result){
+                if(result === 404) return stndResponse.notFound(res);
+                res.json(result);
+            });
         });
     });
 };
 
-var update = function (req, res) {
-    if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
-    Crowds.updateCrowd(req.params.crowdId, req.body, function(result){
-        res.json(result);
-    });
-};
+
 
 var remove = function(req, res){
     if(!ObjectId.isValid(req.params.crowdId)) return stndResponse.unprocessableEntity(res);
@@ -46,18 +61,22 @@ var getWithName = function(req, res){
 };
 
 var addMember = function(req, res){
-    var username = req.params.username;
+    var userId = req.params.userId;
     var crowdId = req.params.crowdId;
-    Crowds.addMember(crowdId, username, function(result){
-        if(result === 404) return res.sendStatus(404);
-        res.status(200).send('Member added.');
+    userController.isValidUser(userId, function (result) {
+        if(!result) return res.json({error: 'Invalid userID.'});
+        Crowds.addMember(crowdId, userId, function(result){
+            if(result === 404) return res.sendStatus(404);
+            res.status(200).send('Member added.');
+        });
     });
+
 };
 
 var removeMember = function(req, res){
     var crowdId = req.params.crowdId,
-        username = req.params.username;
-    Crowds.removeMember(crowdId, username, function(result){
+        userId = req.params.userId;
+    Crowds.removeMember(crowdId, userId, function(result){
         if(result === 404) return res.sendStatus(404);
         res.status(200).send('Member removed.');
     });
@@ -129,13 +148,6 @@ var formatResultForClient = function (result) {
     return {crowds: result}
 };
 
-var isValidCrowdObject = function(crowd){
-    if (typeof crowd.owner === 'string'
-        && typeof crowd.members === 'object'
-        && typeof crowd.name === 'string'
-        && Object.keys(crowd).length === 3) return true;
-    return false;
-};
 
 module.exports = {
     create: create,

@@ -298,6 +298,34 @@ paths:
             $ref: '#/definitions/Crowd'
         '404':
           $ref: '#/responses/notFound'
+    put:
+      tags:
+        - crowds
+      summary: Update an existing crowd
+      description: ''
+      operationId: updateCrowd
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: crowdID
+          description: ID of the crowd to delete
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: >
+            New Crowd-object data
+          required: true
+          schema:
+            $ref: '#/definitions/Crowd'
+      responses:
+        '200':
+          description: OK
+        '404':
+          $ref: '#/responses/notFound'
     delete:
       tags:
         - crowds
@@ -451,7 +479,66 @@ paths:
       responses:
         '200':
           description: OK
-
+          schema:
+            type: object
+            $ref: '#/definitions/UserLoggedIn'
+  /forgotpassword:
+    post:
+      tags:
+        - users
+      summary: Make server send you a reset password key
+      operationId: forgotpassword
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                description: 'Your username'
+                required: true
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+  /resetpassword:
+    post:
+      tags:
+        - users
+      summary: Set new password
+      operationId: resetpassword
+      parameters:
+        - in: body
+          name: body
+          description: Object with key, username and new password
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                description: 'Your username'
+                required: true
+              key:
+                type: integer
+                description: 'Key from e-mail'
+                required: true
+              password:
+                type: string
+                description: 'New password.'
+                required: true
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
 definitions:
   User:
     type: object
@@ -473,6 +560,21 @@ definitions:
         type: string
       password:
         type: string
+  UserLoggedIn:
+    type: object
+    description: ''
+    properties:
+      _id:
+        type: string
+      username:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      token:
+        type: string
+        description: 'Used for authentication. Add to body of all requets, or to query on GET-requests. Valid for 20 minutes.'
   UserList:
     type: object
     properties:

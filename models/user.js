@@ -10,7 +10,8 @@ var schema = Joi.object().keys({
     _id: Joi.number().valid(-1).optional(),
     name: Joi.string().required(),
     username: Joi.string().required(),
-    email: Joi.string().email().required()
+    email: Joi.string().email().required(),
+    password: Joi.string().optional()
 });
 
 
@@ -38,24 +39,34 @@ var removeUser = function(id, callback){
 };
 
 var updateUser = function(id, newUser, callback){
-    if(isValid(user).error) return callback({validationError: isValid(user).error});
-    Users.updateOne({_id: ObjectId(id)}, {$set: newUser}, function(err, result){
+    if(isValid(newUser).error) return callback({validationError: isValid(user).error});
+    Users.updateOne({_id: id}, {$set: newUser}, function(err, result){
+        if(err) return callback({error: err});
         if(!result) return callback(404);
         return callback(result);
     });
 };
 
+
 var findWithID  = function(id, callback){
-    Users.findOne({_id: ObjectId(id)}, function(err, result){
+    Users.findOne({_id: id}, function(err, result){
         if(!err && !result) return callback(404); // NOt found
         if(!err) return callback(result); // result
         return callback({error: err}); // errors
     });
 };
 
+
+var findMultipleWithIds = function (listOfIds, callback) {
+    Users.find({_id: {$in: listOfIds }}).toArray(function (err, result) {
+        if(!err) return callback(result);
+        return callback({error: err});
+    });
+};
+
 var findAll = function (callback) {
     Users.find({}).toArray(function (err, result) {
-        if(!err) callback(result);
+        if(!err) return callback(result);
     });
 };
 
@@ -71,12 +82,27 @@ var isValid = function (user){
     return Joi.validate(user, schema);
 };
 
+/*
+ * isAvailableUser
+ * @description Checks if the username and e-mail in a user object is already in the db
+ * @param User {}
+ * @param callback(boolean)
+ * @returns function
+ */
+var isAvailableUser = function (user, callback) {
+    Users.find({$or: [{username: user.username}, {email: user.email}] }).toArray(function (err, result) {
+        if(!err && result.length === 0) return callback(true);
+        return callback(false);
+    });
+};
 
 module.exports = {
     insertUser: insertUser,
     removeUser: removeUser,
     updateUser: updateUser,
     findWithID: findWithID,
+    findMultipleWithIds: findMultipleWithIds,
     findWithUsername: findWithUsername,
-    findAll: findAll
+    findAll: findAll,
+    isAvailableUser: isAvailableUser
 };
