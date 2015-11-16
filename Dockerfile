@@ -10,7 +10,7 @@ RUN echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-or
 # Update apt-get sources AND install MongoDB + curl + git 
 RUN apt-get update && apt-get install -y mongodb-org git curl python
 # node-gyp reqs
-RUN apt-get install -y build-essential
+RUN apt-get install -y build-essential make automake gcc g++ cpp libc6-dev man-db autoconf pkg-config 
 
 # Create the MongoDB data directory
 RUN mkdir -p /data/db
