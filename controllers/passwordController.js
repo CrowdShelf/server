@@ -1,7 +1,7 @@
 /**
  * Created by esso on 28.10.15.
  */
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 
 /*
  * hash
@@ -11,7 +11,7 @@ var bcrypt = require('bcrypt');
  * @returns function(hash)
  */
 var hash = function (password, callback) {
-    bcrypt.hash(password, 8, function(err, hash) {
+    bcrypt.hash(password, null, null, function(err, hash) {
         if(!err) callback(hash);
     });
 };
