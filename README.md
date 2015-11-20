@@ -28,7 +28,6 @@ Get a local server by doing the following:
 ## Project structure
 
     server\
-        api\ - Setup methods for legacy APIs
         controllers\ - Controllers for handling requsts
         models\ - Models that handle database-operations
         index.js - Starts a server
