@@ -13,9 +13,6 @@ RUN apt-get update && apt-get install -y mongodb-org git curl
 # Create the MongoDB data directory
 RUN mkdir -p /data/db
 
-# Expose MongoDB port 27017
-EXPOSE 27017
-
 # Environment variable for the node-server
 ENV MONGODB="mongodb://localhost:27017/test"
 
