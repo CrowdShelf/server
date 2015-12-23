@@ -482,7 +482,7 @@ paths:
           schema:
             type: object
             $ref: '#/definitions/UserLoggedIn'
-  /forgotpassword:
+  /users/forgotpassword:
     post:
       tags:
         - users
@@ -506,7 +506,7 @@ paths:
       responses:
         '200':
           description: OK
-  /resetpassword:
+  /users/resetpassword:
     post:
       tags:
         - users

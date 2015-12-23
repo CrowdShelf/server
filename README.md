@@ -21,7 +21,7 @@ Get a local server by doing the following:
 2. `cd` into the folder
 3. Run `npm install` to install dependencies
 4. Set up [Mongodb](https://www.mongodb.org/) locally and export an environment variable `MONGODB` that defines its URL.
-5. You'll also need a SMTP-server. You can set this up locally or wherever you want, then export the following environment variables: `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_ADDRESS`, `EMAIL_USER` and `EMAIL_PASS`.
+5. You'll also need a [Mailgun](http://mailgun.com)-account. Register, then export the following environment variables: `MAILGUN_KEY` and `EMAIL_ADDRESS`.
 6. Run `npm start` and you'll be up and running on port 3000, or an environment defined as `PORT`.
 
 
@@ -43,7 +43,7 @@ There's also CI on the `dev`-branch, which is the latest version of the API. You
 A Docker-image is avaiable on the [Docker Hub](https://hub.docker.com/r/crowdshelf/server/). 
 
 You can get it with `docker pull crowdshelf/server`, and run it with  
-`docker run --net host -e "EMAIL_HOST=yourhost" -e "EMAIL_HOST=yourport" -e "EMAIL_USER=youruser" -e "EMAIL_PASS=yourpass" -e "EMAIL_ADDRESS=adress to send from" crowdshelf/server`.
+`docker run --net host -e "MAILGUN_KEY=your Mailgun API key" -e "EMAIL_ADDRESS=adress to send from" crowdshelf/server`.
 The `-e`-parameter sets the environmental variables for your e-mail serivce.
 This will expose the ports `3000` and `27017` locally, which means you can reach the API under `localhost:3000/api`.
 

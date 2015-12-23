@@ -11,7 +11,7 @@ var bookController = require('./controllers/bookController'),
 var express = require('express'),
     bodyParser = require('body-parser');
 
-function setup(app){
+exports.setup = function(app){
     // Some setup for encoding of requests
     app.use(bodyParser.json());       // to support JSON-encoded bodies
     app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -74,6 +74,4 @@ function setup(app){
         .delete(crowdController.removeMember);
 
 
-}
-
-exports.setup = setup;
+};
