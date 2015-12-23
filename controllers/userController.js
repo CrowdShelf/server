@@ -24,7 +24,7 @@ var create = function(req, res){
                 if(result.validationError) return stndResponse.unprocessableEntity(res, {error: result.validationError});
                 if(result === 500) return stndResponse.internalError(res);
                 delete result.password; // remove hash from object
-                emailController.sendRegistrationEmail(result, function(result) {return; });
+                emailController.sendRegistrationEmail(result);
                 return res.json(result);
             });
         });

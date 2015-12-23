@@ -7,15 +7,11 @@ var email = require('../helpers/emailSendingHelper'),
 /*
  * sendRegistrationEmail
  * @param recipentUser {User}
- * @param callback(result)
  */
-var sendRegistrationEmail = function (recipentUser, callback) {
+module.exports.sendRegistrationEmail = function (recipentUser) {
     templates.build('registerNewUser', {name: recipentUser.name}, function (result) {
-        if(result.error) return callback({error: result.error});
-        email.send(recipentUser.email, 'Welcome to CrowdShelf!', result, function (result) {
-            if(result.error) return callback({error: result.error});
-            callback({success: result});
-        })
+        if(result.error) return console.log(result);
+        email.send(recipentUser.email, 'Welcome to CrowdShelf!', result);
     });
 };
 
@@ -24,16 +20,11 @@ var sendRegistrationEmail = function (recipentUser, callback) {
  * @param recipentUser {User}
  * @param callback(result)
  */
-var sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
+module.exports.sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
     templates.build('resetPassword', {key: resetKey}, function (result) {
         if(result.error) return callback({error: result.error});
-        email.send(recipentUser.email, 'Forgot password', result, function (result) {
-            if(result.error) {
-                console.log(result.error);
-                return callback({error: result.error})
-            }
-            callback({success: result});
-        })
+        email.send(recipentUser.email, 'Forgot password', result);
+        callback(null);
     });
 };
 
@@ -43,18 +34,10 @@ var sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
  * @param recipentUser {User}
  * @param callback(result)
  */
-var sendInvitationEmail = function (inviter, recipentUser, callback) {
+module.exports.sendInvitationEmail = function (inviter, recipentUser, callback) {
     templates.build('inviteUser', {inviter: inviter.name, invitee: recipentUser.name }, function (result) {
-        if(result.error) return callback({error: result.error});
-        email.send(recipentUser.email, 'A friend wants you to join CrowdShelf!', result, function (result) {
-            if(result.error) return callback({error: result.error});
-            callback({success: result});
-        })
+        if (result.error) return callback({error: result.error});
+        email.send(recipentUser.email, 'A friend wants you to join CrowdShelf!', result);
+        callback(null);
     });
-};
-
-module.exports = {
-    sendRegistrationEmail: sendRegistrationEmail,
-    sendForgotPasswordEmail: sendForgotPasswordEmail,
-    sendInvitationEmail: sendInvitationEmail
 };
