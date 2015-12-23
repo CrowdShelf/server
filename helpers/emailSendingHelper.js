@@ -5,15 +5,10 @@
 var nodemailer = require('nodemailer'),
     smtpTransport = require('nodemailer-smtp-transport');
 
-// create reusable transporter object using SMTP transport
-var transporter = nodemailer.createTransport(smtpTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-}));
+var api_key = process.env.MAILGUN_KEY,
+    domain = process.env.MAILGUN_DOMAIN;
+
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
 /*
  * @param recipents Array
@@ -29,11 +24,11 @@ var sendEmail = function (recipents, subject, content, callback) {
         html: content.html, // html body
         text: content.text
     };
-    transporter.sendMail(mailOptions, function(error, info){
+    mailgun.messages().send(mailOptions, function(error, body){
         if(error){
             return callback({error: error})
         }
-        callback(info.response);
+        callback(body);
     });
 };
 

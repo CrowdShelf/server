@@ -12,7 +12,7 @@ var email = require('../helpers/emailSendingHelper'),
 var sendRegistrationEmail = function (recipentUser, callback) {
     templates.build('registerNewUser', {name: recipentUser.name}, function (result) {
         if(result.error) return callback({error: result.error});
-        email.send([recipentUser.email], 'Welcome to CrowdShelf!', result, function (result) {
+        email.send(recipentUser.email, 'Welcome to CrowdShelf!', result, function (result) {
             if(result.error) return callback({error: result.error});
             callback({success: result});
         })
@@ -27,7 +27,7 @@ var sendRegistrationEmail = function (recipentUser, callback) {
 var sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
     templates.build('resetPassword', {key: resetKey}, function (result) {
         if(result.error) return callback({error: result.error});
-        email.send([recipentUser.email], 'Forgot password', result, function (result) {
+        email.send(recipentUser.email, 'Forgot password', result, function (result) {
             if(result.error) {
                 console.log(result.error);
                 return callback({error: result.error})
@@ -46,7 +46,7 @@ var sendForgotPasswordEmail = function (recipentUser, resetKey, callback) {
 var sendInvitationEmail = function (inviter, recipentUser, callback) {
     templates.build('inviteUser', {inviter: inviter.name, invitee: recipentUser.name }, function (result) {
         if(result.error) return callback({error: result.error});
-        email.send([recipentUser.email], 'A friend wants you to join CrowdShelf!', result, function (result) {
+        email.send(recipentUser.email, 'A friend wants you to join CrowdShelf!', result, function (result) {
             if(result.error) return callback({error: result.error});
             callback({success: result});
         })
