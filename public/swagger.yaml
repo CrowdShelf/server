@@ -6,7 +6,7 @@ info:
   title: CrowsShelf API
   contact:
     url: www.github.com/crowdshelf
-    name: 'http://www.github.crowdshelf.io' 
+    name: 'http://www.github.crowdshelf.io'
 host: crowdshelf.xyz
 basePath: /api
 schemes:
@@ -415,7 +415,7 @@ paths:
           description: User object to create
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserWithPassword'
       responses:
         '200':
           description: OK
@@ -542,7 +542,7 @@ paths:
 definitions:
   User:
     type: object
-    description: ''
+    description: 'A general user object '
     properties:
       _id:
         type: string
@@ -551,6 +551,18 @@ definitions:
       name:
         type: string
       email:
+        type: string
+  UserWithPassword:
+    type: object
+    description: 'User object + password field. Used when creating new user.'
+    properties:
+      username:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      password:
         type: string
   UserToLogIn:
     type: object
