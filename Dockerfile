@@ -1,32 +1,14 @@
-# Base Docker-image on Ubuntu
-FROM    ubuntu:latest
+FROM    node:6
+MAINTAINER Stein-Otto Svorstol <steinotto@svorstol.com>
 
-MAINTAINER M.Y. Stein-Otto Svorstol <stein-otto@svorstol.com>
+# Create app directory
+RUN mkdir -p /app
+WORKDIR /app
 
-# Import MongoDB public GPG key AND create a MongoDB list file
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-RUN echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list
-
-# Update apt-get sources AND install MongoDB + curl + git 
-RUN apt-get update && apt-get install -y mongodb-org git curl
-
-
-# Create the MongoDB data directory
-RUN mkdir -p /data/db
-
-# Environment variable for the node-server
-ENV MONGODB="mongodb://localhost:27017/test"
-
-# Install NodeJS
-RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
-RUN apt-get update && apt-get install -y nodejs
-RUN npm install -g node-gyp
-
-# Git-clone project
-RUN git clone https://github.com/CrowdShelf/server.git
-
-# Server runs on port 3000
 EXPOSE 3000
 
-# Install dependencies and start server and database
-CMD cd /server && sh start.sh
+# Copy application
+COPY . /app
+
+# Build image
+RUN npm install

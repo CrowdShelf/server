@@ -1,0 +1,13 @@
+api:
+  image: crowdshelf/server
+  ports:
+   - "3000:3000"
+  links:
+   - mongo
+  environment:
+   - MONGO_URL=mongodb://mongo/crowdshelf
+   - EMAIL_ADDRESS=your-email
+   - MAILGUN_KEY=yourkey
+  command: npm start
+mongo:
+  image: mongo:latest
