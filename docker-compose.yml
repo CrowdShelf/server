@@ -5,7 +5,7 @@ api:
   links:
    - mongo
   environment:
-   - MONGO_URL=mongodb://mongo/crowdshelf
+   - MONGODB=mongodb://mongo/crowdshelf
    - EMAIL_ADDRESS=your-email
    - MAILGUN_KEY=yourkey
   command: npm start
