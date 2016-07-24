@@ -8,5 +8,6 @@ api:
    - MONGO_URL=mongodb://mongo/crowdshelf
    - EMAIL_ADDRESS=your-email
    - MAILGUN_KEY=yourkey
+  command: npm start
 mongo:
   image: mongo:latest
