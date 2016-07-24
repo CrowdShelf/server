@@ -43,7 +43,7 @@ There's also CI on the `dev`-branch, which is the latest version of the API. You
 A Docker-image is avaiable on the [Docker Hub](https://hub.docker.com/r/crowdshelf/server/). 
 
 You can get it with `docker pull crowdshelf/server`, and run it with  
-`docker run --net host -e "MONGO_URL=mongo://yourURL" -e "MAILGUN_KEY=your Mailgun API key" -e "EMAIL_ADDRESS=adress to send from" crowdshelf/server`npm start
+`docker run --net host -e "MONGODB=mongo://yourURL" -e "MAILGUN_KEY=your Mailgun API key" -e "EMAIL_ADDRESS=adress to send from" crowdshelf/server`npm start
 The `-e`-parameter sets the environmental variables for your e-mail serivce and database.
 This will expose the ports `3000`locally, which means you can reach the API under `localhost:3000/api`.
 
