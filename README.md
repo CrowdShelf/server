@@ -48,6 +48,13 @@ The `-e`-parameter sets the environmental variables for your e-mail serivce.
 This will expose the ports `3000` and `27017` locally, which means you can reach the API under `localhost:3000/api`.
 
 You can also build the image yourself with `docker build -t crowdshelf/server .`
+
+#### Docker Compose
+You can also spin everything up with Docker Compose. 
+
+1. Add your environment variables to `docker-compose.yml`.
+2. Run `docker-compose up`
+
 ## Data model and API
 Latest API definition can be found on our servers:
 
